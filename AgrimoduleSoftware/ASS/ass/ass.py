@@ -33,17 +33,6 @@ class User(db.Model, UserMixin):
 user_datastore = SQLAlchemyUserDatastore(db, User, Role)
 security = Security(app, user_datastore)
 
-# Create a user to test with
-# @app.before_first_request
-# def create_user():
-    # db.drop_all()
-    # db.create_all()
-    # from flask.ext.security.utils import encrypt_password
-    # user_datastore.create_user(email='carlos@sv.de', password=encrypt_password('carlos123'))
-    # user_datastore.create_user(email='carlos@sv.de', password='carlos123')
-    # db.session.commit()
-    # return 'USER CREATED'
-
 # Views
 @app.route('/')
 @login_required
@@ -52,4 +41,4 @@ def home():
     # return render_template('index.html')
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run()
