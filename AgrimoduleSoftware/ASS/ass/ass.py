@@ -7,7 +7,7 @@ from flask.ext.security import Security, SQLAlchemyUserDatastore, UserMixin, Rol
 app = Flask(__name__)
 app.config['DEBUG'] = True
 
-app.config['SECRET_KEY'] = 'super-secret'
+app.config['SECRET_KEY'] = 'q+f!t-cj&5vcn_5d_8nu9#^17=q5m!*l8!ip6iin!ypkf6ktm@'
 app.config['SECURITY_PASSWORD_HASH'] = 'plaintext' # when change later, SALT must be configure too.
 app.config['SECURITY_REGISTERABLE'] = True 	# allows register form template from flask-security
 app.config['SECURITY_SEND_REGISTER_EMAIL'] = False # to disable sending a confirmation email for registering without configuring the email register yet.
