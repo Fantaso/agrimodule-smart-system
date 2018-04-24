@@ -1,5 +1,7 @@
 ## I ADDED
 *.txt
+# software directory
+Software/
 
 # Flask
 instance/
