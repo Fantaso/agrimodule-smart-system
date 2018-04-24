@@ -1,27 +1,11 @@
 from flask import Flask, render_template
 from flask_sqlalchemy import SQLAlchemy
-# from flask_security import Security, SQLAlchemyUserDatastore, UserMixin, RoleMixin, login_required
-from flask.ext.security import Security, SQLAlchemyUserDatastore, UserMixin, RoleMixin, login_required
+from flask_security import Security, SQLAlchemyUserDatastore, UserMixin, RoleMixin, login_required
 
 # Create app
 app = Flask(__name__)
-app.config['DEBUG'] = True
 
-app.config['SECRET_KEY'] = 'q+f!t-cj&5vcn_5d_8nu9#^17=q5m!*l8!ip6iin!ypkf6ktm@'
-app.config['SECURITY_PASSWORD_HASH'] = 'plaintext' # when change later, SALT must be configure too.
-app.config['SECURITY_REGISTERABLE'] = True 	# allows register form template from flask-security
-app.config['SECURITY_SEND_REGISTER_EMAIL'] = False # to disable sending a confirmation email for registering without configuring the email register yet.
-# app.config['SECURITY_LOGIN_URL'] = 'security/login_user.html'
-# app.config['SECURITY_REGISTER_URL'] = 'security/register_user.html'
-# app.config['SECURITY_RESET_URL'] = 'security/reset_password.html'
-# app.config['SECURITY_CHANGE_URL'] = 'security/change_password.html'
-
-# app.config['SECURITY_PASSWORD_HASH'] = 'bcrypt'
-# app.config['SECURITY_PASSWORD_SALT'] = '$2a$16$PnnIgfMwkOjGX4SkHqSOPO'
-
-
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:////Volumes/TiroLoco/5.DevEloper/AgrimoduleSmartSystem/AgrimoduleSoftware/ASS/ass/ass.db'
-# app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config.from_pyfile('cfg.cfg')
 
 # Create database connection object
 db = SQLAlchemy(app)
