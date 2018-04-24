@@ -1,0 +1,1396 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"if",
+				"ifmain\tif __name__ == '__main__'"
+			],
+			[
+				"week",
+				"weekFreq"
+			],
+			[
+				"num",
+				"numPlant"
+			],
+			[
+				"plant",
+				"plant_area"
+			],
+			[
+				"wee",
+				"plant_cycle_weeks"
+			],
+			[
+				"prod",
+				"prodFreq"
+			],
+			[
+				"crop",
+				"cropsPerYear"
+			],
+			[
+				"pro",
+				"prodFreq"
+			],
+			[
+				"area",
+				"area"
+			],
+			[
+				"days",
+				"daysPerWeek"
+			],
+			[
+				"plantC",
+				"plantCycleDays"
+			],
+			[
+				"we",
+				"weeksPerYear"
+			],
+			[
+				"day",
+				"daysPerWeek"
+			],
+			[
+				"plan",
+				"plantClass"
+			],
+			[
+				"PLUM",
+				"PLUM_WEIGHT"
+			],
+			[
+				"mie",
+				"mineral_d"
+			],
+			[
+				"min",
+				"mineral_d"
+			],
+			[
+				"mineral_d",
+				"mineral_d_stage"
+			],
+			[
+				"miner",
+				"mineral_d"
+			],
+			[
+				"minera",
+				"minerals_d"
+			],
+			[
+				"mine",
+				"mineral_d"
+			],
+			[
+				"mienra",
+				"minerals_d"
+			],
+			[
+				"mien",
+				"minerals_d"
+			],
+			[
+				"each",
+				"eachStage"
+			],
+			[
+				"mi",
+				"mineral_tag"
+			],
+			[
+				"Stag",
+				"STAGES_FOOD"
+			],
+			[
+				"S",
+				"STAGES_FOOD"
+			],
+			[
+				"ba",
+				"batchAmount"
+			],
+			[
+				"get",
+				"get_stage_water"
+			],
+			[
+				"pla",
+				"plantAmount"
+			],
+			[
+				"batc",
+				"batch_1"
+			],
+			[
+				"land",
+				"landWaterStages"
+			],
+			[
+				"drink",
+				"drinkList"
+			],
+			[
+				"Nu",
+				"soilNutrients"
+			],
+			[
+				"wa",
+				"soilWater"
+			],
+			[
+				"farmer",
+				"farmerInput"
+			],
+			[
+				"far",
+				"farmerInput"
+			],
+			[
+				"irriga",
+				"irrigationData"
+			],
+			[
+				"fer",
+				"fertilizerData"
+			],
+			[
+				"prepa",
+				"prepare_crop"
+			],
+			[
+				"re",
+				"reportHead"
+			],
+			[
+				"repo",
+				"reportHead"
+			],
+			[
+				"batch",
+				"batchQty"
+			],
+			[
+				"la",
+				"landArea"
+			],
+			[
+				"report",
+				"report_body"
+			],
+			[
+				"repor",
+				"report_head"
+			],
+			[
+				"land_",
+				"land_data"
+			],
+			[
+				"bact",
+				"batchesData"
+			],
+			[
+				"batches",
+				"batches_data_unpack"
+			],
+			[
+				"btaches",
+				"batchesData"
+			],
+			[
+				"sim",
+				"sim_land"
+			],
+			[
+				"batchData",
+				"batchData"
+			],
+			[
+				"sim_cultivation",
+				"sim_cultivation_less"
+			],
+			[
+				"fa",
+				"farmerLandRid"
+			],
+			[
+				"em",
+				"emailRecovery"
+			],
+			[
+				"us",
+				"userLocation"
+			],
+			[
+				"pr",
+				"print"
+			],
+			[
+				"pre",
+				"prepare_land"
+			],
+			[
+				"get_",
+				"get_land_list"
+			],
+			[
+				"plant_q",
+				"plant_qty_per_batch"
+			],
+			[
+				"pl",
+				"plantName"
+			],
+			[
+				"plant_qt",
+				"plant_qty_per_batch_stagnated"
+			],
+			[
+				"hours",
+				"hoursRequired"
+			],
+			[
+				"mineral",
+				"mineralValue"
+			],
+			[
+				"al",
+				"already_fruiting"
+			],
+			[
+				"gro",
+				"grow_cycle"
+			],
+			[
+				"growth",
+				"growthFactor"
+			],
+			[
+				"hou",
+				"hoursRequired"
+			],
+			[
+				"stage",
+				"stageIndex"
+			],
+			[
+				"ST",
+				"STAGES_RADIATION"
+			],
+			[
+				"nitro",
+				"nitrogenRequired"
+			],
+			[
+				"STAGE",
+				"STAGES_FOOD"
+			],
+			[
+				"tan",
+				"tanFactor"
+			],
+			[
+				"eat",
+				"eatFactor"
+			],
+			[
+				"TOMA",
+				"TOMATO_STAGES"
+			],
+			[
+				"m",
+				"make_batch"
+			],
+			[
+				"farm",
+				"farmName"
+			],
+			[
+				"new",
+				"new_farm"
+			],
+			[
+				"user",
+				"userFarmName"
+			],
+			[
+				"yield",
+				"yield_projected"
+			],
+			[
+				"cultiva",
+				"cultivationList"
+			],
+			[
+				"c",
+				"cultivationRid"
+			],
+			[
+				"Fa",
+				"Farm"
+			],
+			[
+				"cult",
+				"cultivationList"
+			],
+			[
+				"cultivation",
+				"cultivationRid"
+			],
+			[
+				"for",
+				"format"
+			],
+			[
+				"qy",
+				"qtyFlag"
+			],
+			[
+				"q",
+				"qtyFlag"
+			],
+			[
+				"qty",
+				"qtyFlag"
+			],
+			[
+				"__",
+				"__init__"
+			],
+			[
+				"p",
+				"plantingArea"
+			],
+			[
+				"grams",
+				"gramsPerFruit"
+			],
+			[
+				"yi",
+				"yield_projected"
+			],
+			[
+				"yie",
+				"yield_current"
+			],
+			[
+				"bat",
+				"batch_duration"
+			],
+			[
+				"g",
+				"gramsPerFruit"
+			],
+			[
+				"fr",
+				"fruitPerPlant"
+			],
+			[
+				"das",
+				"daysToMaturity"
+			],
+			[
+				"STAGES",
+				"STAGES_DURATION"
+			],
+			[
+				"b",
+				"batch1"
+			],
+			[
+				"dict",
+				"dict_comp"
+			],
+			[
+				"plant_",
+				"plant_class_db"
+			],
+			[
+				"get_qty",
+				"get_qty_flag"
+			],
+			[
+				"self",
+				"self"
+			],
+			[
+				"qt",
+				"qtyFlag"
+			],
+			[
+				"E",
+				"Exception"
+			],
+			[
+				"TOM",
+				"TOMATO_STAGES"
+			],
+			[
+				"s",
+				"size"
+			],
+			[
+				"wei",
+				"weightRatePerDay"
+			],
+			[
+				"STA",
+				"STAGES_DURATION"
+			],
+			[
+				"t",
+				"t1"
+			],
+			[
+				"st",
+				"str\tclass"
+			],
+			[
+				"se",
+				"setattr\tfunction"
+			],
+			[
+				"print",
+				"print_full_birthday\tfunction"
+			],
+			[
+				"va",
+				"variety\tstatement"
+			],
+			[
+				"prin",
+				"print_variety\tfunction"
+			],
+			[
+				"variety",
+				"variety"
+			],
+			[
+				"F",
+				"Fruity\tclass"
+			],
+			[
+				"Le",
+				"Lettuce\tclass"
+			],
+			[
+				"su",
+				"super\tclass"
+			],
+			[
+				"set",
+				"setType\tfunction"
+			],
+			[
+				"ge",
+				"get_info\tfunction"
+			],
+			[
+				"a",
+				"attribute\tparam"
+			],
+			[
+				"attri",
+				"attributeList"
+			],
+			[
+				"__s",
+				"__str__\tfunction"
+			],
+			[
+				"o",
+				"object"
+			],
+			[
+				"method",
+				"method"
+			],
+			[
+				"ad",
+				"addAux\tstatement"
+			]
+		]
+	},
+	"buffers":
+	[
+		{
+			"file": "ass/ass.py",
+			"settings":
+			{
+				"buffer_size": 1869,
+				"encoding": "UTF-8",
+				"line_ending": "Unix",
+				"name": "from flask import Flask"
+			}
+		},
+		{
+			"file": "/Volumes/PorUsar/test/app/app.py",
+			"settings":
+			{
+				"buffer_size": 1763,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "ass.sublime-project",
+			"settings":
+			{
+				"buffer_size": 45,
+				"line_ending": "Unix"
+			}
+		}
+	],
+	"build_system": "",
+	"build_system_choices":
+	[
+	],
+	"build_varint": "",
+	"command_palette":
+	{
+		"height": 392.0,
+		"last_filter": "inst",
+		"selected_items":
+		[
+			[
+				"inst",
+				"Package Control: Install Package"
+			],
+			[
+				"rem",
+				"Package Control: Remove Package"
+			],
+			[
+				"ins",
+				"Package Control: Install Package"
+			],
+			[
+				"remove",
+				"Package Control: Remove Package"
+			],
+			[
+				"insta",
+				"Package Control: Install Package"
+			]
+		],
+		"width": 521.0
+	},
+	"console":
+	{
+		"height": 264.0,
+		"history":
+		[
+			"print(t1)"
+		]
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"file_history":
+	[
+		"/Volumes/TiroLoco/5.DevEloper/AgrimoduleSmartSystem/README.md",
+		"/Volumes/TiroLoco/5.DevEloper/GitHub/fantaso.github.io/index.html",
+		"/Volumes/TiroLoco/4.DevCloud/Python/Python_info.txt",
+		"/Volumes/TiroLoco/4.DevCloud/Projects/AQ_/4th_crop_batch_report/user.py",
+		"/Users/CmrH/Library/Application Support/Sublime Text 3/Packages/SublimeREPL/SublimeREPL.sublime-settings",
+		"/Users/CmrH/Library/Application Support/Sublime Text 3/Packages/User/SublimeREPL.sublime-settings",
+		"/Volumes/TiroLoco/techniker krankenkasse.txt",
+		"/Volumes/TiroLoco/3.SolarVibes/00-SVibes/crowdfunding/notes/crowdfund.txt",
+		"/Volumes/TiroLoco/3.SolarVibes/00-SVibes/crowdfunding/notes/crop.txt",
+		"/Volumes/TiroLoco/3.SolarVibes/00-SVibes/crowdfunding/notes/Video App Mock Up.txt",
+		"/Volumes/TiroLoco/4.DevCloud/Projects/el_hijo_e_maria.py",
+		"/Volumes/TiroLoco/3.SolarVibes/00-SVibes/crowdfunding/notes/SV Market & Sales.txt",
+		"/Volumes/TiroLoco/3.SolarVibes/00-SVibes/crowdfunding/notes/solar panel frame",
+		"/Volumes/TiroLoco/4.DevCloud/Projects/AQ_/5th/farmer.py",
+		"/Volumes/TiroLoco/4.DevCloud/Projects/AQ_/5th/user.py",
+		"/Volumes/TiroLoco/4.DevCloud/Projects/AQ_/5th/utility.py",
+		"/Volumes/TiroLoco/4.DevCloud/Projects/AQ_/5th/plant.py",
+		"/Volumes/TiroLoco/4.DevCloud/Projects/AQ_/5th/tomato.py",
+		"/Volumes/TiroLoco/4.DevCloud/Projects/AQ_/5th/plum.py",
+		"/Volumes/TiroLoco/4.DevCloud/Projects/AQ_/5th/deskstudy.py",
+		"/Volumes/TiroLoco/4.DevCloud/Projects/AQ_/5th/batch.py",
+		"/Volumes/TiroLoco/4.DevCloud/Projects/AQ_/5th/land.py",
+		"/Volumes/TiroLoco/3.SolarVibes/00-SVibes/crowdfunding/notes/AgriModule.txt",
+		"/Volumes/TiroLoco/4.DevCloud/Projects/AQ_/5th/farm.py",
+		"/Volumes/TiroLoco/4.DevCloud/Projects/AQ_/5th/user_settings.py",
+		"/Volumes/TiroLoco/4.DevCloud/Projects/AQ_/4th/plant.py",
+		"/Volumes/TiroLoco/4.DevCloud/Projects/AQ_/4th/tomato.py",
+		"/Volumes/TiroLoco/4.DevCloud/Projects/AQ_/4th/plum.py",
+		"/Volumes/TiroLoco/4.DevCloud/Projects/AQ_/4th/batch.py",
+		"/Volumes/TiroLoco/4.DevCloud/Projects/AQ_/4th/utility.py",
+		"/Volumes/TiroLoco/4.DevCloud/Projects/AQ_/4th/land.py",
+		"/Volumes/TiroLoco/4.DevCloud/Projects/AQ_/4th/user_settings.py",
+		"/Volumes/TiroLoco/4.DevCloud/Projects/AQ_/4th/user.py",
+		"/Volumes/TiroLoco/4.DevCloud/Projects/AQ_/4th/farm.py",
+		"/Volumes/TiroLoco/4.DevCloud/Projects/AQ_/4th/farmer.py",
+		"/Volumes/TiroLoco/4.DevCloud/Projects/AQ_/3rd/plant.py",
+		"/Volumes/TiroLoco/4.DevCloud/Projects/AQ_/3rd/tomato.py",
+		"/Volumes/TiroLoco/4.DevCloud/Projects/AQ_/3rd/plum.py",
+		"/Volumes/TiroLoco/4.DevCloud/Projects/AQ_/3rd/utility.py",
+		"/Volumes/TiroLoco/4.DevCloud/Projects/AQ_/3rd/batch.py",
+		"/Volumes/TiroLoco/4.DevCloud/Projects/AQ_/3rd/land.py",
+		"/Volumes/TiroLoco/4.DevCloud/Projects/AQ_/3rd/farmer.py",
+		"/Volumes/TiroLoco/4.DevCloud/Projects/AQ_/3rd/farm.py",
+		"/Volumes/TiroLoco/4.DevCloud/Projects/AQ_/3rd/user.py",
+		"/Volumes/TiroLoco/4.DevCloud/Projects/AQ_/2nd_user.farms.crops.feed.water.tan.crop/user_settings.py",
+		"/Volumes/TiroLoco/4.DevCloud/Projects/AQ_/2nd_user.farms.crops.feed.water.tan.crop/farm.py",
+		"/Volumes/TiroLoco/4.DevCloud/Projects/AQ_/2nd_user.farms.crops.feed.water.tan.crop/farmer.py",
+		"/Volumes/TiroLoco/4.DevCloud/Projects/AQ_/2nd_user.farms.crops.feed.water.tan.crop/utility.py",
+		"/Volumes/TiroLoco/4.DevCloud/Projects/AQ_/3rd/user_settings.py",
+		"/Volumes/TiroLoco/4.DevCloud/Projects/AQ_/2nd_user.farms.crops.feed.water.tan.crop/plant.py",
+		"/Volumes/TiroLoco/4.DevCloud/Projects/AQ_/2nd_user.farms.crops.feed.water.tan.crop/tomato.py",
+		"/Volumes/TiroLoco/4.DevCloud/Projects/AQ_/2nd/plum.py",
+		"/Volumes/TiroLoco/4.DevCloud/Projects/AQ_/2nd/user.py",
+		"/Volumes/TiroLoco/4.DevCloud/Projects/AQ_/2nd/user_settings.py",
+		"/Volumes/TiroLoco/4.DevCloud/Projects/AQ_/2nd/farmer_bu.py",
+		"/Volumes/TiroLoco/4.DevCloud/Projects/AQ_/2nd/cultivate.py",
+		"/Volumes/TiroLoco/4.DevCloud/Projects/AQ_/2nd/play.py",
+		"/Volumes/TiroLoco/4.DevCloud/Projects/AQ_/time.py",
+		"/Volumes/TiroLoco/4.DevCloud/Projects/AQ_/tomato.py",
+		"/Volumes/TiroLoco/4.DevCloud/Projects/AQ_/user.txt",
+		"/Volumes/TiroLoco/4.DevCloud/Projects/AQ_/2nd/utility.py",
+		"/Users/CmrH/Library/Application Support/Sublime Text 3/Packages/Python Flake8 Lint/Flake8Lint.sublime-settings",
+		"/Volumes/TiroLoco/4.DevCloud/Projects/AQ_/2nd/report.py",
+		"/Volumes/TiroLoco/4.DevCloud/Projects/exercises/instance generator.py",
+		"/Volumes/TiroLoco/4.DevCloud/Projects/AQ_/farm_objects.py",
+		"/Volumes/TiroLoco/4.DevCloud/Projects/exercises/class_parent_inherits_class_variable_from_child.py",
+		"/Volumes/TiroLoco/4.DevCloud/Projects/exercises/dictionary_comprenhension.py",
+		"/Volumes/TiroLoco/4.DevCloud/Projects/AQ_/2nd/cultivate_bu.py",
+		"/Volumes/TiroLoco/4.DevCloud/Projects/*REPL* [python]",
+		"/Volumes/TiroLoco/3.SolarVibes/03-Code/Python/Agrimodule 2/tkinter3.py",
+		"/Volumes/TiroLoco/4.DevCloud/Projects/AQ_/2nd/tomato.py",
+		"/Volumes/TiroLoco/4.DevCloud/Projects/AQ_/fruity.py",
+		"/Volumes/TiroLoco/4.DevCloud/Projects/AQ_/plant.py",
+		"/Volumes/TiroLoco/3.SolarVibes/03-Code/Python/Agrimodule 2/store_data_template.py",
+		"/Volumes/TiroLoco/4.DevCloud/Projects/exercises/asset-v1-MITx+6.00.1x+2T2017+type@asset+block@Lecture10/TrialCode.py",
+		"/Volumes/TiroLoco/4.DevCloud/Projects/exercises/class_parent_using_method_from_child.py",
+		"/Users/CmrH/Library/Application Support/Sublime Text 3/Packages/User/PythonREPL-36.sublime-build",
+		"/Users/CmrH/Library/Application Support/Sublime Text 3/Packages/SublimeREPL/config/Python/Main.sublime-menu",
+		"/Users/CmrH/Library/Application Support/Sublime Text 3/Packages/User/Python-2.7.sublime-build",
+		"/Users/CmrH/Library/Application Support/Sublime Text 3/Packages/User/Python-3.6.sublime-build",
+		"/Users/CmrH/Library/Application Support/Sublime Text 3/Packages/User/Anaconda.sublime-settings",
+		"/Users/CmrH/Library/Application Support/Sublime Text 3/Packages/User/Python-3.6-repl.sublime-build",
+		"/Volumes/TiroLoco/1.Downloads/asset-v1-MITx+6.00.1x+2T2017+type@asset+block@Lecture10/Grades.py",
+		"/Volumes/TiroLoco/5.DevEloper/Python/Python_info.txt",
+		"/Volumes/TiroLoco/4.DevCloud/Projects/AQ_/leavy.py",
+		"/Volumes/TiroLoco/4.DevCloud/Projects/AQ_/lettuce.py",
+		"/Volumes/TiroLoco/4.DevCloud/Projects/exercises/classs.py",
+		"/Volumes/TiroLoco/2.Documents/Si caen sapos del cielo, a seguir nuestra fuerza n.txt",
+		"/Volumes/TiroLoco/3.SolarVibes/03-Code/Python/Jinja2/jinja_template.html",
+		"/Volumes/TiroLoco/4.DevCloud/Projects/Jinja2_/generate_html.py",
+		"/Volumes/TiroLoco/4.DevCloud/Projects/Jinja2_/Generate_html/generate_html.py",
+		"/Volumes/TiroLoco/4.DevCloud/Projects/Jinja2_/Generate_html/generated_html.html",
+		"/Volumes/TiroLoco/3.SolarVibes/03-Code/Python/Jinja2/jinja2.py",
+		"/Volumes/TiroLoco/2.Documents/Fargo",
+		"/Volumes/TiroLoco/4.Mega/Projects/Jinja2_/generate_html.py",
+		"/Users/CmrH/code/Jinja2eg/templates/index.html",
+		"/Volumes/TiroLoco/3.SolarVibes/99-RemoteFile/Coder Plan/Bewerbung/Website/JobApplication/FCC_portfolio.css",
+		"/Volumes/TiroLoco/3.SolarVibes/99-RemoteFile/Coder Plan/Bewerbung/Website/Solarvibes/adopt_a_farmer.css",
+		"/Volumes/TiroLoco/3.SolarVibes/99-RemoteFile/Coder Plan/Bewerbung/Website/JobApplication/index.html",
+		"/Volumes/TiroLoco/3.SolarVibes/99-RemoteFile/Coder Plan/Bewerbung/Website/Solarvibes/index.html",
+		"/Volumes/TiroLoco/3.SolarVibes/03-Code/Python/Agrimodule/agrimodule_4th.py",
+		"/Volumes/TiroLoco/3.SolarVibes/Meine Passion, Menschen zur Selbstversorgung und z",
+		"/Volumes/PD-CmrH/Scrip..txt",
+		"/Volumes/TiroLoco/5.DevEloper/Python/Flask/Flask Installation.txt",
+		"/Volumes/TiroLoco/4.WeFarm/TxT/SolarVibes Camp",
+		"/Volumes/TiroLoco/5.DevEloper/CMD/cmd.txt",
+		"/Volumes/TiroLoco/5.DevEloper/HTML & CSS/Solarvibes/5th No Text Over/stylebackup.css",
+		"/Volumes/TiroLoco/5.DevEloper/HTML & CSS/Solarvibes/5th No Text Over/index.html",
+		"/Volumes/TiroLoco/5.DevEloper/HTML & CSS/Solarvibes/5th No Text Over/style.css",
+		"/Volumes/TiroLoco/5.DevEloper/HTML & CSS/Solarvibes/2nd No Text Over/index.html",
+		"/Volumes/TiroLoco/5.DevEloper/HTML & CSS/Solarvibes/2nd No Text Over/style.css",
+		"/Volumes/TiroLoco/5.DevEloper/HTML & CSS/Solarvibes/2nd No Text Over/index2.html",
+		"/Volumes/TiroLoco/1.Downloads/Text",
+		"/Volumes/TiroLoco/3.SolarVibes/Energy management system for anything of new energ",
+		"/Volumes/TiroLoco/HHuman-read&watch.html",
+		"/Volumes/TiroLoco/Svibes-Berlin",
+		"/Volumes/TiroLoco/job-tv-other-ver",
+		"/Volumes/TiroLoco/31july-ende.html",
+		"/Volumes/TiroLoco/Berlin-end.html"
+	],
+	"find":
+	{
+		"height": 25.0
+	},
+	"find_in_files":
+	{
+		"height": 93.0,
+		"where_history":
+		[
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+			"primary_key",
+			"True",
+			"github"
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"selected": 0,
+			"sheets":
+			[
+				{
+					"buffer": 0,
+					"file": "ass/ass.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1869,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								418,
+								418
+							]
+						],
+						"settings":
+						{
+							"auto_name": "from flask import Flask",
+							"bracket_highlighter.busy": false,
+							"bracket_highlighter.clone": -1,
+							"bracket_highlighter.clone_locations":
+							{
+								"close":
+								{
+								},
+								"icon":
+								{
+								},
+								"open":
+								{
+								},
+								"unmatched":
+								{
+								}
+							},
+							"bracket_highlighter.clone_regions":
+							[
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_default_content",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_tag_content",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_double_quote_content",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_curly_content",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close",
+								"bh_single_quote_content",
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_regex_content",
+								"bh_c_define",
+								"bh_c_define_center",
+								"bh_c_define_open",
+								"bh_c_define_close",
+								"bh_c_define_content",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_round_content",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_unmatched_content",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_angle_content",
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_square_content"
+							],
+							"bracket_highlighter.locations":
+							{
+								"close":
+								{
+								},
+								"icon":
+								{
+								},
+								"open":
+								{
+								},
+								"unmatched":
+								{
+								}
+							},
+							"bracket_highlighter.regions":
+							[
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_square_content",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_angle_content",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close",
+								"bh_single_quote_content",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_curly_content",
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_regex_content",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_tag_content",
+								"bh_c_define",
+								"bh_c_define_center",
+								"bh_c_define_open",
+								"bh_c_define_close",
+								"bh_c_define_content",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_double_quote_content",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_unmatched_content",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_default_content",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_round_content"
+							],
+							"syntax": "Packages/Python/Python.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "/Volumes/PorUsar/test/app/app.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1763,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								1763
+							]
+						],
+						"settings":
+						{
+							"bracket_highlighter.busy": false,
+							"bracket_highlighter.clone": -1,
+							"bracket_highlighter.clone_locations":
+							{
+								"close":
+								{
+								},
+								"icon":
+								{
+								},
+								"open":
+								{
+								},
+								"unmatched":
+								{
+								}
+							},
+							"bracket_highlighter.clone_regions":
+							[
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_default_content",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_tag_content",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_double_quote_content",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_curly_content",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close",
+								"bh_single_quote_content",
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_regex_content",
+								"bh_c_define",
+								"bh_c_define_center",
+								"bh_c_define_open",
+								"bh_c_define_close",
+								"bh_c_define_content",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_round_content",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_unmatched_content",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_angle_content",
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_square_content"
+							],
+							"bracket_highlighter.locations":
+							{
+								"close":
+								{
+									"1":
+									[
+										1762,
+										1763
+									]
+								},
+								"icon":
+								{
+									"1":
+									[
+										"Packages/BracketHighlighter/icons/round_bracket.png",
+										"region.yellowish"
+									]
+								},
+								"open":
+								{
+									"1":
+									[
+										1761,
+										1762
+									]
+								},
+								"unmatched":
+								{
+								}
+							},
+							"bracket_highlighter.regions":
+							[
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_square_content",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_angle_content",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close",
+								"bh_single_quote_content",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_curly_content",
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_regex_content",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_tag_content",
+								"bh_c_define",
+								"bh_c_define_center",
+								"bh_c_define_open",
+								"bh_c_define_close",
+								"bh_c_define_content",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_double_quote_content",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_unmatched_content",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_default_content",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_round_content"
+							],
+							"syntax": "Packages/Python/Python.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "ass.sublime-project",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 45,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"bracket_highlighter.busy": false,
+							"bracket_highlighter.clone": -1,
+							"bracket_highlighter.clone_locations":
+							{
+								"close":
+								{
+								},
+								"icon":
+								{
+								},
+								"open":
+								{
+								},
+								"unmatched":
+								{
+								}
+							},
+							"bracket_highlighter.clone_regions":
+							[
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_default_content",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_tag_content",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_double_quote_content",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_curly_content",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close",
+								"bh_single_quote_content",
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_regex_content",
+								"bh_c_define",
+								"bh_c_define_center",
+								"bh_c_define_open",
+								"bh_c_define_close",
+								"bh_c_define_content",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_round_content",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_unmatched_content",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_angle_content",
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_square_content"
+							],
+							"bracket_highlighter.locations":
+							{
+								"close":
+								{
+								},
+								"icon":
+								{
+								},
+								"open":
+								{
+								},
+								"unmatched":
+								{
+								}
+							},
+							"bracket_highlighter.regions":
+							[
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_default_content",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_tag_content",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_double_quote_content",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_curly_content",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close",
+								"bh_single_quote_content",
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_regex_content",
+								"bh_c_define",
+								"bh_c_define_center",
+								"bh_c_define_open",
+								"bh_c_define_close",
+								"bh_c_define_content",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_round_content",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_unmatched_content",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_angle_content",
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_square_content"
+							],
+							"syntax": "Packages/JavaScript/JSON.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 2,
+					"type": "text"
+				}
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 25.0
+	},
+	"input":
+	{
+		"height": 37.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.exec":
+	{
+		"height": 239.0
+	},
+	"output.find_results":
+	{
+		"height": 0.0
+	},
+	"pinned_build_system": "Packages/User/PythonREPL-36.sublime-build",
+	"project": "untitled.sublime-project",
+	"replace":
+	{
+		"height": 46.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_symbol":
+	{
+		"height": 299.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 392.0
+	},
+	"selected_group": 0,
+	"settings":
+	{
+	},
+	"show_minimap": false,
+	"show_open_files": true,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 219.0,
+	"status_bar_visible": true,
+	"template_settings":
+	{
+	}
+}
