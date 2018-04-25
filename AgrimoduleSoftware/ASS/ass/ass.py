@@ -67,7 +67,7 @@ class Farm(db.Model):
 
 crops_field = db.Table('crops_field',
     db.Column('field_id', db.Integer, db.ForeignKey('field.id')),
-    db.Column('crop_id', db.Ineger, db.ForeignKey('crop.id'))
+    db.Column('crop_id', db.Integer, db.ForeignKey('crop.id'))
     )
 
 class Field(db.Model):
@@ -163,7 +163,7 @@ class AgrimoduleSmartSystem(db.Model):
     # AGRIMODULESMARTSYSTEM[1]-AGRIPUMPSCHEDULE[M]
     agripump_schedules = db.relationship('AgripumpSchedule', backref='agrimodulesmartsystem', lazy='dynamic')
     # USER[1]-AGRIMODULESMARTSYSTEM[M]
-    user_id = db.Column(db.Integer, db.ForeignKey='user.id')
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
     _time_created = db.Column(db.DateTime(timezone=True), server_default=func.now())
     _time_updated = db.Column(db.DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
@@ -186,7 +186,7 @@ class AgrimoduleMeasurement(db.Model):
     
     # RELATIONSHIP
     # AGRIMODULESMARTSYSTEM[1]-AGRIMODULEMEASUREMENT[M]
-    agrimodule_smart_system_id = db.Column(db.integer, db.ForeignKey('agrimodulesmartsystem.id'))
+    agrimodule_smart_system_id = db.Column(db.Integer, db.ForeignKey('agrimodulesmartsystem.id'))
 
     _time_created = db.Column(db.DateTime(timezone=True), server_default=func.now())
     _time_updated = db.Column(db.DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
@@ -204,7 +204,7 @@ class Pump(db.Model):
 
     # RELATIONSHIP
     # USER[1]-PUMP[M]
-    user_id = db.Column(db.Integer, db.ForeignKey='user.id')
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     # PUMP[1]-AGRIPUMPSCHEDULE
     agripump_schedules = db.relationship('Pump', backref='pump', lazy='dynamic')
     
