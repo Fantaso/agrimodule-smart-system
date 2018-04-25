@@ -62,6 +62,11 @@ class Farm(db.Model):
     def __repr__(self):
         return '<farm {}>'.format(self.name)
 
+crops_field = db.Table('crops_field',
+    db.Column('field_id', db.Integer, db.ForeignKey('field.id')),
+    db.Column('crop_id', db.Ineger, db.ForeignKey('crop.id'))
+    )
+
 class Field(db.Model):
     """Fields that can exist inside the Farm.Model. One Farm can have as many Fields within for different crops to be cultivated, being limited by the size of the Farm"""
     id = db.Column(db.Integer, primary_key=True)
@@ -82,11 +87,6 @@ class Field(db.Model):
 
     def __repr__(self):
         return '<field {}>'.format(self.crop)
-
-crops_field = db.Table('crops_field',
-    db.Column('field_id', db.Integer, db.ForeignKey('field.id')),
-    db.Column('crop_id', db.Ineger, db.ForeignKey('crop.id'))
-    )
 
 class Crop(db.Model):
     '''The crop database reference from farmers or Users.model that can be be cultivated in the Field.Model'''
@@ -185,13 +185,11 @@ class AgrimoduleMeasurement(db.Model):
     # AGRIMODULESMARTSYSTEM[1]-AGRIMODULEMEASUREMENT[M]
     agrimodule_smart_system_id = db.Column(db.integer, db.ForeignKey('agrimodulesmartsystem.id'))
 
-
     _time_created = db.Column(db.DateTime(timezone=True), server_default=func.now())
     _time_updated = db.Column(db.DateTime(timezone=True), onupdate=func.now())
 
     def __repr__(self):
         return '<agrimodulemeasurements {}>'.format(self.date)
-
 
 class Pump(db.Model):
     """pump database used for each field or each agripump whichi is installed in the farm. one farm can ahve as many pump the want as long as the have an agripump for it"""
