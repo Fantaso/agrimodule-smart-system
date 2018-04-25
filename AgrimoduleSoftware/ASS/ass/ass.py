@@ -31,6 +31,14 @@ class User(db.Model, UserMixin):
     confirmed_at = db.Column(db.DateTime(timezone=True))
     roles = db.relationship('Role', secondary=roles_users, backref=db.backref('users', lazy='dynamic'))
 
+    # RELATIONSHIP
+    # USER[1]-FARM[M]
+    farms = db.relationship('Farm', backref='user', lazy='dynamic')
+    # USER[1]-AGRIMODULESMARTSYSTEM[M]
+    agrimodule_smart_systems = db.relationship('AgrimoduleSmartSystem', backref='user', lazy='dynamic')
+    # USER[1]-PUMP[M]
+    pumps = db.relationship('Pump', backref='user', lazy='dynamic')
+
     def __repr__(self):
         return '<user {}>'.format(self.email)
 
@@ -41,7 +49,13 @@ class Farm(db.Model):
     name = db.Column(db.String(25), nullable=False, unique=True)
     location = db.Column(db.String(20))
     size = db.Column(db.Float(precision=2))
-    
+
+    # RELATIONSHIP
+    # USER[1]-FARM[M]
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    # FARM[1]-FIELD[M]
+    fields = db.relationship('Field', backref='farm', lazy='dynamic')
+
     _time_created = db.Column(db.DateTime(timezone=True), server_default=func.now())
     _time_updated = db.Column(db.DateTime(timezone=True), onupdate=func.now())
 
@@ -56,6 +70,10 @@ class Field(db.Model):
     date_start = db.Column(db.DateTime(timezone=True))
     date_finish = db.Column(db.DateTime(timezone=True))
     _current_yield = db.Column(db.Float(precision=2))
+
+    # RELATIONSHIP
+    # FARM[1]-FIELD[M]
+    farm_id = db.Column(db.Integer, db.ForeignKey('farm.id'))
     
     _time_created = db.Column(db.DateTime(timezone=True), server_default=func.now())
     _time_updated = db.Column(db.DateTime(timezone=True), onupdate=func.now())
@@ -129,6 +147,14 @@ class AgrimoduleSmartSystem(db.Model):
     _lat_agripump = db.Column(db.Float(precision=8))
     _lon_agripump = db.Column(db.Float(precision=8))
 
+    # RELATIONSHIP
+    # AGRIMODULESMARTSYSTEM[1]-AGRIMODULEMEASUREMENT[M]
+    agrimodule_measurements = db.relationship('AgrimoduleMeasurement', backref='agrimodulesmartsystem', lazy='dynamic')
+    # AGRIMODULESMARTSYSTEM[1]-AGRIPUMPSCHEDULE[M]
+    agripump_schedules = db.relationship('AgripumpSchedule', backref='agrimodulesmartsystem', lazy='dynamic')
+    # USER[1]-AGRIMODULESMARTSYSTEM[M]
+    user_id = db.Column(db.Integer, db.ForeignKey='user.id')
+
     _time_created = db.Column(db.DateTime(timezone=True), server_default=func.now())
     _time_updated = db.Column(db.DateTime(timezone=True), onupdate=func.now())
 
@@ -148,6 +174,11 @@ class AgrimoduleMeasurement(db.Model):
     solar_radiation = db.Column(db.Float(precision=4))
     timestamp = db.Column(db.DateTime(timezone=True), nullable=False)
     
+    # RELATIONSHIP
+    # AGRIMODULESMARTSYSTEM[1]-AGRIMODULEMEASUREMENT[M]
+    agrimodule_smart_system_id = db.Column(db.integer, db.ForeignKey('agrimodulesmartsystem.id'))
+
+
     _time_created = db.Column(db.DateTime(timezone=True), server_default=func.now())
     _time_updated = db.Column(db.DateTime(timezone=True), onupdate=func.now())
 
@@ -162,6 +193,10 @@ class Pump(db.Model):
     flow_rate = db.Column(db.Float(precision=2), nullable=False)
     height_max = db.Column(db.Float(presicion=2), nullable=False)
     kwh = db.Column(db.Float(precision=2), nullable=False)
+
+    # RELATIONSHIP
+    # USER[1]-PUMP[M]
+    user_id = db.Column(db.Integer, db.ForeignKey='user.id')
     
     _time_created = db.Column(db.DateTime(timezone=True), server_default=func.now())
     _time_updated = db.Column(db.DateTime(timezone=True), onupdate=func.now())
@@ -200,6 +235,10 @@ class AgripumpSchedule(db.Model):
     _21_HOUR = db.Column(db.Float(precision=1))
     _22_HOUR = db.Column(db.Float(precision=1))
     _23_HOUR = db.Column(db.Float(precision=1))
+
+    # REALTIONSHIPS
+    # AGRIMODULESMARTSYSTEM[1]-AGRIPUMPSCHEDULE[M]
+    agrimodule_smart_system_id = db.Column(db.Integer, db.ForeignKey('agrimodulesmartsystem.id'))
     
     _time_created = db.Column(db.DateTime(timezone=True), server_default=func.now())
     _time_updated = db.Column(db.DateTime(timezone=True), onupdate=func.now())
