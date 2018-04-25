@@ -72,6 +72,8 @@ class Field(db.Model):
     _current_yield = db.Column(db.Float(precision=2))
 
     # RELATIONSHIP
+    # FIELD[M]-CROP[M]
+    crops = db.relationship('Crop', secondary='crops_field', backref='field', lazy='dynamic')
     # FARM[1]-FIELD[M]
     farm_id = db.Column(db.Integer, db.ForeignKey('farm.id'))
     
@@ -80,6 +82,11 @@ class Field(db.Model):
 
     def __repr__(self):
         return '<field {}>'.format(self.crop)
+
+crops_field = db.Table('crops_field',
+    db.Column('field_id', db.Integer, db.ForeignKey('field.id')),
+    db.Column('crop_id', db.Ineger, db.ForeignKey('crop.id'))
+    )
 
 class Crop(db.Model):
     '''The crop database reference from farmers or Users.model that can be be cultivated in the Field.Model'''
