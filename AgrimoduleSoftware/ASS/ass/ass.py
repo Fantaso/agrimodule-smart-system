@@ -116,14 +116,18 @@ class Crop(db.Model):
     def __repr__(self):
         return '<crop {}>'.format(self._name)
 
-class Agrimodule(db.Model):
-    """Each agrimodule is unique and can be added to any user any farm with a unique identuifier which can connect the data being sent to server to an specific User.Model/Field.Model
+class AgrimoduleSmartSystem(db.Model):
+    """Each agrimodule smart system is unique and has am agrimodule an agripump and maybe agresiensor and other agripumps depending on the complaexity of the farm
+    and can be added to any user any farm with a unique identuifier which can connect the data being sent to server to an specific User.Model/Field.Model
     Each agrimodule"""
     id = db.Column(db.Integer, primary_key=True)
-    _identifier = db.Column(db.String(50), unique=True, nullable=False)
+    _identifier_agrimodule = db.Column(db.String(50), unique=True, nullable=False)
+    _identifier_agripump = db.Column(db.String(50), unique=True, nullable=False)
     # LOCATION
-    _lat = db.Column(db.Float(precision=8), nullable=False)
-    _lon = db.Column(db.Float(precision=8), nullable=False)
+    _lat_agrimodule = db.Column(db.Float(precision=8), nullable=False)
+    _lon_agrimodule = db.Column(db.Float(precision=8), nullable=False)
+    _lat_agripump = db.Column(db.Float(precision=8))
+    _lon_agripump = db.Column(db.Float(precision=8))
 
     _time_created = db.Column(db.DateTime(timezone=True), server_default=func.now())
     _time_updated = db.Column(db.DateTime(timezone=True), onupdate=func.now())
@@ -131,8 +135,8 @@ class Agrimodule(db.Model):
     def __repr__(self):
         return '<agrimodule {}>'.format(self.identifier)
 
-class AgrimoduleMeasurements(db.Model):
-    """pump database used for each field or each agripump whichi is installed in the farm. one farm can ahve as many pump the want as long as the have an agripump for it"""
+class AgrimoduleMeasurement(db.Model):
+    """each agrimodule has a different table where all data that is measured by agrimodule is saved in this model"""
     id = db.Column(db.Integer, primary_key=True)
     soil_ph = db.Column(db.Float(precision=4))
     soil_nutrient = db.Column(db.Float(precision=4))
@@ -158,7 +162,6 @@ class Pump(db.Model):
     flow_rate = db.Column(db.Float(precision=2), nullable=False)
     height_max = db.Column(db.Float(presicion=2), nullable=False)
     kwh = db.Column(db.Float(precision=2), nullable=False)
-    # add overhead or pressure on height variable
     
     _time_created = db.Column(db.DateTime(timezone=True), server_default=func.now())
     _time_updated = db.Column(db.DateTime(timezone=True), onupdate=func.now())
@@ -166,6 +169,43 @@ class Pump(db.Model):
     def __repr__(self):
         return '<pump {}>'.format(self.brand)   
 
+class AgripumpSchedule(db.Model):
+    """pump schedule for each farm and agripump, it requires to know which Pump.Model is used in order to make the calculations"""
+    id = db.Column(db.Integer, primary_key=True)
+    # REQUIREMENTS
+    _daily_water = db.Column(db.Float(precision=3))
+    _date = db.Column(db.DateTime(timezone=True), nullable=False)
+    # SCHEDULE IN MINUTES
+    _00_HOUR = db.Column(db.Float(precision=1))
+    _01_HOUR = db.Column(db.Float(precision=1))
+    _02_HOUR = db.Column(db.Float(precision=1))
+    _03_HOUR = db.Column(db.Float(precision=1))
+    _04_HOUR = db.Column(db.Float(precision=1))
+    _05_HOUR = db.Column(db.Float(precision=1))
+    _06_HOUR = db.Column(db.Float(precision=1))
+    _07_HOUR = db.Column(db.Float(precision=1))
+    _08_HOUR = db.Column(db.Float(precision=1))
+    _09_HOUR = db.Column(db.Float(precision=1))
+    _10_HOUR = db.Column(db.Float(precision=1))
+    _11_HOUR = db.Column(db.Float(precision=1))
+    _12_HOUR = db.Column(db.Float(precision=1))
+    _13_HOUR = db.Column(db.Float(precision=1))
+    _14_HOUR = db.Column(db.Float(precision=1))
+    _15_HOUR = db.Column(db.Float(precision=1))
+    _16_HOUR = db.Column(db.Float(precision=1))
+    _17_HOUR = db.Column(db.Float(precision=1))
+    _18_HOUR = db.Column(db.Float(precision=1))
+    _19_HOUR = db.Column(db.Float(precision=1))
+    _20_HOUR = db.Column(db.Float(precision=1))
+    _21_HOUR = db.Column(db.Float(precision=1))
+    _22_HOUR = db.Column(db.Float(precision=1))
+    _23_HOUR = db.Column(db.Float(precision=1))
+    
+    _time_created = db.Column(db.DateTime(timezone=True), server_default=func.now())
+    _time_updated = db.Column(db.DateTime(timezone=True), onupdate=func.now())
+
+    def __repr__(self):
+        return '<pump {}>'.format(self.brand)   
 
 # Setup Flask-Security
 user_datastore = SQLAlchemyUserDatastore(db, User, Role)
