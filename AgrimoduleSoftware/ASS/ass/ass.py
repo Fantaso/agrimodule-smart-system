@@ -39,6 +39,9 @@ class User(db.Model, UserMixin):
     # USER[1]-PUMP[M]
     pumps = db.relationship('Pump', backref='user', lazy='dynamic')
 
+    _time_created = db.Column(db.DateTime(timezone=True), server_default=func.now())
+    _time_updated = db.Column(db.DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
+
     def __repr__(self):
         return '<user {}>'.format(self.email)
 
@@ -57,7 +60,7 @@ class Farm(db.Model):
     fields = db.relationship('Field', backref='farm', lazy='dynamic')
 
     _time_created = db.Column(db.DateTime(timezone=True), server_default=func.now())
-    _time_updated = db.Column(db.DateTime(timezone=True), onupdate=func.now())
+    _time_updated = db.Column(db.DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
 
     def __repr__(self):
         return '<farm {}>'.format(self.name)
@@ -83,7 +86,7 @@ class Field(db.Model):
     farm_id = db.Column(db.Integer, db.ForeignKey('farm.id'))
     
     _time_created = db.Column(db.DateTime(timezone=True), server_default=func.now())
-    _time_updated = db.Column(db.DateTime(timezone=True), onupdate=func.now())
+    _time_updated = db.Column(db.DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
 
     def __repr__(self):
         return '<field {}>'.format(self.crop)
@@ -136,7 +139,7 @@ class Crop(db.Model):
     _air_humi_max = db.Column(db.Float(precision=2))
 
     _time_created = db.Column(db.DateTime(timezone=True), server_default=func.now())
-    _time_updated = db.Column(db.DateTime(timezone=True), onupdate=func.now())
+    _time_updated = db.Column(db.DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
 
     def __repr__(self):
         return '<crop {}>'.format(self._name)
@@ -163,7 +166,7 @@ class AgrimoduleSmartSystem(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey='user.id')
 
     _time_created = db.Column(db.DateTime(timezone=True), server_default=func.now())
-    _time_updated = db.Column(db.DateTime(timezone=True), onupdate=func.now())
+    _time_updated = db.Column(db.DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
 
     def __repr__(self):
         return '<agrimodule {}>'.format(self.identifier)
@@ -186,7 +189,7 @@ class AgrimoduleMeasurement(db.Model):
     agrimodule_smart_system_id = db.Column(db.integer, db.ForeignKey('agrimodulesmartsystem.id'))
 
     _time_created = db.Column(db.DateTime(timezone=True), server_default=func.now())
-    _time_updated = db.Column(db.DateTime(timezone=True), onupdate=func.now())
+    _time_updated = db.Column(db.DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
 
     def __repr__(self):
         return '<agrimodulemeasurements {}>'.format(self.date)
@@ -206,7 +209,7 @@ class Pump(db.Model):
     agripump_schedules = db.relationship('Pump', backref='pump', lazy='dynamic')
     
     _time_created = db.Column(db.DateTime(timezone=True), server_default=func.now())
-    _time_updated = db.Column(db.DateTime(timezone=True), onupdate=func.now())
+    _time_updated = db.Column(db.DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
 
     def __repr__(self):
         return '<pump {}>'.format(self.brand)   
@@ -250,7 +253,7 @@ class AgripumpSchedule(db.Model):
     pump_id = db.Column(db.Integer, db.ForeignKey('pump.id'))
     
     _time_created = db.Column(db.DateTime(timezone=True), server_default=func.now())
-    _time_updated = db.Column(db.DateTime(timezone=True), onupdate=func.now())
+    _time_updated = db.Column(db.DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
 
     def __repr__(self):
         return '<pump {}>'.format(self.brand)   
