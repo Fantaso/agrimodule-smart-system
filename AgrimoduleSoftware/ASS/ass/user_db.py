@@ -7,8 +7,10 @@ users = {
 				    'last_name':'Rosas',
 				    'email':'cmrhsv@gmail.com',
 				    'password':'cmrhsv',
-				    'birthday':'',
+				    'birthday':None,
 				    'mobile':'+4917647645375',
+				    'active':True,
+    				'confirmed_at':None
 					},
 			'swathish': 
 					{
@@ -16,8 +18,8 @@ users = {
 				    'last_name':'Ravi',
 				    'email':'swathish.ravi@gmail.com',
 				    'password':'swathish.ravi',
-				    'birthday':'',
-				    'mobile':'+4917587878787',
+				    'birthday':None,
+				    'mobile':'+4917587878787'
 					},
 			'mansoor':
 					{
@@ -25,8 +27,8 @@ users = {
 				    'last_name':'Mansoor',
 				    'email':'mohgul.mansoor@gmail.com',
 				    'password':'mohgul.mansoor',
-				    'birthday':'',
-				    'mobile':'+4917655252526',
+				    'birthday':None,
+				    'mobile':'+4917655252526'
 					}, 
 			'viktor':
 					{
@@ -34,8 +36,8 @@ users = {
 				    'last_name':'Veeser',
 				    'email':'viktor.veeser@gmail.com',
 				    'password':'viktor.veeser',
-				    'birthday':'',
-				    'mobile':'+4917545123695',
+				    'birthday':None,
+				    'mobile':'+4917545123695'
 					},
 			'pavarthi':
 					{
@@ -43,8 +45,8 @@ users = {
 				    'last_name':'Radja',
 				    'email':'pavarthi.radja@gmail.com',
 				    'password':'pavarthi.radja',
-				    'birthday':'',
-				    'mobile':'+491765848596',
+				    'birthday':None,
+				    'mobile':'+491765848596'
 					},
 			'oscar':
 					{
@@ -52,8 +54,8 @@ users = {
 				    'last_name':'Guerrero',
 				    'email':'oscar.guerrero@gmail.com',
 				    'password':'oscar.guerrero',
-				    'birthday':'',
-				    'mobile':'+4917455668891',
+				    'birthday':None,
+				    'mobile':'+4917455668891'
 					},
 			'vera':
 					{
@@ -61,8 +63,8 @@ users = {
 				    'last_name':'Anna',
 				    'email':'vera.anna@gmail.com',
 				    'password':'vera.anna',
-				    'birthday':'',
-				    'mobile':'+4917455668899',
+				    'birthday':None,
+				    'mobile':'+4917455668899'
 					},
 		}
 
