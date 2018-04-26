@@ -439,4 +439,5 @@ def add_crops(crops):
 
 
 # TO ADD THESE CROP DATASETS RUN:
-add_crops(crops)
+if __name__ == '__main__':
+	add_crops(crops)
