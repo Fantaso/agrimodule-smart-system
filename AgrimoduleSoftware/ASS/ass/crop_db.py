@@ -1,30 +1,30 @@
 from ass import db, Crop
 
-
-crops = { 	'Plum':
+crops = { 	
+			'Plum':
 					{ 
 					'variety':'tomato',
 				 	'family':'fruit',
-					'yield':2.8,
-					'space_x':0.25,
-					'space_y':0.25,
-					'density':'',
+					'yield':2.8, # kg
+					'space_x':0.3, # m
+					'space_y':0.3, # m
+					'space_z':1.1, # m
+					'density':11.11, # plants/m2
 					'fruit_quantity':26,
-					'fruit_size':0,
-					'fruit_weight':0,
-					'water':0,
-					'nutrient':0,
-					'radiation':0,
-					'cycle_dtg_days':0,
-					'cycle_dtm_days':0,
-					'soil_ph_min':0, 		'soil_ph_opt':0, 		'soil_ph_max':0,
-					'soil_temp_min':0,		'soil_temp_opt':0,		'soil_temp_max':0,
-					'soil_humi_min':0,		'soil_humi_opt':0,		'soil_humi_max':0,
-					'soil_nutrient_min':0,	'soil_nutrient_opt':0,	'soil_nutrient_max':0,
-					'air_temp_min':0,		'air_temp_opt':0,		'air_temp_max':0,
-					'air_humi_min':0,		'air_humi_opt':0,		'air_humi_max':0,
+					'fruit_size':0.076, # m
+					'fruit_weight':0.062, # kg
+					'water':1, # l/day
+					'nutrient':18, # mSiemens
+					'radiation':12, # h/day
+					'dtg':12, # day
+					'dtm':180, # day
+					'soil_ph_min':6, 		'soil_ph_opt':6.5, 		'soil_ph_max':6.8,		# pH
+					'soil_temp_min':15,		'soil_temp_opt':23,		'soil_temp_max':30, 	# ºC
+					'soil_humi_min':50,		'soil_humi_opt':60,		'soil_humi_max':75, 	# %RH
+					'soil_nutrient_min':2,	'soil_nutrient_opt':16,	'soil_nutrient_max':40,	# mSiemens
+					'air_temp_min':17,		'air_temp_opt':25,		'air_temp_max':28, 		# ºC
+					'air_humi_min':60,		'air_humi_opt':63,		'air_humi_max':70,		# %RH
 					},
-
 			'iceberg': 
 					{
 					'variety':'lettuce',
@@ -48,7 +48,6 @@ crops = { 	'Plum':
 					'air_temp_min':0,		'air_temp_opt':0,		'air_temp_max':0,
 					'air_humi_min':0,		'air_humi_opt':0,		'air_humi_max':0,
 					},
-
 			'arugula':
 					{
 					'variety':'something',
@@ -72,7 +71,6 @@ crops = { 	'Plum':
 					'air_temp_min':0,		'air_temp_opt':0,		'air_temp_max':0,
 					'air_humi_min':0,		'air_humi_opt':0,		'air_humi_max':0,
 					}, 
-
 			'radicchio':
 					{
 					'variety':'something',
@@ -96,7 +94,6 @@ crops = { 	'Plum':
 					'air_temp_min':0,		'air_temp_opt':0,		'air_temp_max':0,
 					'air_humi_min':0,		'air_humi_opt':0,		'air_humi_max':0,
 					},
-
 			'bell_pepper':
 					{
 					'variety':'something',
@@ -120,7 +117,6 @@ crops = { 	'Plum':
 					'air_temp_min':0,		'air_temp_opt':0,		'air_temp_max':0,
 					'air_humi_min':0,		'air_humi_opt':0,		'air_humi_max':0,
 					},
-
 			'cabbage':
 					{
 					'variety':'something',
@@ -144,7 +140,6 @@ crops = { 	'Plum':
 					'air_temp_min':0,		'air_temp_opt':0,		'air_temp_max':0,
 					'air_humi_min':0,		'air_humi_opt':0,		'air_humi_max':0,
 					},
-
 			'coriander':
 					{
 					'variety':'something',
@@ -168,7 +163,6 @@ crops = { 	'Plum':
 					'air_temp_min':0,		'air_temp_opt':0,		'air_temp_max':0,
 					'air_humi_min':0,		'air_humi_opt':0,		'air_humi_max':0,
 					},
-
 			'basil':
 					{
 					'variety':'something',
@@ -192,7 +186,6 @@ crops = { 	'Plum':
 					'air_temp_min':0,		'air_temp_opt':0,		'air_temp_max':0,
 					'air_humi_min':0,		'air_humi_opt':0,		'air_humi_max':0,
 					},
-
 			'squash':
 					{
 					'variety':'something',
@@ -216,7 +209,6 @@ crops = { 	'Plum':
 					'air_temp_min':0,		'air_temp_opt':0,		'air_temp_max':0,
 					'air_humi_min':0,		'air_humi_opt':0,		'air_humi_max':0,
 					},
-
 			'chive':
 					{
 					'variety':'something',
@@ -240,7 +232,6 @@ crops = { 	'Plum':
 					'air_temp_min':0,		'air_temp_opt':0,		'air_temp_max':0,
 					'air_humi_min':0,		'air_humi_opt':0,		'air_humi_max':0,
 					},
-
 			'sweet_corn':
 					{
 					'variety':'something',
@@ -264,7 +255,6 @@ crops = { 	'Plum':
 					'air_temp_min':0,		'air_temp_opt':0,		'air_temp_max':0,
 					'air_humi_min':0,		'air_humi_opt':0,		'air_humi_max':0,
 					},
-
 			'black_bean':
 					{
 					'variety':'something',
@@ -288,7 +278,6 @@ crops = { 	'Plum':
 					'air_temp_min':0,		'air_temp_opt':0,		'air_temp_max':0,
 					'air_humi_min':0,		'air_humi_opt':0,		'air_humi_max':0,
 					},
-
 			'strawberry':
 					{
 					'variety':'something',
@@ -312,7 +301,6 @@ crops = { 	'Plum':
 					'air_temp_min':0,		'air_temp_opt':0,		'air_temp_max':0,
 					'air_humi_min':0,		'air_humi_opt':0,		'air_humi_max':0,
 					},
-
 			'tomato2':
 					{
 					'variety':'something',
@@ -336,7 +324,6 @@ crops = { 	'Plum':
 					'air_temp_min':0,		'air_temp_opt':0,		'air_temp_max':0,
 					'air_humi_min':0,		'air_humi_opt':0,		'air_humi_max':0,
 					},
-
 			'rice':
 					{
 					'variety':'something',
@@ -360,7 +347,6 @@ crops = { 	'Plum':
 					'air_temp_min':0,		'air_temp_opt':0,		'air_temp_max':0,
 					'air_humi_min':0,		'air_humi_opt':0,		'air_humi_max':0,
 					},
-
 			'chilli':
 					{
 					'variety':'something',
@@ -384,7 +370,6 @@ crops = { 	'Plum':
 					'air_temp_min':0,		'air_temp_opt':0,		'air_temp_max':0,
 					'air_humi_min':0,		'air_humi_opt':0,		'air_humi_max':0,
 					},
-
 			'cottom':
 					{
 					'variety':'something',
