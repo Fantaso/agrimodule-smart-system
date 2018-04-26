@@ -1,4 +1,4 @@
-# from ass import db, Crop
+from ass import db, Crop
 
 crops = { 	
 			'plum':
@@ -20,10 +20,10 @@ crops = {
 					'_dtg':12, # day
 					'_dtm':180, # day
 					'_soil_ph_min':6, 		'_soil_ph_opt':6.5, 		'_soil_ph_max':6.8,			# pH
-					'_soil_temp_min':15,	'_soil_temp_opt':23,		'_soil_temp_max':30, 		# ºC
+					'_soil_temp_min':15,	'_soil_temp_opt':23,		'_soil_temp_max':30, 		# C
 					'_soil_humi_min':50,	'_soil_humi_opt':60,		'_soil_humi_max':75, 		# %RH
 					'_soil_nutrient_min':2,	'_soil_nutrient_opt':16,	'_soil_nutrient_max':40,	# mSiemens
-					'_air_temp_min':17,		'_air_temp_opt':25,			'_air_temp_max':28, 		# ºC
+					'_air_temp_min':17,		'_air_temp_opt':25,			'_air_temp_max':28, 		# C
 					'_air_humi_min':60,		'_air_humi_opt':63,			'_air_humi_max':70,			# %RH
 					},
 			'romaine': 
@@ -59,7 +59,7 @@ crops = {
 					'_yield':0.000671,
 					'_space_x':0.0204,
 					'_space_y':0.0204,
-					'_space_z':30,
+					'_space_z':0.30,
 					'_density':2402.92,
 					'_fruit_quantity':1,
 					'_fruit_size':25,
@@ -428,16 +428,15 @@ crops = {
 					},
 		}
 
+# Automatically add crops to the db through SQLAlchemy
 def add_crops(crops):
+	print('Starting inserting crops to db')
 	for crop in crops:
-		print (crop)
+		crop_to_db = Crop(**crops[crop])
+		db.session.add(crop_to_db)
+	db.session.commit()
+	print('Crops added to db! Done!')
 
-add_crops()
-# def calc_density(crop):
-# 	density = (crops[crop]['space_x']) * (crops[crop]['space_y'])
-# 	return density
 
-# def add_crop(*args, **kwargs):
-# 	print (args)
-# 	print ()
-# 	print (kwargs)
+# TO ADD THESE CROP DATASETS RUN:
+add_crops(crops)
