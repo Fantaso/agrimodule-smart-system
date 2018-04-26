@@ -30,10 +30,10 @@ class User(db.Model, UserMixin):
     last_name = db.Column(db.String(15))
     email = db.Column(db.String(255), unique=True)
     password = db.Column(db.String(255))
-    birthday = db.Column(db.DateTime)
+    birthday = db.Column(db.DateTime, nullable=True)
     mobile = db.Column(db.String(12), unique=True)
-    active = db.Column(db.Boolean())
-    confirmed_at = db.Column(db.DateTime(timezone=True))
+    active = db.Column(db.Boolean(), nullable=True)
+    confirmed_at = db.Column(db.DateTime(timezone=True), nullable=True)
     roles = db.relationship('Role', secondary=roles_users, backref=db.backref('users', lazy='dynamic'))
 
     # RELATIONSHIP
