@@ -26,8 +26,12 @@ class Role(db.Model, RoleMixin):
 class User(db.Model, UserMixin):
     __tablename__ = 'user'
     id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(15))
+    last_name = db.Column(db.String(15))
     email = db.Column(db.String(255), unique=True)
     password = db.Column(db.String(255))
+    birthday = db.Column(db.DateTime)
+    mobile = db.Column(db.String(12), unique=True)
     active = db.Column(db.Boolean())
     confirmed_at = db.Column(db.DateTime(timezone=True))
     roles = db.relationship('Role', secondary=roles_users, backref=db.backref('users', lazy='dynamic'))
