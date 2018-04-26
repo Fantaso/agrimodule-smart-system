@@ -2,6 +2,14 @@
 *.txt
 # software directory
 Software/
+.gitignore
+
+#DATABASE
+*.db
+
+# SUBLIME
+*.sublime-workspace
+*.sublime-project
 
 # Flask
 instance/
