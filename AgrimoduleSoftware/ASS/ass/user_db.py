@@ -3,66 +3,66 @@ from ass import db, User, Role
 users = { 	
 			'carlos':
 					{
-					'name':'Carlos'
-				    'last_name':'Rosas'
-				    'email':'cmrhsv@gmail.com'
-				    'password':'cmrhsv'
-				    'birthday':''
-				    'mobile':'+4917647645375'
+					'name':'Carlos',
+				    'last_name':'Rosas',
+				    'email':'cmrhsv@gmail.com',
+				    'password':'cmrhsv',
+				    'birthday':'',
+				    'mobile':'+4917647645375',
 					},
 			'swathish': 
 					{
-					'name':'Swathish'
-				    'last_name':'Ravi'
-				    'email':'swathish.ravi@gmail.com'
-				    'password':'swathish.ravi'
-				    'birthday':''
-				    'mobile':'+4917587878787'
+					'name':'Swathish',
+				    'last_name':'Ravi',
+				    'email':'swathish.ravi@gmail.com',
+				    'password':'swathish.ravi',
+				    'birthday':'',
+				    'mobile':'+4917587878787',
 					},
 			'mansoor':
 					{
-					'name':'Mohgul'
-				    'last_name':'Mansoor'
-				    'email':'mohgul.mansoor@gmail.com'
-				    'password':'mohgul.mansoor'
-				    'birthday':''
-				    'mobile':'+4917655252526'
+					'name':'Mohgul',
+				    'last_name':'Mansoor',
+				    'email':'mohgul.mansoor@gmail.com',
+				    'password':'mohgul.mansoor',
+				    'birthday':'',
+				    'mobile':'+4917655252526',
 					}, 
 			'viktor':
 					{
-					'name':'Viktor'
-				    'last_name':'Veeser'
-				    'email':'viktor.veeser@gmail.com'
-				    'password':'viktor.veeser'
-				    'birthday':''
-				    'mobile':'+4917545123695'
+					'name':'Viktor',
+				    'last_name':'Veeser',
+				    'email':'viktor.veeser@gmail.com',
+				    'password':'viktor.veeser',
+				    'birthday':'',
+				    'mobile':'+4917545123695',
 					},
 			'pavarthi':
 					{
-					'name':'Pavarthi'
-				    'last_name':'Radja'
-				    'email':'pavarthi.radja@gmail.com'
-				    'password':'pavarthi.radja'
-				    'birthday':''
-				    'mobile':'+491765848596'
+					'name':'Pavarthi',
+				    'last_name':'Radja',
+				    'email':'pavarthi.radja@gmail.com',
+				    'password':'pavarthi.radja',
+				    'birthday':'',
+				    'mobile':'+491765848596',
 					},
 			'oscar':
 					{
-					'name':'Oscar'
-				    'last_name':'Guerrero'
-				    'email':'oscar.guerrero@gmail.com'
-				    'password':'oscar.guerrero'
-				    'birthday':''
-				    'mobile':'+4917455668891'
+					'name':'Oscar',
+				    'last_name':'Guerrero',
+				    'email':'oscar.guerrero@gmail.com',
+				    'password':'oscar.guerrero',
+				    'birthday':'',
+				    'mobile':'+4917455668891',
 					},
 			'vera':
 					{
-					'name':'Vera'
-				    'last_name':'Anna'
-				    'email':'vera.anna@gmail.com'
-				    'password':'vera.anna'
-				    'birthday':''
-				    'mobile':'+4917455668899'
+					'name':'Vera',
+				    'last_name':'Anna',
+				    'email':'vera.anna@gmail.com',
+				    'password':'vera.anna',
+				    'birthday':'',
+				    'mobile':'+4917455668899',
 					},
 		}
 
