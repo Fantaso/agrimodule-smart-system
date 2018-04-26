@@ -251,7 +251,7 @@ crops = {
 					'_air_temp_min':0,		'_air_temp_opt':0,		'_air_temp_max':0,
 					'_air_humi_min':0,		'_air_humi_opt':0,		'_air_humi_max':0,
 					},
-			'sweet_corn':
+			'sweet corn':
 					{
 					'_name':'sweet corn',
 					'_variety':'something',
