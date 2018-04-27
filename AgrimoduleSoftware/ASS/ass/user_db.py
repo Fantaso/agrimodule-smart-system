@@ -1,4 +1,6 @@
 from ass import db, User, Role
+from datetime import date
+from sqlalchemy.sql import func
 
 users = { 	
 			'carlos':
@@ -7,7 +9,7 @@ users = {
 				    'last_name':'Rosas',
 				    'email':'cmrhsv@gmail.com',
 				    'password':'cmrhsv',
-				    'birthday':None,
+				    'birthday': date(1986, 2, 27),
 				    'mobile':'+4917647645375',
 				    'active':True,
     				'confirmed_at':None
@@ -18,8 +20,10 @@ users = {
 				    'last_name':'Ravi',
 				    'email':'swathish.ravi@gmail.com',
 				    'password':'swathish.ravi',
-				    'birthday':None,
-				    'mobile':'+4917587878787'
+				    'birthday': date(1990, 5, 14),
+				    'mobile':'+4917587878787',
+				    'active':True,
+    				'confirmed_at':None
 					},
 			'mansoor':
 					{
@@ -27,8 +31,10 @@ users = {
 				    'last_name':'Mansoor',
 				    'email':'mohgul.mansoor@gmail.com',
 				    'password':'mohgul.mansoor',
-				    'birthday':None,
-				    'mobile':'+4917655252526'
+				    'birthday': date(1988, 12, 1),
+				    'mobile':'+4917655252526',
+				    'active':True,
+    				'confirmed_at':None
 					}, 
 			'viktor':
 					{
@@ -36,8 +42,10 @@ users = {
 				    'last_name':'Veeser',
 				    'email':'viktor.veeser@gmail.com',
 				    'password':'viktor.veeser',
-				    'birthday':None,
-				    'mobile':'+4917545123695'
+				    'birthday': date(1989, 6, 22),
+				    'mobile':'+4917545123695',
+				    'active':True,
+    				'confirmed_at':None
 					},
 			'pavarthi':
 					{
@@ -45,8 +53,10 @@ users = {
 				    'last_name':'Radja',
 				    'email':'pavarthi.radja@gmail.com',
 				    'password':'pavarthi.radja',
-				    'birthday':None,
-				    'mobile':'+491765848596'
+				    'birthday': date(1982, 5, 17),
+				    'mobile':'+491765848596',
+				    'active':True,
+    				'confirmed_at':None
 					},
 			'oscar':
 					{
@@ -54,8 +64,10 @@ users = {
 				    'last_name':'Guerrero',
 				    'email':'oscar.guerrero@gmail.com',
 				    'password':'oscar.guerrero',
-				    'birthday':None,
-				    'mobile':'+4917455668891'
+				    'birthday': date(1986, 9, 11),
+				    'mobile':'+4917455668891',
+				    'active':True,
+    				'confirmed_at':None
 					},
 			'vera':
 					{
@@ -63,8 +75,10 @@ users = {
 				    'last_name':'Anna',
 				    'email':'vera.anna@gmail.com',
 				    'password':'vera.anna',
-				    'birthday':None,
-				    'mobile':'+4917455668899'
+				    'birthday': date(1987, 11, 16),
+				    'mobile':'+4917455668899',
+				    'active':True,
+    				'confirmed_at':None
 					},
 		}
 
