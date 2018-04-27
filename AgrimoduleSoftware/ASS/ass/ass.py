@@ -55,7 +55,7 @@ class Farm(db.Model):
     """Farms Models for Users to create. One User can created as many farms as he wants"""
     __tablename__ = 'farm'
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(25), nullable=False, unique=True)
+    name = db.Column(db.String(25), nullable=False)
     location = db.Column(db.String(20))
     size = db.Column(db.Float(precision=2))
 
