@@ -6,7 +6,7 @@ farms = {
 					{
 					'name':'farm berlin',
 				    'location':'berlin',
-				    'size':'1000',
+				    'size':1000,
 				    'user_id':'',
 				    'fields':'',
 				    },
@@ -14,7 +14,7 @@ farms = {
 					{
 					'name':'farm tamil',
 				    'location':'tamil',
-				    'size':'800',
+				    'size':800,
 				    'user_id':'',
 				    'fields':'',
 				    },
@@ -22,7 +22,7 @@ farms = {
 					{
 					'name':'farm venezuela',
 				    'location':'venezuela',
-				    'size':'3000',
+				    'size':3000,
 				    'user_id':'',
 				    'fields':'',
 				    },
@@ -30,7 +30,7 @@ farms = {
 					{
 					'name':'farm indonesia',
 				    'location':'indonesia',
-				    'size':'500',
+				    'size':500,
 				    'user_id':'',
 				    'fields':'',
 				    },
