@@ -80,7 +80,7 @@ class Field(db.Model):
     """Fields that can exist inside the Farm.Model. One Farm can have as many Fields within for different crops to be cultivated, being limited by the size of the Farm"""
     __tablename__ = 'field'
     id = db.Column(db.Integer, primary_key=True)
-    crop = db.Column(db.String(25), nullable=False)
+    name = db.Column(db.String(25), nullable=False)
     size = db.Column(db.Float(precision=3))
     date_start = db.Column(db.DateTime(timezone=True))
     date_finish = db.Column(db.DateTime(timezone=True))
