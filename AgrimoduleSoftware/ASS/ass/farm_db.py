@@ -50,6 +50,7 @@ def add_farms(farms, random_user):
 	db.session.commit()
 	print('Farms added to db! Done!')
 
+
 # due to db.session not handle in the app yet.  different methods cant be used to add automatically to the db.
 # USE the random_user to the the user in a python repl session and then pass in the same session the random_user to add the farms
 '''e.g.
@@ -59,7 +60,7 @@ def add_farms(farms, random_user):
 		ru4 = get_user()
 		rus = [ru1, ru2, ru3, ru4]
 		for ru in rus:
-			add_farms(farms, ru) # farms come from the farm dictionary manual db
+			add_farms(farms, ru) # farms come from the farm dictionary manual db'''
 
 def add_farm_with_user(farms):
 	random_user = get_user()
