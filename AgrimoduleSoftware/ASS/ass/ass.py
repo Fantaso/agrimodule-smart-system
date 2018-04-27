@@ -96,7 +96,7 @@ class Field(db.Model):
     _time_updated = db.Column(db.DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
 
     def __repr__(self):
-        return '<field {}>'.format(self.crop)
+        return '<field {}>'.format(self.name)
 
 class Crop(db.Model):
     '''The crop database reference from farmers or Users.model that can be be cultivated in the Field.Model'''
