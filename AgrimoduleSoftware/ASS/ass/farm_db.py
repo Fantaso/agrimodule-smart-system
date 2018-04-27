@@ -58,7 +58,10 @@ def add_farms(farms, random_user):
 		ru2 = get_user()
 		ru3 = get_user()
 		ru4 = get_user()
-		rus = [ru1, ru2, ru3, ru4]
+		ru5 = get_user()
+		ru6 = get_user()
+		ru7 = get_user()
+		rus = [ru1, ru2, ru3, ru4, ru5, ru6, ru7]
 		for ru in rus:
 			add_farms(farms, ru) # farms come from the farm dictionary manual db'''
 
