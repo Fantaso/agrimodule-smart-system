@@ -79,7 +79,7 @@ crops = {
 			'radicchio':
 					{
 					'_name':'radicchio',
-					'_variety':'unknow',
+					'_variety':'unknown',
 				 	'_family':'leafy',
 					'_yield':0,
 					'_space_x':0,
