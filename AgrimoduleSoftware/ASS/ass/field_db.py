@@ -89,4 +89,4 @@ def add_field(fields, user_name, farm_name, field_name, crop_name):
 
 
 if __name__ == '__main__':
-	add_farms()
+	add_fields()
