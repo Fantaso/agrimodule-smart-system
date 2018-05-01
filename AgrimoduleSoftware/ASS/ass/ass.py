@@ -180,6 +180,7 @@ class AgrimoduleSystem(db.Model):
     Each agrimodule"""
     __tablename__ = 'agrimodulesystem'
     id = db.Column(db.Integer, primary_key=True)
+    _identifier_agrimodulesystem = db.Column(db.String(50), unique=True, nullable=False)
     _identifier_agrimodule = db.Column(db.String(50), unique=True, nullable=False)
     _identifier_agripump = db.Column(db.String(50), unique=True, nullable=False)
     # LOCATION
