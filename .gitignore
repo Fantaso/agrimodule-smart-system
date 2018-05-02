@@ -3,6 +3,7 @@
 # software directory
 Software/
 .gitignore
+*.db-journal
 
 #DATABASE
 *.db
