@@ -3,13 +3,18 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_security import Security, SQLAlchemyUserDatastore, UserMixin, RoleMixin, login_required
 from flask_migrate import Migrate
 
+from flask_mail import Mail, Message
+
 from sqlalchemy.sql import func
+
 
 # Create app
 app = Flask(__name__)               # creates the flask app
 app.config.from_pyfile('cfg.cfg')   # imports app configuration from cfg.cfg
 db = SQLAlchemy(app)                # create database connection object
-Migrate(app, db)                    # creates a migration object for the app db migrations
+Migrate(app, db)                    # creates a migration object for the app db migrations]\
+mail = Mail(app)
+
 
 
 # DEFINE USER MODELS FLASK-SECURITY
@@ -32,6 +37,13 @@ class User(db.Model, UserMixin):
     password = db.Column(db.String(255))
     birthday = db.Column(db.DateTime, nullable=True)
     mobile = db.Column(db.String(12), unique=True)
+
+    last_login_at = db.Column(db.DateTime(timezone=True))
+    current_login_at = db.Column(db.DateTime(timezone=True))
+    last_login_ip = db.Column(db.String(100))
+    current_login_ip = db.Column(db.String(100))
+    login_count = db.Column(db.Integer)
+
     active = db.Column(db.Boolean(), nullable=True)
     confirmed_at = db.Column(db.DateTime(timezone=True), nullable=True)
     roles = db.relationship('Role', secondary=roles_users, backref=db.backref('users', lazy='dynamic'))
