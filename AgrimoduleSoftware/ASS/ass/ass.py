@@ -1,16 +1,16 @@
 from flask import Flask, render_template
 from flask_sqlalchemy import SQLAlchemy
 from flask_security import Security, SQLAlchemyUserDatastore, UserMixin, RoleMixin, login_required
+from flask_migrate import Migrate
 
 from sqlalchemy.sql import func
 
 # Create app
-app = Flask(__name__)
+app = Flask(__name__)               # creates the flask app
+app.config.from_pyfile('cfg.cfg')   # imports app configuration from cfg.cfg
+db = SQLAlchemy(app)                # create database connection object
+Migrate(app, db)                    # creates a migration object for the app db migrations
 
-app.config.from_pyfile('cfg.cfg')
-
-# Create database connection object
-db = SQLAlchemy(app)
 
 # DEFINE USER MODELS FLASK-SECURITY
 roles_users = db.Table('roles_users',
@@ -184,8 +184,10 @@ class AgrimoduleSystem(db.Model):
     _identifier_agrimodule = db.Column(db.String(50), unique=True, nullable=False)
     _identifier_agripump = db.Column(db.String(50), unique=True, nullable=False)
     # LOCATION
-    _lat_agrimodule = db.Column(db.Float(precision=8), nullable=False)
-    _lon_agrimodule = db.Column(db.Float(precision=8), nullable=False)
+    _lat_agrimodule = db.Column(db.Float(precision=8))
+    _lon_agrimodule = db.Column(db.Float(precision=8))
+    _lat_agrisensor = db.Column(db.Float(precision=8))
+    _lon_agrisensor = db.Column(db.Float(precision=8))
     _lat_agripump = db.Column(db.Float(precision=8))
     _lon_agripump = db.Column(db.Float(precision=8))
 
