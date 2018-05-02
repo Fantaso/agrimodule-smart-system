@@ -294,8 +294,9 @@ security = Security(app, user_datastore)
 # Views
 @app.route('/')
 # @login_required
-def home():
+def index():
     return render_template('index.html')
+
 
 if __name__ == '__main__':
     app.run()
