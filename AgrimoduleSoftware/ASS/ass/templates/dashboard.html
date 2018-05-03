@@ -5,21 +5,22 @@
 {% endblock %}
 
 {% block content %}
-<div id="fh5co-main" class="container" style="margin-top: 5%;">
-	<div class="row" style="padding-left: 2%;">
-		<h1>Hi, {{ name }} {{ last_name }}</h1>
-		<h4>You currently are in your dashboard</h4>
-		<h4>Set up your first farm to get started!</h4>
-		<a href="{{ url_for('dashboard') }}" class="btn btn-primary btn-outline">Set up Farm</a>
+	<div id = "fh5co-main" class = "container" style = "margin-top: 5%;">
+		<div style="padding-left: 2%;">
+			<h1>Hi, {{ name }} {{ last_name }}</h1>
+			<p>Looks like its your first time here!
+			<br>We will guide you through setting up your system in no time.</p>
+			<h4>First thing:</h4>
+			<form method="post" action = "/setup_farm" class = "row">
+				<label class = "col-sm-4 col-md-3">1. Set up your Farm</label>
+				<input type = "submit" name="add_farm" value = "Set up Farm" class = "btn btn-primary">
+			</form>
+			<form method="post" action = "/setup_ass" class ="row">
+				<label class = "col-sm-4 col-md-3">2. Set up you Agrimodule</label>
+				<input type = "submit" name = "add_ass" value ="Set up ASS" class = "btn btn-primary">
+			</form>
+			<!-- <a href="{{ url_for('dashboard') }}" class="btn btn-primary btn-outline">Set up Farm</a> -->
+		</div>
 	</div>
-</div>
-
 {% endblock %}
 
-<!-- <form method="post" action="/dashboard">
-	<label>Username:</label>
-	<input type="text" name="username" id="username">
-	<label>Password:</label>
-	<input type="password" name="password" id="password">
-	<input type="submit" name="">
-</form> -->
