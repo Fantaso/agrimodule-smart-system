@@ -1,7 +1,9 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, session, request, redirect, url_for
 from flask_sqlalchemy import SQLAlchemy
 from flask_security import Security, SQLAlchemyUserDatastore, UserMixin, RoleMixin, login_required
 from flask_migrate import Migrate
+
+from flask_login import current_user
 
 from flask_mail import Mail, Message
 
@@ -293,10 +295,50 @@ security = Security(app, user_datastore)
 
 # Views
 @app.route('/')
-# @login_required
 def index():
     return render_template('index.html')
 
 
+
+
+
+@app.route('/dashboard', methods=['GET'])
+# @login_required
+def dashboard():
+    if request.method == 'GET':
+        if current_user.is_authenticated:
+            uid = current_user.get_id()
+            return redirect(url_for('dashboard_id', id=uid))
+        if current_user.is_anonymous:
+            return 'User has not logged in'
+        else:
+            return 'fuck off'
+
+
+@app.route('/dashboard/<int:id>', methods=['GET', 'POST'])
+@login_required
+def dashboard_id(id):
+    uid = User.query.filter_by(id=id).first()
+    if request.method == 'GET':
+        farm_already = Farm.query.all()
+        if farm_already == None:
+            # this is the first time you join solarvibes, please SETUP your first farm to start
+            return render_template('dashboard_init.html', name=uid.name, last_name=uid.last_name, email=uid.email)
+        else:
+            # if farm exist, deliver the first farm or default one. sending the context of Farm.Model
+            return render_template('dashboard.html', name=uid.name, last_name=uid.last_name, email=uid.email)
+    if request.method == 'POST':
+        return 'POST in dashboard_id'
+    else:
+        return 'ELSE: in dashboard_id'
+
+
+
+
+
 if __name__ == '__main__':
     app.run()
+    # app.run(
+    #     host = '192.168.1.4',
+    #     port = 8080
+    #     )
