@@ -60,10 +60,10 @@
 			<nav id="fh5co-main-menu" role="navigation">
 				<ul>
 					<li class="fh5co-active"><a href="{{ url_for('index') }}">Home</a></li>
-					<li><a href="agrimodule.html">Agrimodule</a></li>
-					<li><a href="platform.html">Platform</a></li>
-					<li><a href="about.html">About Us</a></li>
-					<li><a href="contact.html">Contact Us</a></li>
+					<li><a href="{{ url_for('agrimodule_web') }}">Agrimodule</a></li>
+					<li><a href="{{ url_for('platform_web') }}">Platform</a></li>
+					<li><a href="{{ url_for('about_web') }}">About Us</a></li>
+					<li><a href="{{ url_for('contact_web') }}">Contact Us</a></li>
 					<!-- <li><a href="{{ url_for('security.login') }}">Login</a></li> -->
 					<!-- <li><a href="{{ url_for('security.register') }}">Register</a></li> -->
 					{% include "security/_menu.html" %}

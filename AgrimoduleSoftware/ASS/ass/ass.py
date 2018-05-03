@@ -299,8 +299,19 @@ def index():
     return render_template('index.html')
 
 
-
-
+# WEBSITE VIEWS
+@app.route('/agrimodule_web', methods=['GET'])
+def agrimodule_web():
+    return render_template('agrimodule.html')
+@app.route('/platform_web', methods=['GET'])
+def platform_web():
+    return render_template('platform.html')
+@app.route('/about_web', methods=['GET'])
+def about_web():
+    return render_template('about.html')
+@app.route('/contact_web', methods=['GET'])
+def contact_web():
+    return render_template('contact.html')
 
 @app.route('/dashboard', methods=['GET'])
 # @login_required
