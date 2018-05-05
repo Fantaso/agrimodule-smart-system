@@ -8,6 +8,7 @@ from flask_login import current_user
 from flask_mail import Mail, Message
 
 from sqlalchemy.sql import func
+from forms import RegisterFormExt
 
 
 # Create app
@@ -37,7 +38,7 @@ class User(db.Model, UserMixin):
     last_name = db.Column(db.String(15))
     email = db.Column(db.String(255), unique=True)
     password = db.Column(db.String(255))
-    birthday = db.Column(db.DateTime, nullable=True)
+    birthday = db.Column(db.DateTime(timezone=True), nullable=True)
     mobile = db.Column(db.String(12), unique=True)
 
     last_login_at = db.Column(db.DateTime(timezone=True))
@@ -63,6 +64,7 @@ class User(db.Model, UserMixin):
 
     def __repr__(self):
         return '<user {}>'.format(self.email)
+
 
 # DEFINE FARMS AND AGRIMODULE MODELS
 class Farm(db.Model):
@@ -291,7 +293,7 @@ class Agripump(db.Model):
 
 # Setup Flask-Security
 user_datastore = SQLAlchemyUserDatastore(db, User, Role)
-security = Security(app, user_datastore)
+security = Security(app, user_datastore, register_form=RegisterFormExt, confirm_register_form=RegisterFormExt)
 
 # Views
 @app.route('/')
