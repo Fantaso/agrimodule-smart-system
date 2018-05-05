@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% from "_renderfield.html" import render_field, render_field_with_errors %}
 
 {% block title %}
 	About Us
@@ -72,9 +73,6 @@
 		</div>
 	</div>
 <!-- END MISION -->
-
-
-
 
 
 	
@@ -169,7 +167,6 @@
 
 <!-- END SB -->
 <!-- KATANA -->
-	<!-- <a href="https://katanareward.opencircleproject.com/campaign/170/join-hands-with-solarvibes-to-empower-small-farmers" target="_blank"> -->
 		<div class="fh5co-counters" style="background-image: url('{{ url_for('static', filename='images/katana.png') }}'); border: solid white; border-left: 15px; border-right: 15px;" data-stellar-background-ratio="0.7" id="counter-animate">
 			<div class="fh5co-narrow-content animate-box">
 				<div class="row" >
@@ -184,22 +181,6 @@
 <!-- END KATANA -->
 
 
-<!-- MEDIA -->
-
-<!-- 	<div class="fh5co-narrow-content">
-		<h2 class="fh5co-heading animate-box" data-animate-effect="fadeInLeft">Media</h2>
-		<div class="row animate-box" data-animate-effect="fadeInLeft">
-			<div class="col-md-4 col-sm-6 col-xs-6 col-xxs-12 work-item">
-				<a href="work.html">
-					<img src="images/work_1.jpg" alt="Free HTML5 Website Template by FreeHTML5.co" class="img-responsive">
-					<h3 class="fh5co-work-title">Cube Tech Fair</h3>
-					<p>Berlin, 2017</p>
-				</a>
-			</div>
-		</div>
-	</div> -->
-<!-- END MEDIA -->
-
 
 <!-- TEAM -->
 	<div class="fh5co-narrow-content  animate-box" data-animate-effect="fadeInLeft">
@@ -211,116 +192,62 @@
 				<h3>Swathis Ravi</h3>
 				<h4>Co-Founder, CEO</h4>
 				<p>Product development, market & business analyst</p>
-				<!-- <ul class="fh5co-social">
-					<li><a href="#"><i class="icon-google"></i></a></li>
-					<li><a href="#"><i class="icon-dribbble"></i></a></li>
-					<li><a href="#"><i class="icon-twitter"></i></a></li>
-					<li><a href="#"><i class="icon-facebook"></i></a></li>
-					<li><a href="#"><i class="icon-instagram"></i></a></li>
-				</ul> -->
+				
 			</div>
 			<div class="col-md-4 fh5co-staff">
 				<img src="{{ url_for('static', filename='images/t_carlos.png') }}" alt="Free HTML5 Bootstrap Template" class="img-responsive">
 				<h3>Carlos Rosas</h3>
 				<h4>Co-Founder, CSO</h4>
 				<p>Electrical & tool development & web development</p>
-				<!-- <ul class="fh5co-social">
-					<li><a href="#"><i class="icon-google"></i></a></li>
-					<li><a href="#"><i class="icon-dribbble"></i></a></li>
-					<li><a href="#"><i class="icon-twitter"></i></a></li>
-					<li><a href="#"><i class="icon-facebook"></i></a></li>
-					<li><a href="#"><i class="icon-instagram"></i></a></li>
-				</ul> -->
+				
 			</div>
 			<div class="col-md-4 fh5co-staff">
 				<img src="{{ url_for('static', filename='images/t_pavarthi.png') }}" alt="Free HTML5 Bootstrap Template" class="img-responsive">
 				<h3>Parvathi Devi</h3>
 				<h4>Co-Founder, CTO</h4>
 				<p>Product development (electronics) & firmware back-end development</p>
-				<!-- <ul class="fh5co-social">
-					<li><a href="#"><i class="icon-google"></i></a></li>
-					<li><a href="#"><i class="icon-dribbble"></i></a></li>
-					<li><a href="#"><i class="icon-twitter"></i></a></li>
-					<li><a href="#"><i class="icon-facebook"></i></a></li>
-					<li><a href="#"><i class="icon-instagram"></i></a></li>
-				</ul> -->
+				
 			</div>
 			<div class="col-md-4 fh5co-staff">
 				<img src="{{ url_for('static', filename='images/t_mansoor.png') }}" alt="Free HTML5 Bootstrap Template" class="img-responsive">
 				<h3>Moghul Mansoor</h3>
 				<h4>Consultant</h4>
 				<p> Product development & system design</p>
-				<!-- <ul class="fh5co-social">
-					<li><a href="#"><i class="icon-google"></i></a></li>
-					<li><a href="#"><i class="icon-dribbble"></i></a></li>
-					<li><a href="#"><i class="icon-twitter"></i></a></li>
-					<li><a href="#"><i class="icon-facebook"></i></a></li>
-					<li><a href="#"><i class="icon-instagram"></i></a></li>
-				</ul> -->
+				
 			</div>
 			<div class="col-md-4 fh5co-staff">
 				<img src="{{ url_for('static', filename='images/t_vanky.jpg') }}" alt="Free HTML5 Bootstrap Template" class="img-responsive">
 				<h3>Venkatesh Pampana</h3>
 				<h4>Software</h4>
 				<p>Full-stack, mobile app & IoT integrator</p>
-				<!-- <ul class="fh5co-social">
-					<li><a href="#"><i class="icon-google"></i></a></li>
-					<li><a href="#"><i class="icon-dribbble"></i></a></li>
-					<li><a href="#"><i class="icon-twitter"></i></a></li>
-					<li><a href="#"><i class="icon-facebook"></i></a></li>
-					<li><a href="#"><i class="icon-instagram"></i></a></li>
-				</ul> -->
+				
 			</div>
 			<div class="col-md-4 fh5co-staff">
 				<img src="{{ url_for('static', filename='images/t_vanthana.png') }}" alt="Free HTML5 Bootstrap Template" class="img-responsive">
 				<h3>Vanthana Murugavel</h3>
 				<h4>Soil Science</h4>
 				<p>Soil tests, pest management & control & plant pathology analyst</p>
-				<!-- <ul class="fh5co-social">
-					<li><a href="#"><i class="icon-google"></i></a></li>
-					<li><a href="#"><i class="icon-dribbble"></i></a></li>
-					<li><a href="#"><i class="icon-twitter"></i></a></li>
-					<li><a href="#"><i class="icon-facebook"></i></a></li>
-					<li><a href="#"><i class="icon-instagram"></i></a></li>
-				</ul> -->
+				
 			</div><div class="col-md-4 fh5co-staff">
 				<img src="{{ url_for('static', filename='images/t_karthik.png') }}" alt="Free HTML5 Bootstrap Template" class="img-responsive">
 				<h3>Karthik Kalimutu</h3>
 				<h4>Vegetable Science</h4>
 				<p>Crop inputs & suitable fertilizers for vegetable cultivation</p>
-				<!-- <ul class="fh5co-social">
-					<li><a href="#"><i class="icon-google"></i></a></li>
-					<li><a href="#"><i class="icon-dribbble"></i></a></li>
-					<li><a href="#"><i class="icon-twitter"></i></a></li>
-					<li><a href="#"><i class="icon-facebook"></i></a></li>
-					<li><a href="#"><i class="icon-instagram"></i></a></li>
-				</ul> -->
+				
 			</div>
 			<div class="col-md-4 fh5co-staff">
 				<img src="{{ url_for('static', filename='images/t_veera.png') }}" alt="Free HTML5 Bootstrap Template" class="img-responsive">
 				<h3>Veera Abillash</h3>
 				<h4>Precision Farming</h4>
 				<p>Analysis & feasability of smart farming potential for developing countries</p>
-				<!-- <ul class="fh5co-social">
-					<li><a href="#"><i class="icon-google"></i></a></li>
-					<li><a href="#"><i class="icon-dribbble"></i></a></li>
-					<li><a href="#"><i class="icon-twitter"></i></a></li>
-					<li><a href="#"><i class="icon-facebook"></i></a></li>
-					<li><a href="#"><i class="icon-instagram"></i></a></li>
-				</ul> -->
+				
 			</div>
 			<div class="col-md-4 fh5co-staff">
 				<img src="{{ url_for('static', filename='images/t_prasath.png') }}" alt="Free HTML5 Bootstrap Template" class="img-responsive">
 				<h3>Prasath Ganesan</h3>
 				<h4>Fruit Science</h4>
 				<p>Crop inputs & suitable fertilizers for fruit cultivation</p>
-				<!-- <ul class="fh5co-social">
-					<li><a href="#"><i class="icon-google"></i></a></li>
-					<li><a href="#"><i class="icon-dribbble"></i></a></li>
-					<li><a href="#"><i class="icon-twitter"></i></a></li>
-					<li><a href="#"><i class="icon-facebook"></i></a></li>
-					<li><a href="#"><i class="icon-instagram"></i></a></li>
-				</ul> -->
+				
 			</div>
 		</div>
 	</div>
@@ -338,18 +265,19 @@
 				<p>Drop us a line...</p>
 			</div>
 		</div>
-		<form action="">
+		<form method="POST" action="/about">
+			{{ form.csrf_token }}
 			<div class="row">
 				<div class="col-md-12">
 					<div class="row">
 						<div class="col-md-6">
 							<div class="form-group">
-								<input type="text" class="form-control" placeholder="Email">
+								{{ render_field_with_errors(form.email, class="form-control") }}
 							</div>
 						</div>
 						<div class="col-md-12">
 							<div class="form-group">
-								<textarea name="" id="message" cols="30" rows="7" class="form-control" placeholder="I would love to work/collaborate/join ... "></textarea>
+								{{ render_field_with_errors(form.msg, class="form-control") }}
 							</div>
 							<div class="form-group">
 								<input type="submit" class="btn btn-primary btn-md" value="Drop!">

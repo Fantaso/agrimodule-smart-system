@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% from "_renderfield.html" import render_field, render_field_with_errors %}
 
 {% block title %}
 	AgTech
@@ -26,7 +27,7 @@
 	        <blockquote>
 	          <span>IS THE BEST ASSISTANT A FARMER CAN HAVE</span>
 	          <p>Agrimodule</p>
-	          <a href="{{ url_for('agrimodule_web') }}" class="btn btn-primary btn-outline">Read more</a>
+	          <a href="{{ url_for('agrimodule') }}" class="btn btn-primary btn-outline">Read more</a>
 	        </blockquote>
 	      </div>
 	    </li>
@@ -35,7 +36,7 @@
 	        <blockquote>
 	          <span>AGRIMODULE'S AI HELPS FARMERS MAKE SUSTAINABLE AND PROFITABLE DECISIONS AT THEIR FARMS</span>
 	          <p>Crop Intelligence</p>
-	          <a href="{{ url_for('agrimodule_web') }}" class="btn btn-primary btn-outline">Read more</a>
+	          <a href="{{ url_for('agrimodule') }}" class="btn btn-primary btn-outline">Read more</a>
 	        </blockquote>
 	      </div>
 	    </li>
@@ -44,7 +45,7 @@
 	        <blockquote>
 	          <span>AGRIMODULE'S APP HELPS FARMERS ASSESS, PLAN, MONITOR, MANAGE AND OPERATE THEIR FARM AT THE TOUCH OF THEIR FINGERTIPS</span>
 	          <p>One Solution All Together</p>
-	          <a href="{{ url_for('platform_web') }}" class="btn btn-primary btn-outline">Read more</a>
+	          <a href="{{ url_for('platform') }}" class="btn btn-primary btn-outline">Read more</a>
 	        </blockquote>
 	      </div>
 	    </li>
@@ -189,7 +190,7 @@
 			<div class="col-md-5">
 				<p class="fh5co-lead animate-box" data-animate-effect="fadeInLeft">Learn</p>
 				<p class="animate-box" data-animate-effect="fadeInLeft"> Our Crop Planning allows to grow any type of crop within our database. It guides and tells you step by step throughtout the whole cultivation process of what you need to do.</p>
-				<p><a href="{{ url_for('platform_web') }}" class="btn btn-primary btn-outline">Read more</a></p>
+				<p><a href="{{ url_for('platform') }}" class="btn btn-primary btn-outline">Read more</a></p>
 			</div>
 			<div class="col-md-6 col-md-push-1 animate-box" data-animate-effect="fadeInLeft">
 				<img src="{{ url_for('static', filename='images/_CropPlanning.png') }}" alt="solarvibes" class="img-responsive"> 
@@ -228,13 +229,16 @@
 				<p>We promise we won't float your e-mail box with unimportant news</p>
 			</div>
 		</div>
-		<form action="">
+		
+
+		<form method="POST" action="/">
+			{{ form.csrf_token }}
 			<div class="row">
 				<div class="col-md-12">
 					<div class="row">
 						<div class="col-md-6">
 							<div class="form-group">
-								<input type="text" class="form-control" placeholder="Email">
+								{{ render_field_with_errors(form.email, class="form-control") }}
 							</div>
 						</div>
 						<div class="col-md-6">
@@ -242,14 +246,13 @@
 								<input type="submit" class="btn btn-primary btn-md" value="Join!">
 							</div>
 						</div>
-						
 					</div>
 				</div>
-				
 			</div>
 		</form>
-	</div>
 
+
+	</div>
 </div>
 
 {% endblock %}

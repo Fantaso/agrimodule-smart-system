@@ -1,8 +1,9 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, TextAreaField, Form, FormField, IntegerField, StringField
+from wtforms import StringField, PasswordField, TextAreaField, Form, FormField, IntegerField
 from wtforms.fields.html5 import DateField
 from wtforms.validators import DataRequired, Email, Length
 from flask_security.forms import RegisterForm, ConfirmRegisterForm
+
 
 # Constructor
 class PreContactUsForm:
@@ -106,6 +107,7 @@ class ContactUsForm(FlaskForm):
     						validators=[
     								DataRequired(),
     								Length(min=7, max=30, message=None)])
+
     msg     = TextAreaField('Message',
     						validators=[
     								DataRequired(),
@@ -133,7 +135,4 @@ class RegisterFormExt(RegisterForm, ConfirmRegisterForm):
 # SET UP FARM FORMS
 
 # SET UP AGRIMODULE FORMS
-
-
-
 

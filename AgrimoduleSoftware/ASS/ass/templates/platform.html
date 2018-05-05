@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% from "_renderfield.html" import render_field, render_field_with_errors %}
 
 {% block title %}
 	Platform
@@ -196,18 +197,19 @@
 				<h1>Tell Us What You Like About The Platform</h1>
 			</div>
 		</div>
-		<form action="">
+		<form method="POST" action="/platform">
+			{{ form.csrf_token }}
 			<div class="row">
 				<div class="col-md-12">
 					<div class="row">
 						<div class="col-md-6">
 							<div class="form-group">
-								<input type="text" class="form-control" placeholder="Email">
+								{{ render_field_with_errors(form.email, class="form-control") }}
 							</div>
 						</div>
 						<div class="col-md-12">
 							<div class="form-group">
-								<textarea name="" id="message" cols="30" rows="7" class="form-control" placeholder="I love/hate ... keep it going/would like to see it better like ... "></textarea>
+								{{ render_field_with_errors(form.msg, class="form-control") }}
 							</div>
 							<div class="form-group">
 								<input type="submit" class="btn btn-primary btn-md" value="Tell!">

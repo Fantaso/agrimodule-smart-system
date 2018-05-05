@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% from "_renderfield.html" import render_field, render_field_with_errors %}
 
 {% block title %}
 	Agrimodule
@@ -60,7 +61,7 @@
 					<div class="col-md-6 animate-box" data-animate-effect="fadeInLeft">
 						<p>Agrimodule's monitoring data and the in-built Crop Intelligence help farmers plan the entire cultivation cycle and assists them every step of the way.
 						Farmers can manage their entire farm operations remotely and efficiently using our mobile application.</p>
-						<p><a href="{{ url_for('platform_web') }}" class="btn btn-primary btn-outline">Read more</a></p>
+						<p><a href="{{ url_for('platform') }}" class="btn btn-primary btn-outline">Read more</a></p>
 					</div>
 				</div>
 			</div>
@@ -303,7 +304,7 @@ Agrimodule is a solar-powered electronic device. it comes with an internal batte
 			</div>
 			<div class="col-md-12 text-center">
 				<div class="fh5co-counter-label animate-box text-center" data-animate-effect="fadeInLeft">
-					<p><a href="{{ url_for('platform_web') }}" class="btn btn-primary btn-outline">Read more</a></p>
+					<p><a href="{{ url_for('platform') }}" class="btn btn-primary btn-outline">Read more</a></p>
 				</div>
 			</div>
 
@@ -336,18 +337,20 @@ Agrimodule is a solar-powered electronic device. it comes with an internal batte
 				<p>Tell us...</p>
 			</div>
 		</div>
-		<form action="">
+
+		<form method="POST" action="/agrimodule">
+			{{ form.csrf_token }}
 			<div class="row">
 				<div class="col-md-12">
 					<div class="row">
 						<div class="col-md-6">
 							<div class="form-group">
-								<input type="text" class="form-control" placeholder="Email">
+								{{ render_field_with_errors(form.email, class="form-control") }}
 							</div>
 						</div>
 						<div class="col-md-12">
 							<div class="form-group">
-								<textarea name="" id="message" cols="30" rows="7" class="form-control" placeholder="I would like it to .... monitor/share ... "></textarea>
+								{{ render_field_with_errors(form.msg, class="form-control") }}
 							</div>
 							<div class="form-group">
 								<input type="submit" class="btn btn-primary btn-md" value="Share!">
@@ -359,6 +362,9 @@ Agrimodule is a solar-powered electronic device. it comes with an internal batte
 				
 			</div>
 		</form>
+
+
+
 	</div>
 <!-- END SPAN -->
 
