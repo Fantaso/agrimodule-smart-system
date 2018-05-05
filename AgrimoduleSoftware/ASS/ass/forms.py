@@ -125,8 +125,7 @@ class RegisterFormExt(RegisterForm, ConfirmRegisterForm):
                                     DataRequired(),
                                     Length(min=2, max=30, message='''Your last name needs
                                                                         at least 2 characters.''')])
-    birthday   = DateField(label='Birthday',
-                            format='%Y-%m-%d')
+    birthday   = DateField(label='Birthday', format='%Y-%m-%d')
     mobile   = StringField('Mobile',
                             validators=[
                                     DataRequired(),

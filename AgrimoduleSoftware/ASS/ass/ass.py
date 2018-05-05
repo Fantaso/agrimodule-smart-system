@@ -10,7 +10,7 @@ from flask_mail import Mail, Message
 from sqlalchemy.sql import func
 from forms import RegisterFormExt
 
-from forms import NewsletterForm, AgrimoduleFBForm, PlatformFBForm, WorkWithUsForm, ContactUsForm, PreContactUsForm, EmailForm, EmailAndTextForm
+from forms import NewsletterForm, AgrimoduleFBForm, PlatformFBForm, WorkWithUsForm, ContactUsForm, PreContactUsForm, EmailForm, EmailAndTextForm, RegisterFormExt
 
 
 
