@@ -1,4 +1,4 @@
-from flask import Flask, render_template, session, request, redirect, url_for
+from flask import Flask, render_template, session, request, redirect, url_for, flash
 from flask_sqlalchemy import SQLAlchemy
 from flask_security import Security, SQLAlchemyUserDatastore, UserMixin, RoleMixin, login_required
 from flask_migrate import Migrate
@@ -9,6 +9,11 @@ from flask_mail import Mail, Message
 
 from sqlalchemy.sql import func
 
+from forms import NewsletterForm, AgrimoduleFBForm, PlatformFBForm, WorkWithUsForm, ContactUsForm, PreContactUsForm, EmailForm, EmailAndTextForm
+
+
+
+
 
 # Create app
 app = Flask(__name__)               # creates the flask app
@@ -16,6 +21,40 @@ app.config.from_pyfile('cfg.cfg')   # imports app configuration from cfg.cfg
 db = SQLAlchemy(app)                # create database connection object
 Migrate(app, db)                    # creates a migration object for the app db migrations]\
 mail = Mail(app)
+
+
+
+class NewsletterTable(db.Model):
+    __tablename__ = 'newslettertable'
+    id = db.Column(db.Integer, primary_key=True)
+    email = db.Column(db.String(30))
+
+class AgrimoduleFBTable(db.Model):
+    __tablename__ = 'agrimodulefbtable'
+    id = db.Column(db.Integer, primary_key=True)
+    email = db.Column(db.String(30))
+    msg = db.Column(db.Text(length=1000))
+
+class PlatformFBTable(db.Model):
+    __tablename__ = 'platformfbtable'
+    id = db.Column(db.Integer, primary_key=True)
+    email = db.Column(db.String(30))
+    msg = db.Column(db.Text(length=1000))
+
+class WorkWithUsTable(db.Model):
+    __tablename__ = 'workwithustable'
+    id = db.Column(db.Integer, primary_key=True)
+    email = db.Column(db.String(30))
+    msg = db.Column(db.Text(length=1000))
+
+class ContactUsTable(db.Model):
+    __tablename__ = 'contactustable'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(30))
+    email = db.Column(db.String(30))
+    phone = db.Column(db.String(30))
+    msg = db.Column(db.Text(length=1000))
+
 
 
 
@@ -72,6 +111,7 @@ class Farm(db.Model):
     name = db.Column(db.String(25), nullable=False)
     location = db.Column(db.String(20))
     size = db.Column(db.Float(precision=2))
+    cultivation_process = db.Column(db.String(20))
 
     # RELATIONSHIP
     # USER[1]-FARM[M]
@@ -95,10 +135,12 @@ class Field(db.Model):
     __tablename__ = 'field'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(25), nullable=False)
-    size = db.Column(db.Float(precision=3))
-    date_start = db.Column(db.DateTime(timezone=True))
-    date_finish = db.Column(db.DateTime(timezone=True))
+    area = db.Column(db.Float(precision=3))
+    cultivation_start_date = db.Column(db.DateTime(timezone=True))
+    cultivation_finish_date = db.Column(db.DateTime(timezone=True))
     _current_yield = db.Column(db.Float(precision=2))
+    cultivation_state = db.Column(db.Boolean)
+    cultivation_type = db.Column(db.String(5))
 
     # RELATIONSHIP
     # FIELD[M]-CROP[M]
@@ -294,24 +336,84 @@ user_datastore = SQLAlchemyUserDatastore(db, User, Role)
 security = Security(app, user_datastore)
 
 # Views
-@app.route('/')
-def index():
-    return render_template('index.html')
 
 
 # WEBSITE VIEWS
-@app.route('/agrimodule_web', methods=['GET'])
-def agrimodule_web():
-    return render_template('agrimodule.html')
-@app.route('/platform_web', methods=['GET'])
-def platform_web():
-    return render_template('platform.html')
-@app.route('/about_web', methods=['GET'])
-def about_web():
-    return render_template('about.html')
-@app.route('/contact_web', methods=['GET'])
-def contact_web():
-    return render_template('contact.html')
+@app.route('/', methods=('GET', 'POST'))
+def index():
+    form = EmailForm()
+    if form.validate_on_submit():
+        email = form.email.data
+        agrimodulefb = NewsletterTable(email=email)
+        db.session.add(agrimodulefb)
+        db.session.commit()
+        form = None
+        flash('Thanks. We will maintain you update!')
+        return redirect(url_for('index'))
+    return render_template('index.html', form=form)
+
+
+@app.route('/agrimodule', methods=('GET', 'POST'))
+def agrimodule():
+    form = EmailAndTextForm()
+    if form.validate_on_submit():
+        email = form.email.data
+        msg = form.msg.data
+        agrimodulefb = AgrimoduleFBTable(email=email, msg=msg)
+        db.session.add(agrimodulefb)
+        db.session.commit()
+        form = None
+        flash('Thanks. We definitely give a lot og thought about it!')
+        return redirect(url_for('agrimodule'))
+    return render_template('agrimodule.html', form=form)
+
+
+@app.route('/platform', methods=('GET', 'POST'))
+def platform():
+    form = EmailAndTextForm()
+    if form.validate_on_submit():
+        email = form.email.data
+        msg = form.msg.data
+        platformfb = PlatformFBTable(email=email, msg=msg)
+        db.session.add(platformfb)
+        db.session.commit()
+        form = None
+        flash('Thanks. Your feedback is valuable to us!')
+        return redirect(url_for('platform'))
+    return render_template('platform.html', form=form)
+
+@app.route('/about', methods=('GET', 'POST'))
+def about():
+    form = EmailAndTextForm()
+    if form.validate_on_submit():
+        email = form.email.data
+        msg = form.msg.data
+        workwithusus = WorkWithUsTable(email=email, msg=msg)
+        db.session.add(workwithusus)
+        db.session.commit()
+        form = None
+        flash('Thanks. Our HR department will contact you!')
+        return redirect(url_for('about'))
+    return render_template('about.html', form=form)
+
+
+@app.route('/contact', methods=('GET', 'POST'))
+def contact():
+    # pre_contact = PreContactUsForm('Carlos','carlos@sv.de','+176-55858585','I would like to get a quotation for my farm 1 hectare located in Berlin')
+    form = ContactUsForm()
+    if form.validate_on_submit():
+        name = form.name.data
+        email = form.email.data
+        phone = form.phone.data
+        msg = form.msg.data
+        newsletter = ContactUsTable(name=name, email=email, phone=phone, msg=msg)
+        db.session.add(newsletter)
+        db.session.commit()
+        form = None
+        flash('Thanks. We will get back to your shortly!')
+        return redirect(url_for('contact'))
+    return render_template('contact.html', form=form)
+
 
 @app.route('/dashboard', methods=['GET'])
 # @login_required
