@@ -1,4 +1,4 @@
-from flask import Flask, render_template, session, request, redirect, url_for, flash
+from flask import Flask, render_template, session, request, redirect, url_for, flash, g
 from flask_sqlalchemy import SQLAlchemy
 from flask_security import Security, SQLAlchemyUserDatastore, UserMixin, RoleMixin, login_required
 from flask_migrate import Migrate
@@ -10,10 +10,7 @@ from flask_mail import Mail, Message
 from sqlalchemy.sql import func
 from forms import RegisterFormExt
 
-from forms import NewsletterForm, AgrimoduleFBForm, PlatformFBForm, WorkWithUsForm, ContactUsForm, PreContactUsForm, EmailForm, EmailAndTextForm, RegisterFormExt
-
-
-
+from forms import EmailForm, EmailAndTextForm, ContactUsForm, RegisterFormExt, FarmForm, FieldForm
 
 
 # Create app
@@ -55,8 +52,6 @@ class ContactUsTable(db.Model):
     email = db.Column(db.String(30))
     phone = db.Column(db.String(30))
     msg = db.Column(db.Text(length=1000))
-
-
 
 
 # DEFINE USER MODELS FLASK-SECURITY
@@ -112,7 +107,7 @@ class Farm(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(25), nullable=False)
     location = db.Column(db.String(20))
-    size = db.Column(db.Float(precision=2))
+    cultivation_area = db.Column(db.Float(precision=2))
     cultivation_process = db.Column(db.String(20))
 
     # RELATIONSHIP
@@ -137,11 +132,11 @@ class Field(db.Model):
     __tablename__ = 'field'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(25), nullable=False)
-    area = db.Column(db.Float(precision=3))
+    cultivation_area = db.Column(db.Float(precision=2))
     cultivation_start_date = db.Column(db.DateTime(timezone=True))
     cultivation_finish_date = db.Column(db.DateTime(timezone=True))
     _current_yield = db.Column(db.Float(precision=2))
-    cultivation_state = db.Column(db.Boolean)
+    cultivation_state = db.Column(db.String(20))
     cultivation_type = db.Column(db.String(5))
 
     # RELATIONSHIP
@@ -338,7 +333,10 @@ user_datastore = SQLAlchemyUserDatastore(db, User, Role)
 security = Security(app, user_datastore, register_form=RegisterFormExt, confirm_register_form=RegisterFormExt)
 
 # Views
-
+# @app.before_request
+# def before_request():
+#     if session is not None:
+#         session = None
 
 # WEBSITE VIEWS
 @app.route('/', methods=('GET', 'POST'))
@@ -447,8 +445,73 @@ def dashboard_id(id):
     else:
         return 'ELSE: in dashboard_id'
 
+@app.route('/farm', methods=('GET', 'POST'))
+@login_required
+def farm():
+    if 'farm' not in session:
+        session['farm'] = ''
+    # print('In farm before: {}'.format(session['farm']))
+    # pre_contact = PreContactUsForm('Carlos','carlos@sv.de','+176-55858585','I would like to get a quotation for my farm 1 hectare located in Berlin')
+    form = FarmForm()
+    if form.validate_on_submit():
+        user = current_user
+        name = form.name.data
+        location = form.location.data
+        cultivation_area = form.cultivation_area.data
+        cultivation_process = form.cultivation_process.data
+        farm = Farm(user=user, name=name, location=location, cultivation_area=cultivation_area, cultivation_process=cultivation_process)
+        db.session.add(farm)
+        db.session.commit()
+        session['farm'] = name
+        session.modified = True
+        flash('You just created your farm!')
+        flash(session['farm'])
+        print(session['farm'])
+        # for item in session['farm']:
+        #     print(item)
+            # print('In field after: {}'.format(session['farm']))
+        # flash('In farm after: {}'.format(session['farm']['name']))
+        form = None
+        return redirect(url_for('field'))
+    return render_template('farm.html', form=form)
+
+@app.route('/field', methods=('GET', 'POST'))
+@login_required
+def field():
+    # print('In field: {}'.format(session['farm']))
+    # pre_contact = PreContactUsForm('Carlos','carlos@sv.de','+176-55858585','I would like to get a quotation for my farm 1 hectare located in Berlin')
+    form = FieldForm()
+    if form.validate_on_submit():
+        user = User.query.filter_by(id = current_user.get_id()).first()
+        print (user.id, user.email)
+        farm = user.farms.filter_by(name = session['farm']).first()
+        print (farm.id, farm.name)
+        crop = Crop.query.filter_by(_name = form.cultivation_crop.data).first()
+
+        name = form.name.data
+        cultivation_area = form.cultivation_area.data
+        cultivation_crop = form.cultivation_crop.data
+        cultivation_start_date = form.cultivation_start_date.data
+        cultivation_state = form.cultivation_state.data
+        cultivation_type = form.cultivation_type.data
+        field = Field(  name=name,
+                        farm=farm,
+                        cultivation_area=cultivation_area,
+                        cultivation_start_date=cultivation_start_date,
+                        cultivation_state=cultivation_state,
+                        cultivation_type=cultivation_type)
+        field.crops.append(crop)
+        db.session.add(field)
+        db.session.commit()
+        flash('You just created a field in your farm')
+        session['farm'] = None
+        return redirect(url_for('main'))
+    return render_template('field.html', form=form)
 
 
+@app.route('/main', methods=('GET', 'POST'))
+def main():
+    return 'congrats'
 
 
 if __name__ == '__main__':

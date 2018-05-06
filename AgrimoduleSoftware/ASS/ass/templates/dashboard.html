@@ -11,15 +11,17 @@
 			<p>Looks like its your first time here!
 			<br>We will guide you through setting up your system in no time.</p>
 			<h4>First thing:</h4>
-			<form method="post" action = "/setup_farm" class = "row">
+			<label class = "col-sm-4 col-md-3">1. Set up your Farm</label>
+			<a href="{{ url_for('farm') }}" class="btn btn-primary btn-outline">Set up Farm</a>
+		<!-- 	<form method="post" action = "/farm" class = "row">
 				<label class = "col-sm-4 col-md-3">1. Set up your Farm</label>
 				<input type = "submit" name="add_farm" value = "Set up Farm" class = "btn btn-primary">
 			</form>
-			<form method="post" action = "/setup_ass" class ="row">
+ -->			<form method="post" action = "/setup_ass" class ="row">
 				<label class = "col-sm-4 col-md-3">2. Set up you Agrimodule</label>
 				<input type = "submit" name = "add_ass" value ="Set up ASS" class = "btn btn-primary">
 			</form>
-			<!-- <a href="{{ url_for('dashboard') }}" class="btn btn-primary btn-outline">Set up Farm</a> -->
+			
 		</div>
 	</div>
 {% endblock %}
