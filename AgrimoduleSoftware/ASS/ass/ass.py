@@ -1,7 +1,7 @@
-from flask import Flask, render_template, session, request, redirect, url_for, flash, g
+from flask import Flask, render_template, session, request, redirect, url_for, flash
 from flask_sqlalchemy import SQLAlchemy
 from flask_security import Security, SQLAlchemyUserDatastore, UserMixin, RoleMixin, login_required
-from flask_migrate import Migrate
+# from flask_migrate import Migrate
 
 from flask_login import current_user
 
@@ -20,7 +20,7 @@ from forms import EmailForm, EmailAndTextForm, ContactUsForm, RegisterFormExt, F
 app = Flask(__name__)               # creates the flask app
 app.config.from_pyfile('cfg.cfg')   # imports app configuration from cfg.cfg
 db = SQLAlchemy(app)                # create database connection object
-Migrate(app, db)                    # creates a migration object for the app db migrations]\
+                    # creates a migration object for the app db migrations]\
 mail = Mail(app)
 
 
