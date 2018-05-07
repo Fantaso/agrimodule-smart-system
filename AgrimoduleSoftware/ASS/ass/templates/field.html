@@ -18,22 +18,22 @@
 			<div class="row">
 				<div class="col-md-12">
 					<div class="form-group">
-						{{ render_field_with_errors(form.name, class="form-control") }}
+						{{ render_field_with_errors(form.name, class="form-control", placeholder="Plum tomatoes field") }}
 					</div>
 					<div class="form-group">
 						{{ render_field_with_errors(form.cultivation_area, class="form-control") }}
 					</div>
 					<div class="form-group">
-						{{ render_field_with_errors(form.cultivation_crop) }}
+						{{ render_field_with_errors(form.cultivation_crop, class="form-control") }}
 					</div>
 					<div class="form-group">
 						{{ render_field_with_errors(form.cultivation_start_date, class="form-control") }}
 					</div>
 					<div class="form-group">
-						{{ render_field_with_errors(form.cultivation_state) }}
+						{{ render_field_with_errors(form.cultivation_state, class="form-control") }}
 					</div>
 					<div class="form-group">
-						{{ render_field_with_errors(form.cultivation_type) }}
+						{{ render_field_with_errors(form.cultivation_type, class="form-control") }}
 					</div>
 					<div class="form-group">
 						<input type="submit" class="btn btn-primary btn-md" value="Create Field!">

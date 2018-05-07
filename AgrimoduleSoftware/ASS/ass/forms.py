@@ -1,7 +1,7 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, TextAreaField, Form, FormField, IntegerField, RadioField, SelectField, FloatField
 from wtforms.fields.html5 import DateField
-from wtforms.validators import DataRequired, Email, Length
+from wtforms.validators import DataRequired, Email, Length, NumberRange
 from flask_security.forms import RegisterForm, ConfirmRegisterForm
 
 # WEBSITE FORMS
@@ -51,32 +51,33 @@ class RegisterFormExt(RegisterForm, ConfirmRegisterForm):
 # SET UP AGRIMODULE FORMS
 
 class CultivationProcessForm(FlaskForm):
-    cultivation_process     = RadioField(label='Cultivation Process',
+    cultivation_process     = SelectField(label='Cultivation Process',
                                     validators=[DataRequired()],
                                     choices=[('Organic','Organic'),('Chemical','Chemical')])
 
 class CultivationTypeForm(FlaskForm):
-    cultivation_type        = RadioField(label='Cultivation Type',
-                                    validators=[DataRequired()],
-                                    choices=[('Mono','Mono'), ('Multi','Multi'), ('Mix','Mix')])
-
+    cultivation_type        = SelectField(label='Cultivation Type',
+                                                validators=[DataRequired()],
+                                                choices=[('mono','Mono'), ('mix','Mix'), ('multi','Multi')])
 class CultivationStateForm(FlaskForm):
-    cultivation_state       = RadioField(label='Cultivation State',
-                                    validators=[DataRequired()],
-                                    choices=[('New','New'),('Already Growing','Already Growing')])
+    cultivation_state       = SelectField(label='Cultivation State',
+                                                validators=[DataRequired()],
+                                                choices=[('new','New'),('Already Growing','Already Growing')])
 
 class CultivationStartDateForm(FlaskForm):
     cultivation_start_date  = DateField(label='Cultivation Start Date', format='%Y-%m-%d',
-                                    validators=[DataRequired()])
+                                                validators=[DataRequired()])
 
 class CultivationCropForm(FlaskForm):
     cultivation_crop        = SelectField(label='Cultivation Crop',
-                                    validators=[DataRequired()],
-                                    choices=['plum','romaine','arugula'], option_widget=None)
+                                                validators=[DataRequired()],
+                                                choices=[('plum','Plum'),('romaine','Romaine'),('arugula','Arugula')],
+                                                option_widget=None)
 
 class CultivationAreaForm(FlaskForm):
     cultivation_area       = FloatField(label='Cultivation Area',
-                                     validators=[DataRequired()]) 
+                                     validators=[DataRequired(),
+                                                 NumberRange(min=5, max=5000, message='Area between 5 and 5000 m2')]) 
 
 
 class FarmForm(CultivationAreaForm, CultivationProcessForm):
@@ -92,27 +93,27 @@ class FarmForm(CultivationAreaForm, CultivationProcessForm):
                                                                         at least 2 characters.''')])
 
 class FieldForm(FlaskForm):
-    name        = StringField(label='Field name',
-                            validators=[
-                                    DataRequired(),
-                                    Length(min=2, max=30, message='''Your name needs
-                                                                        at least 2 characters.''')])
+    name                    = StringField(label='Field name',
+                                                validators=[
+                                                        DataRequired(),
+                                                        Length(min=2, max=30, message='''Your name needs
+                                                                                         at least 2 characters.''')])
     
-    cultivation_area       = FloatField(label='Cultivation Area',
-                                     validators=[DataRequired()])
+    cultivation_area       = FloatField(label='Field Cultivation Area',
+                                                validators=[DataRequired()],render_kw={"placeholder":"500.50"})
 
-    cultivation_crop        = RadioField(label='Cultivation Crop',
-                                    validators=[DataRequired()],
-                                    choices=[('plum','Plum'),('romaine','Romaine'),('arugula','Arugula')])
+    cultivation_crop        = SelectField(label='Cultivation Crop',
+                                                validators=[DataRequired()],
+                                                choices=[('plum','Plum'),('romaine','Romaine'),('arugula','Arugula')])
 
     cultivation_start_date  = DateField(label='Cultivation Start Date', format='%Y-%m-%d',
-                                    validators=[DataRequired()])
-    cultivation_state       = RadioField(label='Cultivation State',
-                                    validators=[DataRequired()],
-                                    choices=[('New','New'),('Already Growing','Already Growing')])
-    cultivation_type        = RadioField(label='Cultivation Type',
-                                    validators=[DataRequired()],
-                                    choices=[('Mono','Mono'), ('Mix','Mix'), ('Multi','Multi')])
+                                                validators=[DataRequired()])
+    cultivation_state       = SelectField(label='Cultivation State',
+                                                validators=[DataRequired()],
+                                                choices=[('new','New'),('already growing','Already Growing')])
+    cultivation_type        = SelectField(label='Cultivation Type',
+                                                validators=[DataRequired()],
+                                                choices=[('mono','Mono'), ('mix','Mix'), ('multi','Multi')])
 
 
 

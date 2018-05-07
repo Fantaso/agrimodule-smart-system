@@ -8,12 +8,15 @@ from flask_login import current_user
 from flask_mail import Mail, Message
 
 from sqlalchemy.sql import func
-from forms import RegisterFormExt
 
 from forms import EmailForm, EmailAndTextForm, ContactUsForm, RegisterFormExt, FarmForm, FieldForm
 
+#############################
+#############################
+# APP
+#############################
+#############################
 
-# Create app
 app = Flask(__name__)               # creates the flask app
 app.config.from_pyfile('cfg.cfg')   # imports app configuration from cfg.cfg
 db = SQLAlchemy(app)                # create database connection object
@@ -21,6 +24,11 @@ Migrate(app, db)                    # creates a migration object for the app db 
 mail = Mail(app)
 
 
+#############################
+#############################
+# WEBSITE MODELS
+#############################
+#############################
 
 class NewsletterTable(db.Model):
     __tablename__ = 'newslettertable'
@@ -54,7 +62,12 @@ class ContactUsTable(db.Model):
     msg = db.Column(db.Text(length=1000))
 
 
-# DEFINE USER MODELS FLASK-SECURITY
+#############################
+#############################
+# USER MODELS FLASK-SECURITY
+#############################
+#############################
+
 roles_users = db.Table('roles_users',
         db.Column('user_id', db.Integer(), db.ForeignKey('user.id')),
         db.Column('role_id', db.Integer(), db.ForeignKey('role.id')))
@@ -100,7 +113,12 @@ class User(db.Model, UserMixin):
         return '<user {}>'.format(self.email)
 
 
-# DEFINE FARMS AND AGRIMODULE MODELS
+#############################
+#############################
+# FARMS AND AGRIMODULE MODELS
+#############################
+#############################
+
 class Farm(db.Model):
     """Farms Models for Users to create. One User can created as many farms as he wants"""
     __tablename__ = 'farm'
@@ -258,7 +276,6 @@ class AgrimoduleSystem(db.Model):
     def __repr__(self):
         return '<agrimodulesystem {}>'.format(self.identifier)
 
-
 class Agrimodule(db.Model):
     """each agrimodule has a different table where all data that is measured by agrimodule is saved in this model"""
     __tablename__ = 'agrimodule'
@@ -328,7 +345,13 @@ class Agripump(db.Model):
     def __repr__(self):
         return '<agripump {}>'.format(self.brand)   
 
+
+#############################
+#############################
 # Setup Flask-Security
+#############################
+#############################
+
 user_datastore = SQLAlchemyUserDatastore(db, User, Role)
 security = Security(app, user_datastore, register_form=RegisterFormExt, confirm_register_form=RegisterFormExt)
 
@@ -338,7 +361,12 @@ security = Security(app, user_datastore, register_form=RegisterFormExt, confirm_
 #     if session is not None:
 #         session = None
 
+#############################
+#############################
 # WEBSITE VIEWS
+#############################
+#############################
+
 @app.route('/', methods=('GET', 'POST'))
 def index():
     form = EmailForm()
@@ -415,12 +443,19 @@ def contact():
     return render_template('contact.html', form=form)
 
 
+#############################
+#############################
+# APP VIEWS
+#############################
+#############################
+
 @app.route('/dashboard', methods=['GET'])
 # @login_required
 def dashboard():
     if request.method == 'GET':
         if current_user.is_authenticated:
             uid = current_user.get_id()
+            username
             return redirect(url_for('dashboard_id', id=uid))
         if current_user.is_anonymous:
             return 'User has not logged in'
@@ -445,55 +480,75 @@ def dashboard_id(id):
     else:
         return 'ELSE: in dashboard_id'
 
+#############################
+#############################
+# APP FARM SETUP VIEWS
+#############################
+#############################
+
 @app.route('/farm', methods=('GET', 'POST'))
 @login_required
 def farm():
     if 'farm' not in session:
-        session['farm'] = ''
-    # print('In farm before: {}'.format(session['farm']))
-    # pre_contact = PreContactUsForm('Carlos','carlos@sv.de','+176-55858585','I would like to get a quotation for my farm 1 hectare located in Berlin')
-    form = FarmForm()
-    if form.validate_on_submit():
+        session['farm'] = dict()
+        session.modified = True
+    
+    form = FarmForm()               # CREATE WTForm FORM
+    if form.validate_on_submit():   # IF request.methiod == 'POST'
+        # USER OBJS
         user = current_user
+        user_id = user.get_id()
+        user_name = User.query.filter_by(id=user_id).first().name
+        # FARM OBJS
         name = form.name.data
         location = form.location.data
         cultivation_area = form.cultivation_area.data
         cultivation_process = form.cultivation_process.data
-        farm = Farm(user=user, name=name, location=location, cultivation_area=cultivation_area, cultivation_process=cultivation_process)
+        # FARM OBJS  TO DB
+        farm = Farm(    user=user,
+                        name=name,
+                        location=location,
+                        cultivation_area=cultivation_area,
+                        cultivation_process=cultivation_process)
+        # DB COMMANDS
         db.session.add(farm)
         db.session.commit()
-        session['farm'] = name
+        # OBJS SAVE ON SESSION
+        session['farm'] = {'user_id':user_id,
+                            'user_name':user_name,
+                            'farm_name':name,
+                            'farm_location':location,
+                            'farm_cultivation_area':cultivation_area,
+                            'farm_cultivation_process':cultivation_process}
         session.modified = True
-        flash('You just created your farm!')
-        flash(session['farm'])
-        print(session['farm'])
-        # for item in session['farm']:
-        #     print(item)
-            # print('In field after: {}'.format(session['farm']))
-        # flash('In farm after: {}'.format(session['farm']['name']))
-        form = None
+        #SUCESS AND REDIRECT TO NEXT STEP
+        flash('You just created farm named: {}'.format(name))
         return redirect(url_for('field'))
+
     return render_template('farm.html', form=form)
 
 @app.route('/field', methods=('GET', 'POST'))
 @login_required
 def field():
-    # print('In field: {}'.format(session['farm']))
+    print('session "farm" in Field: {}'.format(session['farm']))
+    for farm in session['farm']:
+        for key, val in farm.items():
+            print (val)
     # pre_contact = PreContactUsForm('Carlos','carlos@sv.de','+176-55858585','I would like to get a quotation for my farm 1 hectare located in Berlin')
-    form = FieldForm()
-    if form.validate_on_submit():
+    form = FieldForm()              # CREATE WTForm FORM
+    if form.validate_on_submit():   # IF request.methiod == 'POST'
+        # USER OBJS
         user = User.query.filter_by(id = current_user.get_id()).first()
-        print (user.id, user.email)
-        farm = user.farms.filter_by(name = session['farm']).first()
-        print (farm.id, farm.name)
+        farm = user.farms.filter_by(name = session['farm']['farm_name']).first()
         crop = Crop.query.filter_by(_name = form.cultivation_crop.data).first()
-
+        # FIELD OBJS
         name = form.name.data
         cultivation_area = form.cultivation_area.data
         cultivation_crop = form.cultivation_crop.data
         cultivation_start_date = form.cultivation_start_date.data
         cultivation_state = form.cultivation_state.data
         cultivation_type = form.cultivation_type.data
+        # FIELD OBJS  TO DB
         field = Field(  name=name,
                         farm=farm,
                         cultivation_area=cultivation_area,
@@ -501,15 +556,19 @@ def field():
                         cultivation_state=cultivation_state,
                         cultivation_type=cultivation_type)
         field.crops.append(crop)
+        # DB COMMANDS
         db.session.add(field)
         db.session.commit()
-        flash('You just created a field in your farm')
-        session['farm'] = None
+        #SUCESS AND REDIRECT TO DASHBOARD
+        flash('You just created a {} in your {}'.format(name, farm.name))
+        del session['farm']     # ERASE SESSION OBJS
         return redirect(url_for('main'))
+
     return render_template('field.html', form=form)
 
 
 @app.route('/main', methods=('GET', 'POST'))
+@login_required
 def main():
     return 'congrats'
 
