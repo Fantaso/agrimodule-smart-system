@@ -1,7 +1,9 @@
 from flask import Flask, render_template, session, request, redirect, url_for, flash
 from flask_sqlalchemy import SQLAlchemy
 from flask_security import Security, SQLAlchemyUserDatastore, UserMixin, RoleMixin, login_required
-# from flask_migrate import Migrate
+
+from flask_migrate import Migrate, MigrateCommand
+from flask_script import Manager
 
 from flask_login import current_user
 
@@ -20,8 +22,11 @@ from forms import EmailForm, EmailAndTextForm, ContactUsForm, RegisterFormExt, F
 app = Flask(__name__)               # creates the flask app
 app.config.from_pyfile('cfg.cfg')   # imports app configuration from cfg.cfg
 db = SQLAlchemy(app)                # create database connection object
-                    # creates a migration object for the app db migrations]\
+migrate = Migrate(app, db)                    # creates a migration object for the app db migrations]\
 mail = Mail(app)
+
+manager = Manager(app)
+manager.add_command('db', MigrateCommand)
 
 
 #############################
@@ -176,7 +181,7 @@ class Crop(db.Model):
     _name = db.Column(db.String(25), unique=True, nullable=False)
     _variety = db.Column(db.String(25))
     _family = db.Column(db.String(25))
-    _yield = db.Column(db.Float(precision=3))
+    _yield = db.Column(db.Float(precision=2))
     _space_x = db.Column(db.Float(precision=2))
     _space_y = db.Column(db.Float(precision=2))
     _space_z = db.Column(db.Float(precision=2))
@@ -574,6 +579,7 @@ def main():
 
 
 if __name__ == '__main__':
+    manager.run()
     app.run()
     # app.run(
     #     host = '192.168.1.4',
