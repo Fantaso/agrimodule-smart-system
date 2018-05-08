@@ -600,7 +600,9 @@ def welcome(url_name):
         # return g.user.name
         return render_template('welcome.html', url_name=g.user.name, last_name=g.user.last_name)
     else:
-        return 'I DONT KNOW 37625348'
+        user = g.user
+        farm = user.farms.first().name
+        return render_template('home.html', url_name=g.user.name, last_name=g.user.last_name, farm=farm)
 
 
 @app.route('/<url_name>/welcome/set-farm', methods=['GET', 'POST']) # AQUI ME QUEDE
@@ -673,7 +675,12 @@ def welcome_set_field(url_name):
         cultivation_state = form.cultivation_state.data
         cultivation_type = form.cultivation_type.data
         # FIELD OBJS  TO DB
-        field = Field(name=name,farm=farm,cultivation_area=cultivation_area,cultivation_start_date=cultivation_start_date,cultivation_state=cultivation_state,cultivation_type=cultivation_type)
+        field = Field(  name=name,
+                        farm=farm,
+                        cultivation_area=cultivation_area,
+                        cultivation_start_date=cultivation_start_date,
+                        cultivation_state=cultivation_state,
+                        cultivation_type=cultivation_type)
         field.crops.append(crop)
         # DB COMMANDS
         db.session.add(field)
@@ -737,7 +744,7 @@ def welcome_set_field(url_name):
 @app.route('/<url_name>/<farm>', methods=('GET', 'POST'))
 @login_required
 def home(url_name, farm):
-    return '<h1>Congrats ' + url_name + ' you can manage you farm ' + farm + '</h1>'
+    return render_template('home.html', url_name=url_name, farm=farm)
 
 
 if __name__ == '__main__':
