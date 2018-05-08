@@ -18,6 +18,13 @@
 			  {{ render_field(login_user_form.next) }}
 			  {{ render_field(login_user_form.submit, class="btn btn-primary") }}
 			</form>
+			{% if security.recoverable %}
+				<li><a style="color:#16B6A5;" href="{{ url_for_security('forgot_password') }}">{{ _('Forgot password') }}</a><br/></li>
+			{% endif %}
+			{% if security.confirmable %}
+				<li><a style="color:#16B6A5;" href="{{ url_for_security('send_confirmation') }}">{{ _('Confirm account') }}</a></li>
+			{% endif %}
+			<li><a style="color:#16B6A5;" href="#">Login with Facebook</a><br/></li>	
 			<!-- {% include "security/_menu.html" %} -->
 		</div>
 	</div>
