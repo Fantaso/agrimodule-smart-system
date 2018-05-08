@@ -60,13 +60,33 @@
 			<h1 id="fh5co-logo"><a href="{{ url_for('index') }}"><img src="{{ url_for('static', filename='images/logo.png') }}" alt="Solarvibes LTD logo"></a></h1>
 			<nav id="fh5co-main-menu" role="navigation">
 				<ul>
-					<li class="fh5co-active"><a href="{{ url_for('index') }}">Home</a></li>
-					<li><a href="{{ url_for('agrimodule') }}">Agrimodule</a></li>
-					<li><a href="{{ url_for('platform') }}">Platform</a></li>
-					<li><a href="{{ url_for('about') }}">About Us</a></li>
-					<li><a href="{{ url_for('contact') }}">Contact Us</a></li>
-					{% include "security/_menu.html" %}
+					{% if current_user.is_authenticated: %}
+						
+						<li><a href="{{ url_for('home', url_name = url_name, farm = farm) }}">Farm status</a></li>
+						<li><a href="{{ url_for('home', url_name = url_name, farm = farm) }}">Crop status</a></li>
+						<li><a href="{{ url_for('home', url_name = url_name, farm = farm) }}">Crop planning</a></li>
+						<li><a href="{{ url_for('home', url_name = url_name, farm = farm) }}">New crop</a></li>
+						<li><a href="{{ url_for('home', url_name = url_name, farm = farm) }}">Crop analyzer</a></li>
+						<li><a href="{{ url_for('home', url_name = url_name, farm = farm) }}">Health analyzer</a></li>
+						<li><a href="{{ url_for('home', url_name = url_name, farm = farm) }}">Market</a></li>
+						<li><a href="{{ url_for('home', url_name = url_name, farm = farm) }}">Settings</a></li>
+						<li><a href="{{ url_for_security('logout') }}">{{ _('Logout') }}</a></li>
 
+					{% endif %}
+					
+					{% if current_user.is_anonymous: %}
+						<!-- <li class="fh5co-active"><a href="{{ url_for('index') }}">Home</a></li> -->
+						<li><a href="{{ url_for('index') }}">Home</a></li>
+						<li><a href="{{ url_for('agrimodule') }}">Agrimodule</a></li>
+						<li><a href="{{ url_for('platform') }}">Platform</a></li>
+						<li><a href="{{ url_for('about') }}">About Us</a></li>
+						<li><a href="{{ url_for('contact') }}">Contact Us</a></li>
+						<li><a style="color:#16B6A5;" href="{{ url_for_security('login') }}{% if 'next' in request.args %}?next={{ request.args.next|urlencode }}{% endif %}">{{ _('Login') }}</a></li>
+						{% if security.registerable %}
+						<li><a style="color:#16B6A5;" href="{{ url_for_security('register') }}{% if 'next' in request.args %}?next={{ request.args.next|urlencode }}{% endif %}">{{ _('Register') }}</a><br/></li>
+						{% endif %}
+
+					{% endif %}
 				</ul>
 			</nav>
 
