@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block title %}
+	{{ url_name }}
+{% endblock %}
+
+{% block content %}
+	<div id = "fh5co-main" class = "container" style = "margin-top: 5%;">
+		<div style="padding-left: 2%; text-align: left;">
+			<h1>Hi, {{ url_name }}</h1>
+			<p>Looks like its your first time here!
+			<br>We will guide you through setting up your system in no time.</p>
+			<h4>First thing:</h4>
+			<label>1. Set up your Farm</label><br>
+			<a href="/{{ url_name }}/welcome/set-farm" class="btn btn-primary">Set up Farm</a><br>
+			<label>2. Set up you Agrimodule</label><br>
+			<a href="/{{ url_name }}/welcome/set-farm"" class="btn btn-primary">Set up ASS</a><br>
+			
+			
+		</div>
+	</div>
+{% endblock %}
+
