@@ -11,7 +11,8 @@ from flask_mail import Mail, Message
 
 from sqlalchemy.sql import func
 
-from forms import EmailForm, EmailAndTextForm, ContactUsForm, RegisterFormExt, FarmForm, FieldForm
+from forms import EmailForm, EmailAndTextForm, ContactUsForm, RegisterFormExt, FarmForm, FieldForm, UserProfileForm, PreUserProfileForm
+from flask_uploads import UploadSet, configure_uploads, IMAGES
 
 #############################
 #############################
@@ -19,15 +20,20 @@ from forms import EmailForm, EmailAndTextForm, ContactUsForm, RegisterFormExt, F
 #############################
 #############################
 
-app = Flask(__name__)               # creates the flask app
-app.config.from_pyfile('cfg.cfg')   # imports app configuration from cfg.cfg
-db = SQLAlchemy(app)                # create database connection object
-migrate = Migrate(app, db)                    # creates a migration object for the app db migrations]\
+app = Flask(__name__)                               # creates the flask app
+photos =  UploadSet('photos', IMAGES)               # Flask-Uploads
+app.config['UPLOADED_PHOTOS_DEST'] = 'upload_img'   # Flask-Uploads
+app.config.from_pyfile('cfg.cfg')                   # imports app configuration from cfg.cfg
+
+configure_uploads(app, photos)
+
+db = SQLAlchemy(app)                                # create database connection object
+migrate = Migrate(app, db)                          # creates a migration object for the app db migrations]\
 mail = Mail(app)
 
 # TO MANAGE THE MIGRATIONS WITH FLASK-SCRIPT WITH PYTHON EXTERNAL SCRIPTS > goes together to migrations for migraing db
-# manager = Manager(app)
-# manager.add_command('db', MigrateCommand)
+manager = Manager(app)
+manager.add_command('db', MigrateCommand)
 
 
 #############################
@@ -89,10 +95,18 @@ class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(15))
     last_name = db.Column(db.String(15))
-    email = db.Column(db.String(255), unique=True)
-    password = db.Column(db.String(255))
+    email = db.Column(db.String(50), unique=True)
+    password = db.Column(db.String(50))
     birthday = db.Column(db.DateTime(timezone=True), nullable=True)
     mobile = db.Column(db.String(12), unique=True)
+    username = db.Column(db.String(30), unique=True)
+    address = db.Column(db.String(30))
+    zipcode = db.Column(db.Integer)
+    city = db.Column(db.String(30))
+    state = db.Column(db.String(30))
+    country = db.Column(db.String(30))
+    email_rec = db.Column(db.String(50))
+    image = db.Column(db.String(100))
 
     last_login_at = db.Column(db.DateTime(timezone=True))
     current_login_at = db.Column(db.DateTime(timezone=True))
@@ -495,14 +509,14 @@ def contact():
 
 # /user/    farm                            > home.html
 # /user/    farm/  field                    > 
-# /user/    farm/  field/  agrimodule       > user-agrimodule.html
-# /user/    farm/  field/  agripump         > user-agrimpump.html
-# /user/    farm/  field/  crop-status      > user-crop-status.html
+# /user/    farm/  field/  agrimodule       > user_agrimodule.html
+# /user/    farm/  field/  agripump         > user_agrimpump.html
+# /user/    farm/  field/  crop-status      > user_crop_status.html
  
 # /user/    welcome                         > welcome.html
-# /user/    welcome/   set-farm             > welcome-set-farm.html
-# /user/    welcome/   set-field            > welcome-set-field.html
-# /user/    welcome/   set-sys              > welcome-set-sys.html
+# /user/    welcome/   set-farm             > welcome_set_farm.html
+# /user/    welcome/   set-field            > welcome_set_field.html
+# /user/    welcome/   set-sys              > welcome_set_sys.html
 
 #############################
 #############################
@@ -552,9 +566,9 @@ def contact():
 def dashboard():
     if request.method == 'GET':
         if current_user.is_authenticated:
-            id = g.user.id
+            id = current_user.id
             name = User.query.filter_by(id=id).first().name
-            return redirect(url_for('welcome', url_name=name))
+            return redirect(url_for('welcome'))
         if current_user.is_anonymous:
             flash("You can't view that farm without logging in :)")
             return redirect(url_for('login'))
@@ -573,10 +587,27 @@ def dashboard():
 # /user/    welcome/   set-field            > welcome-set-field.html
 # /user/    welcome/   set-sys              > welcome-set-sys.html
 
-@app.route('/<url_name>/welcome', methods=['GET'])
-@login_required
-def welcome(url_name):
+#############################
+#############################
+# WELCOME VIEWS
+#############################
+#############################
 
+###################
+# WELCOME
+###################
+@app.route('/user/welcome', methods=['GET'])
+@login_required
+def welcome():
+
+
+    if current_user.farms.count() == 0:
+        flash('welcome for the first time ' + current_user.name + '!')
+        print('welcome for the first time ' + current_user.name + '!')
+        # return g.user.name
+        return render_template('welcome.html', current_user=current_user)
+    else:
+        return redirect(url_for('home'))
     # if request.method == 'POST':
 
     # autenticar si el nombre de usuario q paso en el route es el mismo q esta autenticado
@@ -584,30 +615,30 @@ def welcome(url_name):
         # si si =  ver su gran. despues de preguntar si es su primera vez en app?
         # si si = mandarla a welcome new user page /user/welcome. instalacion de agri y detalles de granja
         # si no = mandarlo a /user/mainfarmname para que vea su granja normalmemnte.
-    if current_user.name != url_name or g.user.id != current_user.id:
-        flash('esa no es tu granja. no la puedes ver.. mandar a su granja.')
-        print('esa no es tu granja. no la puedes ver.. mandar a su granja.')
-        return redirect(url_for('login'))
+    # if  g.user.id != current_user.id:
+    #     flash('esa no es tu granja. no la puedes ver.. mandar a su granja.')
+    #     print('esa no es tu granja. no la puedes ver.. mandar a su granja.')
+    #     return redirect(url_for('login'))
 
     # elif g.user.farms.count() > 0:
     #     flash('welcome back ' + g.user.name)
     #     print('welcome back ' + g.user.name)
     #     return 'welcome back ' + g.user.name
         # return render_template('farm_home.html', name=g.user.name, last_name=g.user.last_name, email=g.user.email)
-    elif g.user.farms.count() == 0:
-        flash('welcome for the first time ' + g.user.name + '!')
-        print('welcome for the first time ' + g.user.name + '!')
-        # return g.user.name
-        return render_template('welcome.html', url_name=g.user.name, last_name=g.user.last_name)
-    else:
-        user = g.user
-        farm = user.farms.first().name
-        return render_template('home.html', url_name=g.user.name, last_name=g.user.last_name, farm=farm)
+    # if current_user.farms.count() == 0:
+    #     flash('welcome for the first time ' + current_user.name + '!')
+    #     print('welcome for the first time ' + current_user.name + '!')
+    #     # return g.user.name
+    #     return redirect(url_for('welcome'))
+    # else:
+    #     return redirect(url_for('home'))
 
-
-@app.route('/<url_name>/welcome/set-farm', methods=['GET', 'POST']) # AQUI ME QUEDE
+###################
+# FARM SET
+###################
+@app.route('/user/welcome/set-farm', methods=['GET', 'POST']) # AQUI ME QUEDE
 @login_required
-def welcome_set_farm(url_name):
+def welcome_set_farm():
     if 'farm' not in session:
         session['farm'] = dict()
         session.modified = True
@@ -642,19 +673,17 @@ def welcome_set_farm(url_name):
         session.modified = True
         #SUCESS AND REDIRECT TO NEXT STEP
         flash('You just created farm named: {}'.format(name))
-        return redirect(url_for('welcome_set_field', url_name=g.user.name))
+        return redirect(url_for('welcome_set_field'))
 
-    return render_template('welcome-set-farm.html', form=form)
+    return render_template('welcome_set_farm.html', form=form)
 
-#############################
-#############################
-# FIELD SETUP VIEW
-#############################
-#############################
 
-@app.route('/<url_name>/welcome/set-field', methods=('GET', 'POST'))
+###################
+# FIELD SET
+###################
+@app.route('/user/welcome/set-field', methods=('GET', 'POST'))
 @login_required
-def welcome_set_field(url_name):
+def welcome_set_field():
     # print('session "farm" in Field: {}'.format(session['farm']))
     # for farm in session['farm']:
         # for key, val in farm.items():
@@ -664,7 +693,7 @@ def welcome_set_field(url_name):
     if form.validate_on_submit():   # IF request.methiod == 'POST'
         # USER OBJS
         farm_name = session['farm']['farm_name']
-        user = User.query.filter_by(id = g.user.id).first()
+        user = User.query.filter_by(id = current_user.id).first()
         farm = user.farms.filter_by(name = farm_name).first()
         crop = Crop.query.filter_by(_name = form.cultivation_crop.data).first()
         # FIELD OBJS
@@ -688,69 +717,215 @@ def welcome_set_field(url_name):
         #SUCESS AND REDIRECT TO DASHBOARD
         flash('You just created a {} in your {}'.format(name, farm.name))
         del session['farm']     # ERASE SESSION OBJS
-        return redirect(url_for('home', url_name=g.user.name,farm=farm_name))
+        return redirect(url_for('home'))
 
-    return render_template('welcome-set-field.html', form=form, url_name=url_name)
+    return render_template('welcome_set_field.html', form=form)
 
-
-
-
-#############################
-#############################
-# FARM VIEWS
-#############################
-#############################
-
-# @app.route('/<name>/<farm-name>', methods=['GET', 'POST'])
-# @login_required
-# def farm(farm_name):
-#     return 'you are in farm-name'
-
-# @app.route('/<name>/<farm-name>/<field-name>', methods=['GET', 'POST'])
-# @login_required
-# def field(field_name):
-#     return 'you are in field-name'
-
-# @app.route('/<name>/<farm-name>/<field-name>/<agrimodule>', methods=['GET', 'POST'])
-# @login_required
-# def agrimodule(field_name):
-#     return 'you are in agrimodule'
-
-# @app.route('/<name>/<farm-name>/<field-name>/<agripump>', methods=['GET', 'POST'])
-# @login_required
-# def agripump(field_name):
-#     return 'you are in agripump'
-
-# @app.route('/<name>/<farm-name>/<field-name>/<crop-status>', methods=['GET', 'POST'])
-# @login_required
-# def crop_status(field_name):
-#     return 'you are in cropstatus'
-
-
-
-
-
-#############################
-#############################
-# FARM SETUP VIEW
-#############################
-#############################
-
-
-
-
-
-
-@app.route('/<url_name>/<farm>', methods=('GET', 'POST'))
+###################
+# FIELD SYS
+###################
+@app.route('/user/welcome/set-sys', methods=['GET', 'POST'])
 @login_required
-def home(url_name, farm):
-    return render_template('home.html', url_name=url_name, farm=farm)
+def welcome_set_sys():
+    return render_template('welcome_set_sys.html')
+
+##########################################################
+##########################################################
+# HOME VIEW
+##########################################################
+##########################################################
+
+@app.route('/user/farm', methods=('GET', 'POST'))
+@login_required
+def home():
+    if current_user.farms.count() == 0:
+        flash('welcome for the first time ' + current_user.name + '!')
+        return render_template('welcome.html', current_user=current_user)
+    name = current_user.name
+    farm_name = current_user.farms.first().name
+    return render_template('home.html', name=name, farm_name=farm_name)
+
+
+##########################################################
+##########################################################
+# FARM VIEWS
+##########################################################
+##########################################################
+
+##################
+# USER FIELD
+##################
+# @app.route('/user/farm/field', methods=['GET'])
+# @login_required
+# def user_field():
+#     return render_template('field.html')
+
+##################
+# USER AGRIMODULE
+##################
+@app.route('/user/farm/field/agrimodule', methods=['GET'])
+@login_required
+def user_agrimodule():
+    return render_template('user_agrimodule.html')
+
+##################
+# USER AGRIPUMP
+##################
+@app.route('/user/farm/field/agripump/', methods=['GET'])
+@login_required
+def user_agripump():
+    return render_template('user_agripump.html')
+
+##################
+# USER CROP STATUS
+##################
+@app.route('/user/farm/field/crop-status', methods=['GET'])
+@login_required
+def user_crop_status():
+    return render_template('user_crop_status.html')
+
+##################
+# USER NEW CROP
+##################
+@app.route('/user/farm/field/new-crop', methods=['GET'])
+@login_required
+def user_new_crop():
+    return render_template('user_new_crop.html')
+
+##################
+# USER WEATHER
+##################
+@app.route('/user/farm/weather', methods=['GET'])
+@login_required
+def user_weather():
+    return render_template('user_weather.html')
+
+##################
+# USER ALERTS
+##################
+@app.route('/user/farm/alerts', methods=('GET', 'POST'))
+@login_required
+def user_alerts():
+    return render_template('user_alerts.html')
+
+
+##########################################################
+##########################################################
+# FARMER VIEWS
+##########################################################
+##########################################################
+
+##################
+# ALERTS
+##################
+@app.route('/user/farm/farmer/crop-planning', methods=['GET'])
+@login_required
+def user_crop_planning():
+    return render_template('user_crop_planning.html')
+
+##################
+# CROP ANALYZER
+##################
+@app.route('/user/farm/farmer/crop-analyzer', methods=['GET'])
+@login_required
+def user_crop_analyzer():
+    return render_template('user_crop_analyzer.html')
+
+##################
+# HEALTH ANALYZER
+##################
+@app.route('/user/farm/farmer/health-analyzer', methods=['GET'])
+@login_required
+def user_health_analyzer():
+    return render_template('user_health_analyzer.html')
+
+##################
+# RESOURCES
+##################
+@app.route('/user/farm/farmer/resources', methods=['GET'])
+@login_required
+def user_resources():
+    return render_template('user_resources.html')
+
+
+##########################################################
+##########################################################
+# MARKET VIEWS
+##########################################################
+##########################################################
+
+@app.route('/user/market', methods=['GET'])
+@login_required
+def user_market():
+    return render_template('user_market.html')
+
+
+##########################################################
+##########################################################
+# USER SETTINGS VIEWS
+##########################################################
+##########################################################
+
+@app.route('/user/settings/profile', methods=('GET', 'POST'))
+@login_required
+def user_profile():
+    name = current_user.name
+    return render_template('user_profile.html', name=name)
+
+@app.route('/user/settings/profile/edit', methods=('GET', 'POST'))
+@login_required
+def user_profile_edit():
+    user = current_user
+    # Prepopulate form
+    myUser = PreUserProfileForm(username = user.username,
+                                name = user.name,
+                                last_name = user.last_name,
+                                address = user.address,
+                                zipcode = user.zipcode,
+                                city = user.city,
+                                state = user.state,
+                                country = user.country,
+                                email = user.email,
+                                email_rec = user.email_rec,
+                                birthday = user.birthday,
+                                image = user.image,
+                                mobile = user.mobile)
+    print(myUser)
+
+    form = UserProfileForm(obj=myUser)
+    if form.validate_on_submit():
+        print(form.username.data)
+        print(form.name.data)
+        print(form.birthday.data)
+        print(form.city.data)
+        
+        # FIELD OBJS  TO DB
+        new_user = User(username = username,
+                        name = name,
+                        last_name = last_name,
+                        address = address,
+                        zipcode = zipcode,
+                        city = city,
+                        state = state,
+                        country = country,
+                        email = email,
+                        email_rec = email_rec,
+                        birthday = birthday,
+                        image = image_url,
+                        mobile = mobile)
+        # DB COMMANDS
+        db.session.add(new_user)
+        db.session.commit()
+        #SUCESS AND REDIRECT TO DASHBOARD
+        flash('You updated sucessfully your profile')
+        return redirect(url_for('user_profile'))
+
+    return render_template('user_profile_edit.html', form=form)
+
+
+
+
 
 
 if __name__ == '__main__':
-    # manager.run()
-    app.run()
-    # app.run(
-    #     host = '192.168.1.4',
-    #     port = 8080
-    #     )
+    manager.run()

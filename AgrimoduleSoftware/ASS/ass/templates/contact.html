@@ -5,6 +5,10 @@
 	Contact Us
 {% endblock %}
 
+{% block web_contact_active %}
+fh5co-active
+{% endblock %}
+
 {% block content %}
 <div id="fh5co-main">
 
@@ -79,7 +83,7 @@
 						
 						<div class="col-md-6">
 							<div class="form-group">
-								{{ render_field_with_errors(form.msg, class="form-control") }}
+								{{ render_field_with_errors(form.msg, class="form-control", cols="30", rows="7") }}
 							</div>
 							<div class="form-group">
 								<input type="submit" class="btn btn-primary btn-md" value="Send">

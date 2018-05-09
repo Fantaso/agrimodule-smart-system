@@ -8,12 +8,15 @@
 {% block content %}
 <div id = "fh5co-main" class = "container" style = "margin-top: 5%;">
 	<div style="padding-left: 2%;">
+		<h1>Welcome set field</h1>
+	    <hr>	
+
 		<h1>Create a field inside your farm</h1>
 	<!-- 	<p>Give it a name</p>
 		<p>Where is it</p>
 		<p>how big is the area to cultivate - m2</p>
 		<p>Up to you</p> -->
-		<form method="POST" action="/{{ url_name }}/welcome/set-field">
+		<form method="POST" action="{{ url_for('welcome_set_field') }}">
 			{{ form.csrf_token }}
 			<div class="row">
 				<div class="col-md-12">

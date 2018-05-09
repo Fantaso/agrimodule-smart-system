@@ -8,13 +8,15 @@
 {% block content %}
 	<div id = "fh5co-main" class = "container" style = "margin-top: 5%;">
 		<div style="padding-left: 2%;">
+		    <h1>Welcome set farm</h1>
+		    <hr>
+		    
 			<h1>Create your farm</h1>
 			<!-- <p>1. Give it a name</p>
 			<p>2. Where is it</p>
 			<p>3. how big is the area to cultivate - m2</p>
 			<p>4. Up to you</p> -->
-			{% if current_user.is_authenticated: %}
-			<form method="POST" action="/{{ current_user.name }}/welcome/set-farm">
+			<form method="POST" action="{{ url_for('welcome_set_farm') }}">
 				{{ form.csrf_token }}
 				<div class="form-group">
 					{{ render_field_with_errors(form.name, class="form-control") }}
@@ -32,7 +34,6 @@
 					<input type="submit" class="btn btn-primary btn-md" value="Create Farm!">
 				</div>
 			</form>
-			{% endif %}
 		</div>
 	</div>
 {% endblock %}

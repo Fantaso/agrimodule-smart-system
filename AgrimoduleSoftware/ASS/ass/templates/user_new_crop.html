@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block title %}
+	New Crop
+{% endblock %}
+
+{% block user_new_crop_active %}
+fh5co-active
+{% endblock %}
+
+{% block content %}
+<div id = "fh5co-main" class = "container" style = "margin-top: 5%;">
+	<div style="padding-left: 2%; text-align: left;">
+    <h1>New crop</h1>
+	<div>
+        <hr>
+        <br>
+        <ul>
+          <li><a href="{{ url_for('home') }}" style="color:#16B6A5;">Home</a><br></li>
+          <li><a href="{{ url_for('user_weather') }}" style="color:#16B6A5;">Weather</a><br></li>
+
+        </ul>
+	</div>
+
+</div>
+
+{% endblock %}

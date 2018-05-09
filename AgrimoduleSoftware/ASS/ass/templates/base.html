@@ -35,8 +35,11 @@
 	<!-- Theme style  -->
 	<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 	<!-- Modernizr JS -->
-	<script src="{{ url_for('static', filename='js/modernizr-2.6.2.min.js') }}">
-	</script>
+	<script src="{{ url_for('static', filename='js/modernizr-2.6.2.min.js') }}"></script>
+
+	<!-- <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+	<script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+	<script src="//code.jquery.com/jquery-1.11.1.min.js"></script> -->
 	<!-- FOR IE9 below -->
 	<!--[if lt IE 9]>
 	<script src="js/respond.min.js"></script>
@@ -56,36 +59,30 @@
 	<div id="fh5co-page">
 		<a href="#" class="js-fh5co-nav-toggle fh5co-nav-toggle"><i></i></a>
 		<aside id="fh5co-aside" role="complementary" class="border js-fullheight">
-
-			<h1 id="fh5co-logo"><a href="{{ url_for('index') }}"><img src="{{ url_for('static', filename='images/logo.png') }}" alt="Solarvibes LTD logo"></a></h1>
+			{% if not current_user.is_authenticated: %}
+				<h1 id="fh5co-logo"><a href="{{ url_for('index') }}"><img src="{{ url_for('static', filename='images/logo.png') }}" alt="Solarvibes LTD logo"></a></h1>
+			{% else %}
+				<h1 id="fh5co-logo"><a href="{{ url_for('home') }}"><img src="{{ url_for('static', filename='images/logo.png') }}" alt="Solarvibes LTD logo"></a></h1>
+			{% endif %}
 			<nav id="fh5co-main-menu" role="navigation">
 				<ul>
-					{% if current_user.is_authenticated: %}
-						
-						<li><a href="{{ url_for('home', url_name = url_name, farm = farm) }}">Farm status</a></li>
-						<li><a href="{{ url_for('home', url_name = url_name, farm = farm) }}">Crop status</a></li>
-						<li><a href="{{ url_for('home', url_name = url_name, farm = farm) }}">Crop planning</a></li>
-						<li><a href="{{ url_for('home', url_name = url_name, farm = farm) }}">New crop</a></li>
-						<li><a href="{{ url_for('home', url_name = url_name, farm = farm) }}">Crop analyzer</a></li>
-						<li><a href="{{ url_for('home', url_name = url_name, farm = farm) }}">Health analyzer</a></li>
-						<li><a href="{{ url_for('home', url_name = url_name, farm = farm) }}">Market</a></li>
-						<li><a href="{{ url_for('home', url_name = url_name, farm = farm) }}">Settings</a></li>
+					{% if not current_user.is_authenticated: %}
+						<li class="{% block web_index_active %}{% endblock %}"><a href="{{ url_for('index') }}">Home</a></li>
+						<li class="{% block web_agrimodule_active %}{% endblock %}"><a href="{{ url_for('agrimodule') }}">Agrimodule</a></li>
+						<li class="{% block web_platform_active %}{% endblock %}"><a href="{{ url_for('platform') }}">Platform</a></li>
+						<li class="{% block web_about_active %}{% endblock %}"><a href="{{ url_for('about') }}">About Us</a></li>
+						<li class="{% block web_contact_active %}{% endblock %}"><a href="{{ url_for('contact') }}">Contact Us</a></li>
+						<li class="{% block web_login_active %}{% endblock %}"><a style="color:#16B6A5;" href="{{ url_for_security('login') }}{% if 'next' in request.args %}?next={{ request.args.next|urlencode }}{% endif %}">{{ _('Login') }}</a></li>
+					{% else %}
+						<li class="{% block user_home_active %}{% endblock %}"><a href="{{ url_for('home') }}">Farm status</a></li>
+						<li class="{% block user_crop_status_active %}{% endblock %}"><a href="{{ url_for('user_crop_status') }}">Crop status</a></li>
+						<li class="{% block user_crop_planning_active %}{% endblock %}"><a href="{{ url_for('user_crop_planning') }}">Crop planning</a></li>
+						<li class="{% block user_new_crop_active %}{% endblock %}"><a href="{{ url_for('user_new_crop') }}">New crop</a></li>
+						<li class="{% block user_crop_analyzer_active %}{% endblock %}"><a href="{{ url_for('user_crop_analyzer') }}">Crop analyzer</a></li>
+						<li class="{% block user_healt_analyzer_active %}{% endblock %}"><a href="{{ url_for('user_health_analyzer') }}">Health analyzer</a></li>
+						<li class="{% block user_market_active %}{% endblock %}"><a href="{{ url_for('user_market') }}">Market</a></li>
+						<li class="{% block user_profile_active %}{% endblock %}"><a href="{{ url_for('user_profile') }}">Profile</a></li>
 						<li><a href="{{ url_for_security('logout') }}">{{ _('Logout') }}</a></li>
-
-					{% endif %}
-					
-					{% if current_user.is_anonymous: %}
-						<!-- <li class="fh5co-active"><a href="{{ url_for('index') }}">Home</a></li> -->
-						<li><a href="{{ url_for('index') }}">Home</a></li>
-						<li><a href="{{ url_for('agrimodule') }}">Agrimodule</a></li>
-						<li><a href="{{ url_for('platform') }}">Platform</a></li>
-						<li><a href="{{ url_for('about') }}">About Us</a></li>
-						<li><a href="{{ url_for('contact') }}">Contact Us</a></li>
-						<li><a style="color:#16B6A5;" href="{{ url_for_security('login') }}{% if 'next' in request.args %}?next={{ request.args.next|urlencode }}{% endif %}">{{ _('Login') }}</a></li>
-						{% if security.registerable %}
-						<li><a style="color:#16B6A5;" href="{{ url_for_security('register') }}{% if 'next' in request.args %}?next={{ request.args.next|urlencode }}{% endif %}">{{ _('Register') }}</a><br/></li>
-						{% endif %}
-
 					{% endif %}
 				</ul>
 			</nav>
@@ -118,7 +115,14 @@
 
 
 	</div>
-		<!-- jQuery -->
+
+
+	<!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+	<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+	<link rel="stylesheet" type="text/css" href="https://bootswatch.com/paper/bootstrap.min.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script> -->
+	<!-- jQuery -->
 	<script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
 	<!-- jQuery Easing -->
 	<script src="{{ url_for('static', filename='js/jquery.easing.1.3.js') }}"></script>

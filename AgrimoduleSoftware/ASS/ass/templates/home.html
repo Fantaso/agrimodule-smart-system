@@ -1,16 +1,31 @@
 {% extends 'base.html' %}
 
 {% block title %}
-	{{ url_name }}
+	{{ current_user.name }}
+{% endblock %}
+
+{% block user_home_active %}
+fh5co-active
 {% endblock %}
 
 {% block content %}
 	<div id = "fh5co-main" class = "container" style = "margin-top: 5%;">
 		<div style="padding-left: 2%; text-align: left;">
-			<h1>Welcome back, {{ url_name }}!</h1>
-			<p>Your {{ farm }}'s farm awaits for you!</p>
+			<h1>Home</h1>
+			<hr>
+			<h1>Welcome back, {{ current_user.name }}!</h1>
+			<p>Your {{ farm_name }}'s farm awaits for you!</p>
+
 			
-			
+			<div>
+                <hr>
+        		<p>General links</p>
+                <ul>
+                  <li><a href="{{ url_for('user_profile') }}" style="color:#16B6A5;">User profile</a><br></li>
+                  <li><a href="{{ url_for('user_agrimodule') }}" style="color:#16B6A5;">Agrimodule</a><br></li>
+                </ul>
+        	</div>
+
 		</div>
 	</div>
 {% endblock %}

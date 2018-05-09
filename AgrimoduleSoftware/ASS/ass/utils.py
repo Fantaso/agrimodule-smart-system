@@ -39,6 +39,16 @@
 	'/user/menu/settings/'
 	'/user/menu/logout/'
 
+	# MARKET
+	'/user/market/'
+	'/user/market/cart/'
+	'/user/market/cart/edit/'
+	'/user/market/checkout/'
+	'/user/market/search/'
+	'/user/market/search/product/'
+	'/user/market/search/product/add-t-cart/'
+	'/user/market/search/product/rem-f-cart/'
+	
 	# FARM
 ##############################################				'/user/farm/'
 
@@ -125,15 +135,7 @@
 		'/user/farm/manager/orders/'
 		'/user/farm/manager/precurement/'
 
-		# MARKET
-		'/user/farm/market/'
-		'/user/farm/market/cart/'
-		'/user/farm/market/cart/edit/'
-		'/user/farm/market/checkout/'
-		'/user/farm/market/search/'
-		'/user/farm/market/search/product/'
-		'/user/farm/market/search/product/add-t-cart/'
-		'/user/farm/market/search/product/rem-f-cart/'
+	
 
 
 

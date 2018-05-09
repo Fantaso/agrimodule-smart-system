@@ -1,0 +1,189 @@
+{% extends 'base.html' %}
+{% from "_renderfield.html" import render_field, render_field_with_errors %}
+
+{% block title %}
+  Edit profile
+{% endblock %}
+
+{% block content %}
+    <!-- <div class="container"> -->
+        <!-- UI - X Starts -->
+
+          <!-- Content Starts -->
+          <div id = "fh5co-main" style = "margin-top: 5%;">
+
+
+          <!-- Head Starts -->
+          <div class="row" style="margin-bottom: 2%;">
+              
+
+          </div>
+
+
+<!-- 
+birthday = user.birthday,
+image = user.image,
+ -->
+            <div class="row">
+              
+              <div class="col-sm-8 col-md-8 col-lg-8 col-lg-offset-2 acc-col">
+                <section>
+                  <h3>Farmer Information</h3>
+                  <!-- FIRST FORM -->
+                  <form class="ng-pristine ng-valid" method="POST" action="{{ url_for('user_profile_edit') }}" enctype="multipart/form-data">
+                      {{ form.csrf_token }}
+
+                      <div class="col-sm-8 col-md-8 col-lg-8">
+                          <h3 id="name-header">{{ form.name.data }} {{ form.last_name.data }}</h3>
+                      </div>
+                      
+                      <!-- Image -->
+                      <div class="col-sm-8 col-md-8 col-lg-8">
+                          <!-- User Image -->
+                          <img src="https://api.adorable.io/avatars/285/abott@adorable.png" alt="Profile Picture" class="img-responsive" width="100" height="100">
+                      </div>
+                    
+                      <div class="col-sm-8 col-md-8 col-lg-8">
+                        {{ render_field_with_errors(form.image, class = "form-control") }}
+                      </div>
+                      
+                      <div class="row">
+                         <div class="col-sm-12">
+                            {{ render_field_with_errors(form.username, class = "form-control") }}
+                        </div>              
+                      </div>
+                      <div class="row">
+                         <div class="col-sm-6">
+                            {{ render_field_with_errors(form.name, class = "form-control") }}
+                        </div>
+                        <div class="col-sm-6">
+                            {{ render_field_with_errors(form.last_name, class = "form-control") }}
+                        </div>               
+                      </div>
+                      <div class="row">
+                        <div class="col-sm-6">
+                            {{ render_field_with_errors(form.email, class = "form-control") }}
+                        </div>
+                        <div class="col-sm-6">
+                            {{ render_field_with_errors(form.mobile, class = "form-control") }}
+                        </div>  
+                      </div>
+
+                      <div class="row">
+                        <div class="col-sm-6">
+                            {{ render_field_with_errors(form.email_rec, class = "form-control") }}
+                        </div>
+                        <div class="col-sm-6">
+                            {{ render_field_with_errors(form.birthday, class = "form-control") }}
+                        </div>
+                      </div>
+                      <div class="row">
+                        <div class="col-sm-4">
+                            {{ render_field_with_errors(form.city, class = "form-control") }}
+                        </div>
+                        <div class="col-sm-2">
+                            {{ render_field_with_errors(form.zipcode, class = "form-control") }}
+                        </div> 
+
+                        <div class="col-sm-2">
+                            {{ render_field_with_errors(form.state, class = "form-control") }}
+                        </div> 
+
+                        <div class="col-sm-4">
+                            {{ render_field_with_errors(form.country, class = "form-control") }}
+                        </div> 
+                      </div>
+
+                
+
+                      <div class="col-sm-12">
+                        <div class="btn-div">
+                          <div class="form-group">
+                            <input type="submit" class="btn btn-primary" value="Save">
+                          </div>
+                        </div>
+                      </div>
+                  
+                  </form>
+
+                </section>
+
+               
+              
+              <section>
+                <h3>Login Information</h3>
+                
+                <form class="" role="form">
+                
+                    <div class="row">
+                      <div class="col-sm-12">
+                        <label for="inputEmail3" class="control-label">Password:</label>
+                        <div class="">
+                          <input type="password" class="form-control" id="inputEmail3">
+                        </div>
+                      </div>
+                      <div class="col-sm-12">
+                        <label for="inputPassword3" class="control-label">Confirm:</label>
+                        <div class="">
+                          <input type="password" class="form-control" id="inputPassword3">
+                        </div>
+                      </div>
+                      <div class="col-sm-12">
+                        <div class="btn-div">
+                          <a href="https://creativethoughtz.com" class="btn btn-primary pull-right">Update</a>
+                        </div>
+                      </div>           
+                    </div>
+
+                </form>
+
+              </section>
+              
+
+               <section>
+                 
+                <h3>Personal Information</h3>
+                  
+                  <form class="ng-pristine ng-valid" role="form">
+                  
+                      <div class="row">
+                        
+                      <div class="col-sm-12">
+                        <label for="inputPassword3" class="col-sm-12 control-label">About Me:</label>
+                        <div class="">
+                          <textarea rows="5" class="form-control" id="inputPassword3"></textarea>
+                        </div>
+                      </div>
+                      <div class="col-sm-12">
+                        <div class="btn-div">
+                          <a href="https://creativethoughtz.com" class="btn btn-primary pull-right">Update</a>
+                        </div>
+                      </div>
+                      </div>
+
+                  </form>
+
+               </section>
+                {% if current_user.is_authenticated: %}
+                  <div>
+                    <hr>
+                    <br>
+                    <ul>
+                      <li><a href="{{ url_for('home') }}" style="color:#16B6A5;">Home</a><br></li>
+                    </ul>
+                  </div>
+                {% endif %}
+              </div>
+              <!-- col-8 -->
+            </div>
+
+          </div>
+          </div>
+
+          <!-- Content Ends -->
+        </div>
+        
+        <!-- UI - X Ends -->
+    </div>
+
+{% endblock %}
