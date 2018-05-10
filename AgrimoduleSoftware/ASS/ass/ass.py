@@ -22,7 +22,7 @@ from flask_uploads import UploadSet, configure_uploads, IMAGES
 
 app = Flask(__name__)                               # creates the flask app
 photos =  UploadSet('photos', IMAGES)               # Flask-Uploads
-app.config['UPLOADED_PHOTOS_DEST'] = 'upload_img'   # Flask-Uploads
+app.config['UPLOADED_PHOTOS_DEST'] = 'static/uploads'       # Flask-Uploads
 app.config.from_pyfile('cfg.cfg')                   # imports app configuration from cfg.cfg
 
 configure_uploads(app, photos)
@@ -875,7 +875,8 @@ def user_profile():
 @app.route('/user/settings/profile/edit', methods=('GET', 'POST'))
 @login_required
 def user_profile_edit():
-    user = current_user
+    user = User.query.filter_by(email=current_user.email).first()
+    print(user.email)
     # Prepopulate form
     myUser = PreUserProfileForm(username = user.username,
                                 name = user.name,
@@ -890,36 +891,51 @@ def user_profile_edit():
                                 birthday = user.birthday,
                                 image = user.image,
                                 mobile = user.mobile)
-    print(myUser)
+ 
 
     form = UserProfileForm(obj=myUser)
-    if form.validate_on_submit():
-        print(form.username.data)
-        print(form.name.data)
-        print(form.birthday.data)
-        print(form.city.data)
+    print(form.username.data)
+    # print(form.name.data)
+    # print(form.birthday.data)
+    # print(form.city.data)
+
+    if form.validate_on_submit():   # IF request.methiod == 'POST'
         
+        print(form.city.data)
+        user = User.query.filter_by(id=current_user.get_id()).first()
+
         # FIELD OBJS  TO DB
-        new_user = User(username = username,
-                        name = name,
-                        last_name = last_name,
-                        address = address,
-                        zipcode = zipcode,
-                        city = city,
-                        state = state,
-                        country = country,
-                        email = email,
-                        email_rec = email_rec,
-                        birthday = birthday,
-                        image = image_url,
-                        mobile = mobile)
-        # DB COMMANDS
-        db.session.add(new_user)
-        db.session.commit()
-        #SUCESS AND REDIRECT TO DASHBOARD
+        try:
+            # IMAGE HANDLING
+            image_filename = photos.save(form.image.data)
+            image_url = photos.url(image_filename)
+            user.image = image_url
+            # REST OF FORM HANDLING
+
+            user.username = form.username.data
+            user.name = form.name.data
+            user.last_name = form.last_name.data
+            user.address = form.address.data
+            user.zipcode = form.zipcode.data
+            user.city = form.city.data
+            user.state = form.state.data
+            user.country = form.country.data
+            user.email = form.email.data
+            user.email_rec = form.email_rec.data
+            user.birthday = form.birthday.data
+            user.mobile = form.mobile.data
+            db.session.commit()
+        except Exception as e:
+            flash(e)
+            print(e)
+            db.session.rollback()
+        else:
+            pass
+        finally:
+            pass
         flash('You updated sucessfully your profile')
         return redirect(url_for('user_profile'))
-
+    flash('passing here')
     return render_template('user_profile_edit.html', form=form)
 
 

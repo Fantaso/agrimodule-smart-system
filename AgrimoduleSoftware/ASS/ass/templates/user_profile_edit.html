@@ -44,7 +44,7 @@ image = user.image,
                       </div>
                     
                       <div class="col-sm-8 col-md-8 col-lg-8">
-                        {{ render_field_with_errors(form.image, class = "form-control") }}
+                          {{ render_field_with_errors(form.image, class = "form-control") }}
                       </div>
                       
                       <div class="row">
@@ -76,6 +76,11 @@ image = user.image,
                         <div class="col-sm-6">
                             {{ render_field_with_errors(form.birthday, class = "form-control") }}
                         </div>
+                      </div>
+                      <div class="row">
+                         <div class="col-sm-12">
+                            {{ render_field_with_errors(form.address, class = "form-control") }}
+                        </div>              
                       </div>
                       <div class="row">
                         <div class="col-sm-4">

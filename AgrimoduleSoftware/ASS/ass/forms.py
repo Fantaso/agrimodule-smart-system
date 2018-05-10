@@ -140,7 +140,7 @@ class UserProfileForm(FlaskForm):
     last_name   = StringField('Last name',          validators=[Length(min=2, max=30, message='Your last name needs to be at least 2 characters long.')])
     address     = StringField('Address',            validators=[Length(min=2, max=30, message='Minimum: 2 characters.')])
     zipcode     = StringField('Zipcode',            validators=[Length(min=1, max=7, message='Minimum: 1 characters.')])
-    city        = StringField('City',               validators=[Length(min=6, max=30, message='Minimum: 2 characters.')])
+    city        = StringField('City',               validators=[Length(min=2, max=30, message='Minimum: 2 characters.')])
     state       = StringField('State',              validators=[Length(min=2, max=30, message='Minimum: 2 characters.')])
     country     = StringField('Country',            validators=[Length(min=2, max=30, message='Minimum: 2 characters.')])
     email       = StringField('Email',              validators=[Length(min=5, max=30, message=None), Email()])

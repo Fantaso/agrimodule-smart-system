@@ -62,7 +62,12 @@
 			{% if not current_user.is_authenticated: %}
 				<h1 id="fh5co-logo"><a href="{{ url_for('index') }}"><img src="{{ url_for('static', filename='images/logo.png') }}" alt="Solarvibes LTD logo"></a></h1>
 			{% else %}
-				<h1 id="fh5co-logo"><a href="{{ url_for('home') }}"><img src="{{ url_for('static', filename='images/logo.png') }}" alt="Solarvibes LTD logo"></a></h1>
+				{% if current_user.image == None %}
+					<h1 id="fh5co-logo"><a href="{{ url_for('index') }}"><img src="{{ url_for('static', filename='images/logo.png') }}" alt="Solarvibes LTD logo"></a></h1>
+					{% else %}
+					<h1 id="fh5co-logo"><a href="{{ url_for('home') }}"><img src="{{ current_user.image }}" alt="Solarvibes LTD logo" width="50%" height="auto"></a></h1>
+				{% endif %}
+			
 			{% endif %}
 			<nav id="fh5co-main-menu" role="navigation">
 				<ul>
