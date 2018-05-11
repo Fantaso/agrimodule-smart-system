@@ -14,6 +14,9 @@ from sqlalchemy.sql import func
 from forms import EmailForm, EmailAndTextForm, ContactUsForm, RegisterFormExt, FarmForm, FieldForm, UserProfileForm, PreUserProfileForm
 from flask_uploads import UploadSet, configure_uploads, IMAGES
 
+from datetime import datetime
+
+
 #############################
 #############################
 # APP
@@ -174,6 +177,7 @@ class Field(db.Model):
     cultivation_start_date = db.Column(db.DateTime(timezone=True))
     cultivation_finish_date = db.Column(db.DateTime(timezone=True))
     _current_yield = db.Column(db.Float(precision=2))
+    _projected_yield = db.Column(db.Float(precision=2))
     cultivation_state = db.Column(db.String(20))
     cultivation_type = db.Column(db.String(5))
 
@@ -237,6 +241,8 @@ class Crop(db.Model):
     _air_humi_min = db.Column(db.Float(precision=2))
     _air_humi_opt = db.Column(db.Float(precision=2))
     _air_humi_max = db.Column(db.Float(precision=2))
+    # WATER
+    _water_needed = db.Column(db.Integer)
 
     _time_created = db.Column(db.DateTime(timezone=True), server_default=func.now())
     _time_updated = db.Column(db.DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
@@ -251,7 +257,7 @@ class Pump(db.Model):
     brand = db.Column(db.String(25))
     flow_rate = db.Column(db.Float(precision=2), nullable=False)
     height_max = db.Column(db.Float(presicion=2), nullable=False)
-    kwh = db.Column(db.Float(precision=2), nullable=False)
+    wm = db.Column(db.Float(precision=2), nullable=False)
 
     # RELATIONSHIP
     # USER[1]-PUMP[M]
@@ -300,14 +306,19 @@ class Agrimodule(db.Model):
     """each agrimodule has a different table where all data that is measured by agrimodule is saved in this model"""
     __tablename__ = 'agrimodule'
     id = db.Column(db.Integer, primary_key=True)
+    
     soil_ph = db.Column(db.Float(precision=4))
     soil_nutrient = db.Column(db.Float(precision=4))
     soil_temp = db.Column(db.Float(precision=4))
     soil_humi = db.Column(db.Float(precision=4))
+
     air_temp = db.Column(db.Float(precision=4))
     air_humi = db.Column(db.Float(precision=4))
     air_pres = db.Column(db.Float(precision=4))
+    
     solar_radiation = db.Column(db.Float(precision=4))
+    batt_status = db.Column(db.Integer)
+    
     timestamp = db.Column(db.DateTime(timezone=True), nullable=False)
     
     # RELATIONSHIP
@@ -318,13 +329,14 @@ class Agrimodule(db.Model):
     _time_updated = db.Column(db.DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
 
     def __repr__(self):
-        return '<agrimodule {}>'.format(self.date)
+        return '<agrimodule {}>'.format(self.timestamp)
 
 class Agripump(db.Model):
     """pump schedule for each farm and agripump, it requires to know which Pump.Model is used in order to make the calculations"""
     __tablename__ = 'agripump'
     id = db.Column(db.Integer, primary_key=True)
     # REQUIREMENTS
+    status = db.Column(db.Boolean)
     _daily_water = db.Column(db.Float(precision=3))
     _date = db.Column(db.DateTime(timezone=True), nullable=False)
     # SCHEDULE IN MINUTES
@@ -336,6 +348,7 @@ class Agripump(db.Model):
     _05_HOUR = db.Column(db.Float(precision=1))
     _06_HOUR = db.Column(db.Float(precision=1))
     _07_HOUR = db.Column(db.Float(precision=1))
+
     _08_HOUR = db.Column(db.Float(precision=1))
     _09_HOUR = db.Column(db.Float(precision=1))
     _10_HOUR = db.Column(db.Float(precision=1))
@@ -346,12 +359,28 @@ class Agripump(db.Model):
     _15_HOUR = db.Column(db.Float(precision=1))
     _16_HOUR = db.Column(db.Float(precision=1))
     _17_HOUR = db.Column(db.Float(precision=1))
+
     _18_HOUR = db.Column(db.Float(precision=1))
     _19_HOUR = db.Column(db.Float(precision=1))
     _20_HOUR = db.Column(db.Float(precision=1))
     _21_HOUR = db.Column(db.Float(precision=1))
     _22_HOUR = db.Column(db.Float(precision=1))
     _23_HOUR = db.Column(db.Float(precision=1))
+    # TIME USAGE
+    start_hour_per_day = db.Column(db.Integer)
+    qty_hour_per_day = db.Column(db.Integer)
+
+    time_per_hour = db.Column(db.Float)
+    time_per_day = db.Column(db.Float)
+    time_per_cycle = db.Column(db.Float)
+    # WATER USAGE
+    water_per_hour = db.Column(db.Integer)
+    water_per_day = db.Column(db.Integer)
+    water_per_cycle = db.Column(db.Integer)
+    # ENERGY USAGE
+    energy_per_hour = db.Column(db.Integer)
+    energy_per_day = db.Column(db.Integer)
+    energy_per_cycle = db.Column(db.Integer)
 
     # REALTIONSHIPS
     # AGRIMODULESYSTEM[1]-AGRIPUMP[M]
@@ -363,7 +392,7 @@ class Agripump(db.Model):
     _time_updated = db.Column(db.DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
 
     def __repr__(self):
-        return '<agripump {}>'.format(self.brand)   
+        return '<agripump {}>'.format(self.id)   
 
 
 #############################
@@ -766,7 +795,37 @@ def home():
 @app.route('/user/farm/field/agrimodule', methods=['GET'])
 @login_required
 def user_agrimodule():
-    return render_template('user_agrimodule.html')
+    user = User.query.filter_by(id = current_user.get_id()).first()
+    farm = user.farms.first()
+    field = farm.fields.first()
+    crop = field.crops.first()
+    print (crop)
+    print (crop._soil_ph_min)
+    print (crop._soil_ph_max)
+    print (crop._soil_temp_min)
+    print (crop._soil_temp_max)
+    print (crop._soil_humi_min)
+    print (crop._soil_humi_max)
+    print (crop._soil_nutrient_min)
+    print (crop._soil_nutrient_max)
+    print (crop._air_temp_min)
+    print (crop._air_temp_max)
+    print (crop._air_humi_min)
+    print (crop._air_humi_max)
+
+    ag_measure = Agrimodule.query.first()
+    print (ag_measure)
+    print (ag_measure.soil_ph)
+    print (ag_measure.soil_nutrient)
+    print (ag_measure.soil_temp)
+    print (ag_measure.soil_humi)
+    print (ag_measure.air_temp)
+    print (ag_measure.air_humi)
+    print (ag_measure.air_pres)
+    print (ag_measure.solar_radiation)
+    print (ag_measure.batt_status)
+    
+    return render_template('user_agrimodule.html', ag_measure = ag_measure, crop = crop)
 
 ##################
 # USER AGRIPUMP
@@ -774,7 +833,44 @@ def user_agrimodule():
 @app.route('/user/farm/field/agripump/', methods=['GET'])
 @login_required
 def user_agripump():
-    return render_template('user_agripump.html')
+
+    user = User.query.filter_by(id = current_user.get_id()).first()
+    farm = user.farms.first()
+    field = farm.fields.first()
+    crop = field.crops.first()
+    agripump = Agripump.query.first()
+    pump = user.pumps.filter_by(id = 1).first()
+    print(user)
+    print(farm)
+    print(crop)
+    print(pump)
+    print(agripump)
+
+    # AGRIPUMP
+    # TIME USAGE
+    # start_hour_per_day = db.Column(db.Integer)
+    # qty_hour_per_day = db.Column(db.Integer)
+
+    # time_per_hour = db.Column(db.Float)
+    # time_per_day = db.Column(db.Float)
+    # time_per_cycle = db.Column(db.Float)
+    # WATER USAGE
+    # water_per_hour = db.Column(db.Integer)
+    # water_per_day = db.Column(db.Integer)
+    # water_per_cycle = db.Column(db.Integer)
+    # ENERGY USAGE
+    # energy_per_hour = db.Column(db.Integer)
+    # energy_per_day = db.Column(db.Integer)
+    # energy_per_cycle = db.Column(db.Integer)
+
+    # PUMP
+    # brand = db.Column(db.String(25))
+    # flow_rate = db.Column(db.Float(precision=2), nullable=False)
+    # height_max = db.Column(db.Float(presicion=2), nullable=False)
+    # wh = db.Column(db.Float(precision=2), nullable=False)
+
+
+    return render_template('user_agripump.html', pump = pump, agripump = agripump)
 
 ##################
 # USER CROP STATUS
@@ -782,7 +878,27 @@ def user_agripump():
 @app.route('/user/farm/field/crop-status', methods=['GET'])
 @login_required
 def user_crop_status():
-    return render_template('user_crop_status.html')
+    user = User.query.filter_by(id = current_user.get_id()).first()
+    farm = user.farms.first()
+    field = farm.fields.first()
+    print (field)
+    print (field.cultivation_area)
+    print (field.cultivation_start_date)
+    print (field.cultivation_finish_date)
+    print (field._current_yield)
+    crop = field.crops.first()
+    print (crop)
+    print (crop._variety)
+    print (crop._name)
+    num_of_plants = ( field.cultivation_area / crop._density )
+    cycle_days = ( crop._dtm + crop._dtg )
+    cycle_days_so_far = ( datetime.now() - field.cultivation_start_date ).days
+    print (num_of_plants)
+    print (cycle_days)
+    print (cycle_days_so_far)
+    calc_values = {'num_of_plants' : num_of_plants, 'cycle_days' : cycle_days, 'cycle_days_so_far' : cycle_days_so_far}
+    print (calc_values)
+    return render_template('user_crop_status.html', crop = crop, field = field, calc_values = calc_values)
 
 ##################
 # USER NEW CROP
@@ -866,17 +982,22 @@ def user_market():
 ##########################################################
 ##########################################################
 
+##################
+# USER PROFILE
+##################
 @app.route('/user/settings/profile', methods=('GET', 'POST'))
 @login_required
 def user_profile():
     name = current_user.name
     return render_template('user_profile.html', name=name)
 
+##################
+# USER PROFILE EDIT
+##################
 @app.route('/user/settings/profile/edit', methods=('GET', 'POST'))
 @login_required
 def user_profile_edit():
     user = User.query.filter_by(email=current_user.email).first()
-    print(user.email)
     # Prepopulate form
     myUser = PreUserProfileForm(username = user.username,
                                 name = user.name,
@@ -891,19 +1012,9 @@ def user_profile_edit():
                                 birthday = user.birthday,
                                 image = user.image,
                                 mobile = user.mobile)
- 
-
     form = UserProfileForm(obj=myUser)
-    print(form.username.data)
-    # print(form.name.data)
-    # print(form.birthday.data)
-    # print(form.city.data)
-
-    if form.validate_on_submit():   # IF request.methiod == 'POST'
-        
-        print(form.city.data)
+    if form.validate_on_submit():   # IF request.methiod == 'POST'     
         user = User.query.filter_by(id=current_user.get_id()).first()
-
         # FIELD OBJS  TO DB
         try:
             # IMAGE HANDLING
@@ -911,7 +1022,6 @@ def user_profile_edit():
             image_url = photos.url(image_filename)
             user.image = image_url
             # REST OF FORM HANDLING
-
             user.username = form.username.data
             user.name = form.name.data
             user.last_name = form.last_name.data
@@ -929,18 +1039,10 @@ def user_profile_edit():
             flash(e)
             print(e)
             db.session.rollback()
-        else:
-            pass
-        finally:
-            pass
         flash('You updated sucessfully your profile')
         return redirect(url_for('user_profile'))
     flash('passing here')
     return render_template('user_profile_edit.html', form=form)
-
-
-
-
 
 
 if __name__ == '__main__':

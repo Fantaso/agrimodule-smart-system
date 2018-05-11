@@ -15,14 +15,28 @@ fh5co-active
 			<hr>
 			<h1>Welcome back, {{ current_user.name }}!</h1>
 			<p>Your {{ farm_name }}'s farm awaits for you!</p>
-
+			<div> 
+			    <hr>
+			    <p>Farmer links</p>
+			    <ul>
+					<li><a href="{{ url_for('user_crop_planning') }}" style="color:#16B6A5;">Crop planning</a><br></li>
+					<li><a href="{{ url_for('user_resources') }}" style="color:#16B6A5;">Resources</a><br></li>
+					<li><a href="{{ url_for('user_crop_analyzer') }}" style="color:#16B6A5;">Crop analyzer</a><br></li>
+					<li><a href="{{ url_for('user_health_analyzer') }}" style="color:#16B6A5;">Health analyzer</a><br></li>
+			    </ul>
+			</div>
 			
 			<div>
                 <hr>
         		<p>General links</p>
                 <ul>
-                  <li><a href="{{ url_for('user_profile') }}" style="color:#16B6A5;">User profile</a><br></li>
-                  <li><a href="{{ url_for('user_agrimodule') }}" style="color:#16B6A5;">Agrimodule</a><br></li>
+					<li><a href="{{ url_for('user_agrimodule') }}" style="color:#16B6A5;">Agrimodule</a><br></li>
+					<li><a href="{{ url_for('user_agripump') }}" style="color:#16B6A5;">Agripump</a><br></li>
+					<li><a href="{{ url_for('user_crop_status') }}" style="color:#16B6A5;">Crop status</a><br></li>
+					<li><a href="{{ url_for('user_market') }}" style="color:#16B6A5;">Market</a><br></li>
+					<li><a href="{{ url_for('user_weather') }}" style="color:#16B6A5;">Weather</a><br></li>
+					<li><a href="{{ url_for('user_alerts') }}" style="color:#16B6A5;">Alerts</a><br></li>
+					<li><a href="{{ url_for('user_profile') }}" style="color:#16B6A5;">Profile</a><br></li>
                 </ul>
         	</div>
 

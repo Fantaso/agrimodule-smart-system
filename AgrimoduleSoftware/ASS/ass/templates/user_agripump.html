@@ -16,11 +16,58 @@ fh5co-active
         <hr>
         <p>General links</p>
         <ul>
-          <li><a href="{{ url_for('home') }}" style="color:#16B6A5;">Home</a><br></li>
-          <li><a href="{{ url_for('user_resources') }}" style="color:#16B6A5;">Resources</a><br></li>
-          <li><a href="{{ url_for('user_crop_planning') }}" style="color:#16B6A5;">Crop planning</a><br></li>
+          <li><a href="{{ url_for('home') }}" style="color:#16B6A5;">Home</a></li>
+          <li><a href="{{ url_for('user_resources') }}" style="color:#16B6A5;">Resources</a></li>
+          <li><a href="{{ url_for('user_crop_planning') }}" style="color:#16B6A5;">Crop planning</a></li>
         </ul>
 	</div>
+
+  <div>
+        <hr>
+        <p>Pump information</p>
+        <ul>
+          <li>Brand:                {{ pump.brand }}</li>
+          <li>Flow rate:            {{ pump.flow_rate / 1000 }} lpm</li>
+          <li>Max height:           {{ pump.height_max / 100 }} m</li>
+          <li>kWh:                  {{ ( pump.wm * 60 ) / 1000 }} kWh</li>
+        </ul>
+  </div>
+
+  <div>
+        <hr>
+        <p>Pump status</p>
+        <ul>
+          {% if agripump.status: %}
+          <li>now: ON</li>
+          {% else %}
+          <li>now: OFF</li>
+          {% endif %}
+        </ul>
+  </div>
+
+  <div>
+        <hr>
+        <p>Water usage</p>
+        <ul>
+          <li><i>Current flow:      500 lph</i></li>
+          <li><i>Today:                6,000 l</i></li>
+          <li>Per cultivation cycle</li>
+          <li><i>Used:                 80,000 l</i></li>
+          <li>Needed:               {{ agripump.water_per_cycle / 1000 }} l</li>
+        </ul>
+  </div>
+
+  <div>
+        <hr>
+        <p>Energy usage</p>
+        <ul>
+          <li><i>Current consumption:  200 kWh</i></li>
+          <li><i>Today:                3,000 KWh</i></li>
+          <li>Per cultivation cycle</li>
+          <li><i>Used:                 15,000 kWh</i></li>
+          <li>Needed:               {{ agripump.energy_per_cycle / 1000 }} kWh</li>
+        </ul>
+  </div>
 
 </div>
 

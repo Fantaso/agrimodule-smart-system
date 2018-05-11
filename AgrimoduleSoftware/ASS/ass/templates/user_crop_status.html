@@ -23,6 +23,43 @@ fh5co-active
         </ul>
 	</div>
 
+  <div>
+        <hr>
+        <p>Crop information</p>
+        <ul>
+          <li>Variety:              {{ crop._variety }}</li>
+          <li>Name:                 {{ crop._name }}</li>
+          <li>Area cultivated:      {{ field.cultivation_area / 10000 }} m<sup>2</sup></li>
+          <li># of plants:          {{ calc_values['num_of_plants'] }}</li>
+          <li>Start cultivation:    {{ field.cultivation_start_date }}</li>
+          <li>Finish cultivation:   {{ field.cultivation_finish_date }}</li>
+        </ul>
+  </div>
+
+  <div>
+        <hr>
+        <p>Resources status</p>
+        <ul>
+          <li><i>Water:                Ok</i></li>
+          <li><i>Fertilizer:           ~Ok</i></li>
+          <li><i>Radiation:            Ok</i></li>
+          <li><i>Status icon:          Icon</i></li>
+        </ul>
+  </div>
+
+  <div>
+        <hr>
+        <p>Time / Yield</p>
+        <ul>
+          <li>Time</li>
+          <li>Cycle:                {{ calc_values['cycle_days'] }} days</li>
+          <li>So far:               {{ calc_values['cycle_days_so_far'] }} days</li>
+          <li>Yield</li>
+          <li>Projected:            {{ field._projected_yield / 1000 }} kg</li>
+          <li><i>So far:               1,120 kg</i></li>
+        </ul>
+  </div>
+
 </div>
 
 {% endblock %}
