@@ -149,11 +149,32 @@ class UserProfileForm(FlaskForm):
     image       = FileField(                        validators=[FileAllowed(IMAGES, 'Only images allowed.')])
     mobile      = StringField('Mobile',             validators=[Length(min=7, max=30, message=None)])
 
+# FARM SETUP SYSTEM
+class FarmInfoForm(FlaskForm):
+    farm_name               = StringField('Farm name',      validators=[Length(min=2, max=30, message='Your farm name needs to be at least 2 characters long.')])
+    farm_location           = FloatField('Farm location',   validators=[Length(min=2, max=30, message='Type the city name and it needs to be at least 2 characters long.')])
+    farm_area               = FloatField('Farm area',       validators=[Length(min=2, max=30, message='Your farm name needs to be at least 2 characters long.')])
+    cultivation_process     = SelectField(label='Cultivation Process', validators=[DataRequired()], choices=[('Organic','Organic'),('Chemical','Chemical')])
 
+class AddAgrisysForm(FlaskForm):
+    agsys_id                = StringField('Agrimodule system code',      validators=[DataRequired(), Length(min=2, max=30, message='Your agrimodule system identifier is in the back of your agrimodule.')])
 
+class InstalAgrisysForm(FlaskForm):
+    agm_lat                 = StringField('Agrimodule latitude location',       validators=[DataRequired(), Length(min=2, max=30, message='write the lat coordinates')])
+    agm_lon                 = StringField('Agrimodule longitude location',      validators=[DataRequired(), Length(min=2, max=30, message='write the lon coordinates')])
+    ags_lat                 = StringField('Agrisensor latitude location',       validators=[DataRequired(), Length(min=2, max=30, message='write the lat coordinates')])
+    ags_lon                 = StringField('Agrisensor longitude location',      validators=[DataRequired(), Length(min=2, max=30, message='write the lon coordinates')])
+    agp_lat                 = StringField('Agripump latitude location',         validators=[DataRequired(), Length(min=2, max=30, message='write the lat coordinates')])
+    agp_lon                 = StringField('Agripump longitude location',        validators=[DataRequired(), Length(min=2, max=30, message='write the lon coordinates')])
+    
+class AddPumpForm(FlaskForm):
+    pump_brand              = StringField('Pump brand',                 validators=[DataRequired(), Length(min=2, max=30, message='Your pump supplier or brand name')])
+    pump_flow_rate          = FloatField('Pump flow rate',              validators=[DataRequired(), Length(min=2, max=30, message="Your pump's water capacity or water turn over")])
+    pump_head               = FloatField('Pump head',                   validators=[DataRequired(), Length(min=2, max=30, message="Your pump's max head pressure or height power")])
+    pump_watts              = FloatField('Pump power consumption',      validators=[DataRequired(), Length(min=2, max=30, message="Your pump's wattage consumption")])
 
-# Constructor
-class PreContactUsForm:
+Floatstructor
+claeContactUsForm:
     def __init__(self, name, email, phone, msg):
         self.name = name
         self.email = email

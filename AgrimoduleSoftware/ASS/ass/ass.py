@@ -279,6 +279,7 @@ class AgrimoduleSystem(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     _identifier_agrimodulesystem = db.Column(db.String(50), unique=True, nullable=False)
     _identifier_agrimodule = db.Column(db.String(50), unique=True, nullable=False)
+    _identifier_agrisensor = db.Column(db.String(50), unique=True, nullable=False)
     _identifier_agripump = db.Column(db.String(50), unique=True, nullable=False)
     # LOCATION
     _lat_agrimodule = db.Column(db.Float(precision=8))
@@ -628,8 +629,6 @@ def dashboard():
 @app.route('/user/welcome', methods=['GET'])
 @login_required
 def welcome():
-
-
     if current_user.farms.count() == 0:
         flash('welcome for the first time ' + current_user.name + '!')
         print('welcome for the first time ' + current_user.name + '!')
@@ -663,7 +662,7 @@ def welcome():
     #     return redirect(url_for('home'))
 
 ###################
-# FARM SET
+# SET FARM
 ###################
 @app.route('/user/welcome/set-farm', methods=['GET', 'POST']) # AQUI ME QUEDE
 @login_required
@@ -708,7 +707,7 @@ def welcome_set_farm():
 
 
 ###################
-# FIELD SET
+# SET FIELD
 ###################
 @app.route('/user/welcome/set-field', methods=('GET', 'POST'))
 @login_required
@@ -751,7 +750,7 @@ def welcome_set_field():
     return render_template('welcome_set_field.html', form=form)
 
 ###################
-# FIELD SYS
+# SET SYS
 ###################
 @app.route('/user/welcome/set-sys', methods=['GET', 'POST'])
 @login_required
@@ -1013,6 +1012,7 @@ def user_profile_edit():
                                 image = user.image,
                                 mobile = user.mobile)
     form = UserProfileForm(obj=myUser)
+    # if image is not uploaded it gets a TypeError
     if form.validate_on_submit():   # IF request.methiod == 'POST'     
         user = User.query.filter_by(id=current_user.get_id()).first()
         # FIELD OBJS  TO DB
