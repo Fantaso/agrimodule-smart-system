@@ -1,4 +1,4 @@
-from flask import Flask, render_template, session, request, redirect, url_for, flash, g
+from flask import Flask, render_template, session, request, redirect, url_for, flash, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_security import Security, SQLAlchemyUserDatastore, UserMixin, RoleMixin, login_required
 
@@ -11,7 +11,8 @@ from flask_mail import Mail, Message
 
 from sqlalchemy.sql import func
 
-from forms import EmailForm, EmailAndTextForm, ContactUsForm, RegisterFormExt, FarmForm, FieldForm, UserProfileForm, PreUserProfileForm
+from forms import EmailForm, EmailAndTextForm, ContactUsForm, RegisterFormExt, FarmForm, FieldForm, UserProfileForm, PreUserProfileForm # wesite and users
+from forms import FarmInfoForm, AddAgrisysForm, InstallAgrisysForm, AddPumpForm # Set up system
 from flask_uploads import UploadSet, configure_uploads, IMAGES
 
 from datetime import datetime
@@ -146,10 +147,10 @@ class Farm(db.Model):
     """Farms Models for Users to create. One User can created as many farms as he wants"""
     __tablename__ = 'farm'
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(25), nullable=False)
-    location = db.Column(db.String(20))
-    cultivation_area = db.Column(db.Float(precision=2))
-    cultivation_process = db.Column(db.String(20))
+    farm_name = db.Column(db.String(25), unique=True, nullable=False)
+    farm_location = db.Column(db.String(20))
+    farm_area = db.Column(db.Float(precision=2))
+    farm_cultivation_process = db.Column(db.String(20))
 
     # RELATIONSHIP
     # USER[1]-FARM[M]
@@ -161,7 +162,7 @@ class Farm(db.Model):
     _time_updated = db.Column(db.DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
 
     def __repr__(self):
-        return '<farm {}>'.format(self.name)
+        return '<farm {}>'.format(self.farm_name)
 
 crops_field = db.Table('crops_field',
     db.Column('field_id', db.Integer, db.ForeignKey('field.id')),
@@ -172,14 +173,14 @@ class Field(db.Model):
     """Fields that can exist inside the Farm.Model. One Farm can have as many Fields within for different crops to be cultivated, being limited by the size of the Farm"""
     __tablename__ = 'field'
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(25), nullable=False)
-    cultivation_area = db.Column(db.Float(precision=2))
-    cultivation_start_date = db.Column(db.DateTime(timezone=True))
-    cultivation_finish_date = db.Column(db.DateTime(timezone=True))
-    _current_yield = db.Column(db.Float(precision=2))
-    _projected_yield = db.Column(db.Float(precision=2))
-    cultivation_state = db.Column(db.String(20))
-    cultivation_type = db.Column(db.String(5))
+    field_name = db.Column(db.String(25), nullable=False)
+    field_cultivation_area = db.Column(db.Float(precision=2))
+    field_cultivation_start_date = db.Column(db.DateTime(timezone=True))
+    field_cultivation_finish_date = db.Column(db.DateTime(timezone=True))
+    field_current_yield = db.Column(db.Float(precision=2))
+    field_projected_yield = db.Column(db.Float(precision=2))
+    field_cultivation_state = db.Column(db.String(20))
+    field_cultivation_type = db.Column(db.String(5))
 
     # RELATIONSHIP
     # FIELD[M]-CROP[M]
@@ -191,7 +192,7 @@ class Field(db.Model):
     _time_updated = db.Column(db.DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
 
     def __repr__(self):
-        return '<field {}>'.format(self.name)
+        return '<field {}>'.format(self.field_name)
 
 class Crop(db.Model):
     '''The crop database reference from farmers or Users.model that can be be cultivated in the Field.Model'''
@@ -254,10 +255,10 @@ class Pump(db.Model):
     """pump database used for each field or each agripump whichi is installed in the farm. one farm can ahve as many pump the want as long as the have an agripump for it"""
     __tablename__ = 'pump'
     id = db.Column(db.Integer, primary_key=True)
-    brand = db.Column(db.String(25))
-    flow_rate = db.Column(db.Float(precision=2), nullable=False)
-    height_max = db.Column(db.Float(presicion=2), nullable=False)
-    wm = db.Column(db.Float(precision=2), nullable=False)
+    pump_brand = db.Column(db.String(25))
+    pump_flow_rate = db.Column(db.Float(precision=2), nullable=False)
+    pump_head = db.Column(db.Float(presicion=2), nullable=False)
+    pump_watts = db.Column(db.Float(precision=2), nullable=False)
 
     # RELATIONSHIP
     # USER[1]-PUMP[M]
@@ -277,25 +278,18 @@ class AgrimoduleSystem(db.Model):
     Each agrimodule"""
     __tablename__ = 'agrimodulesystem'
     id = db.Column(db.Integer, primary_key=True)
-    _identifier_agrimodulesystem = db.Column(db.String(50), unique=True, nullable=False)
-    _identifier_agrimodule = db.Column(db.String(50), unique=True, nullable=False)
-    _identifier_agrisensor = db.Column(db.String(50), unique=True, nullable=False)
-    _identifier_agripump = db.Column(db.String(50), unique=True, nullable=False)
-    # LOCATION
-    _lat_agrimodule = db.Column(db.Float(precision=8))
-    _lon_agrimodule = db.Column(db.Float(precision=8))
-    _lat_agrisensor = db.Column(db.Float(precision=8))
-    _lon_agrisensor = db.Column(db.Float(precision=8))
-    _lat_agripump = db.Column(db.Float(precision=8))
-    _lon_agripump = db.Column(db.Float(precision=8))
+    identifier = db.Column(db.String(50), unique=True, nullable=False)
 
     # RELATIONSHIP
+     # USER[1]-AGRIMODULESYSTEM[M]
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     # AGRIMODULESYSTEM[1]-AGRIMODULE[M]
     agrimodules = db.relationship('Agrimodule', backref='agrimodulesystem', lazy='dynamic')
+    # AGRIMODULESYSTEM[1]-AGRISENSOR[M]
+    agrisensors = db.relationship('Agrisensor', backref='agrimodulesystem', lazy='dynamic')
     # AGRIMODULESYSTEM[1]-AGRIPUMP[M]
     agripumps = db.relationship('Agripump', backref='agrimodulesystem', lazy='dynamic')
-    # USER[1]-AGRIMODULESYSTEM[M]
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+   
 
     _time_created = db.Column(db.DateTime(timezone=True), server_default=func.now())
     _time_updated = db.Column(db.DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
@@ -307,6 +301,9 @@ class Agrimodule(db.Model):
     """each agrimodule has a different table where all data that is measured by agrimodule is saved in this model"""
     __tablename__ = 'agrimodule'
     id = db.Column(db.Integer, primary_key=True)
+    identifier = db.Column(db.String(50), unique=True)    
+    lat = db.Column(db.Float(precision=8))
+    lon = db.Column(db.Float(precision=8))
     
     soil_ph = db.Column(db.Float(precision=4))
     soil_nutrient = db.Column(db.Float(precision=4))
@@ -320,7 +317,7 @@ class Agrimodule(db.Model):
     solar_radiation = db.Column(db.Float(precision=4))
     batt_status = db.Column(db.Integer)
     
-    timestamp = db.Column(db.DateTime(timezone=True), nullable=False)
+    timestamp = db.Column(db.DateTime(timezone=True))
     
     # RELATIONSHIP
     # AGRIMODULESYSTEM[1]-AGRIMODULE[M]
@@ -330,16 +327,51 @@ class Agrimodule(db.Model):
     _time_updated = db.Column(db.DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
 
     def __repr__(self):
-        return '<agrimodule {}>'.format(self.timestamp)
+        return '<agrimodule {}>'.format(self.id)
+
+class Agrisensor(db.Model):
+    """each agrimodule has a different table where all data that is measured by agrimodule is saved in this model"""
+    __tablename__ = 'agrisensor'
+    id = db.Column(db.Integer, primary_key=True)
+    identifier = db.Column(db.String(50), unique=True)
+    lat = db.Column(db.Float(precision=8))
+    lon = db.Column(db.Float(precision=8))
+    
+    soil_ph = db.Column(db.Float(precision=4))
+    soil_nutrient = db.Column(db.Float(precision=4))
+    soil_temp = db.Column(db.Float(precision=4))
+    soil_humi = db.Column(db.Float(precision=4))
+
+    air_temp = db.Column(db.Float(precision=4))
+    air_humi = db.Column(db.Float(precision=4))
+    air_pres = db.Column(db.Float(precision=4))
+    
+    solar_radiation = db.Column(db.Float(precision=4))
+    batt_status = db.Column(db.Integer)
+    
+    timestamp = db.Column(db.DateTime(timezone=True))
+    
+    # RELATIONSHIP
+    # AGRIMODULESYSTEM[1]-AGRIMODULE[M]
+    agrimodulesystem_id = db.Column(db.Integer, db.ForeignKey('agrimodulesystem.id'))
+
+    _time_created = db.Column(db.DateTime(timezone=True), server_default=func.now())
+    _time_updated = db.Column(db.DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
+
+    def __repr__(self):
+        return '<agrisensor {}>'.format(self.id)
 
 class Agripump(db.Model):
     """pump schedule for each farm and agripump, it requires to know which Pump.Model is used in order to make the calculations"""
     __tablename__ = 'agripump'
     id = db.Column(db.Integer, primary_key=True)
+    identifier = db.Column(db.String(50), unique=True)
+    lat = db.Column(db.Float(precision=8))
+    lon = db.Column(db.Float(precision=8))
     # REQUIREMENTS
     status = db.Column(db.Boolean)
     _daily_water = db.Column(db.Float(precision=3))
-    _date = db.Column(db.DateTime(timezone=True), nullable=False)
+    _date = db.Column(db.DateTime(timezone=True))
     # SCHEDULE IN MINUTES
     _00_HOUR = db.Column(db.Float(precision=1))
     _01_HOUR = db.Column(db.Float(precision=1))
@@ -413,17 +445,15 @@ security = Security(app, user_datastore, register_form=RegisterFormExt, confirm_
 
 @app.before_request
 def before_request():
-    g.user = current_user
-
     ############ TESTS
     if current_user.is_anonymous:
     #         flash("hi is_anonymous")
             print("Hi is_anonymous")
-    if g.user.is_authenticated:
+    if current_user.is_authenticated:
     #         flash("hi "+str(g.user.id))
     #         print("hi "+str(g.user.id))
     #         flash("hi "+g.user.name)
-            print("Hi "+g.user.name)
+            print("Hi "+current_user.name)
     # print( current_user )                     # PRINTS >  <user carlos@solar-vibes.com>
     # print( g.user )                           # PRINTS >  <user carlos@solar-vibes.com>
     # print( str( g.user.id ) )                 # PRINTS >  1
@@ -629,10 +659,9 @@ def dashboard():
 @app.route('/user/welcome', methods=['GET'])
 @login_required
 def welcome():
-    if current_user.farms.count() == 0:
+    if current_user.farms.count() == 0 or current_user.agrimodule_systems.count() == 0:
         flash('welcome for the first time ' + current_user.name + '!')
         print('welcome for the first time ' + current_user.name + '!')
-        # return g.user.name
         return render_template('welcome.html', current_user=current_user)
     else:
         return redirect(url_for('home'))
@@ -678,29 +707,29 @@ def welcome_set_farm():
         user_id = user.get_id()
         user_name = User.query.filter_by(id=user_id).first().name
         # FARM OBJS
-        name = form.name.data
-        location = form.location.data
-        cultivation_area = form.cultivation_area.data
-        cultivation_process = form.cultivation_process.data
+        farm_name = form.farm_name.data
+        farm_location = form.farm_location.data
+        farm_area = form.farm_area.data
+        farm_cultivation_process = form.farm_cultivation_process.data
         # FARM OBJS  TO DB
         farm = Farm(    user=user,
-                        name=name,
-                        location=location,
-                        cultivation_area=cultivation_area,
-                        cultivation_process=cultivation_process )
+                        farm_name=farm_name,
+                        farm_location=farm_location,
+                        farm_area=farm_area,
+                        farm_cultivation_process=farm_cultivation_process )
         # DB COMMANDS
         db.session.add(farm)
         db.session.commit()
         # OBJS SAVE ON SESSION
         session['farm'] = {'user_id':user_id,
                             'user_name':user_name,
-                            'farm_name':name,
-                            'farm_location':location,
-                            'farm_cultivation_area':cultivation_area,
-                            'farm_cultivation_process':cultivation_process}
+                            'farm_name':farm_name,
+                            'farm_location':farm_location,
+                            'farm_area':farm_area,
+                            'farm_cultivation_process':farm_cultivation_process}
         session.modified = True
         #SUCESS AND REDIRECT TO NEXT STEP
-        flash('You just created farm named: {}'.format(name))
+        flash('You just created farm named: {}'.format(farm_name))
         return redirect(url_for('welcome_set_field'))
 
     return render_template('welcome_set_farm.html', form=form)
@@ -722,40 +751,249 @@ def welcome_set_field():
         # USER OBJS
         farm_name = session['farm']['farm_name']
         user = User.query.filter_by(id = current_user.id).first()
-        farm = user.farms.filter_by(name = farm_name).first()
-        crop = Crop.query.filter_by(_name = form.cultivation_crop.data).first()
+        farm = user.farms.filter_by(farm_name = farm_name).first()
+        
         # FIELD OBJS
-        name = form.name.data
-        cultivation_area = form.cultivation_area.data
-        # cultivation_crop = form.cultivation_crop.data
-        cultivation_start_date = form.cultivation_start_date.data
-        cultivation_state = form.cultivation_state.data
-        cultivation_type = form.cultivation_type.data
-        # FIELD OBJS  TO DB
-        field = Field(  name=name,
+        crop = Crop.query.filter_by(_name = form.field_cultivation_crop.data).first()
+        field_name = form.field_name.data
+        field_cultivation_area = form.field_cultivation_area.data
+        field_cultivation_start_date = form.field_cultivation_start_date.data
+        field_cultivation_state = form.field_cultivation_state.data
+        field_cultivation_type = form.field_cultivation_type.data
+        # FIELD OBJS TO DB
+        field = Field(  field_name=field_name,
                         farm=farm,
-                        cultivation_area=cultivation_area,
-                        cultivation_start_date=cultivation_start_date,
-                        cultivation_state=cultivation_state,
-                        cultivation_type=cultivation_type)
+                        field_cultivation_area=field_cultivation_area,
+                        field_cultivation_start_date=field_cultivation_start_date,
+                        field_cultivation_state=field_cultivation_state,
+                        field_cultivation_type=field_cultivation_type)
         field.crops.append(crop)
         # DB COMMANDS
         db.session.add(field)
         db.session.commit()
         #SUCESS AND REDIRECT TO DASHBOARD
-        flash('You just created a {} in your {}'.format(name, farm.name))
+        flash('You just created a {} in your {}'.format(field_name, farm.farm_name))
         del session['farm']     # ERASE SESSION OBJS
-        return redirect(url_for('home'))
+        return redirect(url_for('welcome'))
 
     return render_template('welcome_set_field.html', form=form)
 
-###################
+##########################################################
+##########################################################
 # SET SYS
-###################
-@app.route('/user/welcome/set-sys', methods=['GET', 'POST'])
+##########################################################
+##########################################################
+@app.route('/user/welcome/set-sys', methods=['GET'])
 @login_required
 def welcome_set_sys():
     return render_template('welcome_set_sys.html')
+
+
+###################
+# SET FARM INFO
+###################
+@app.route('/user/welcome/set-sys/farm-info', methods=['GET', 'POST'])
+@login_required
+def farm_info():
+
+    if 'set_sys' not in session:
+        session['set_sys'] = dict()
+        session.modified = True
+
+    form = FarmInfoForm()
+    if form.validate_on_submit():
+        # USER OBJS
+        user_id = current_user.get_id()
+
+        # FARM INFO OBJS
+        farm_name = form.farm_name.data
+        farm_location = form.farm_location.data
+        farm_area = form.farm_area.data
+        farm_cultivation_process = form.farm_cultivation_process.data
+        print (form.farm_name.data)
+        print (form.farm_location.data)
+        print (form.farm_area.data)
+        print (form.farm_cultivation_process.data)
+
+        # OBJS TO DB
+        farm = Farm(user_id=user_id,
+                    farm_name=farm_name,
+                    farm_location=farm_location,
+                    farm_area=farm_area,
+                    farm_cultivation_process=farm_cultivation_process)
+        print(farm)
+
+        # DB COMMANDS
+        db.session.add(farm)
+        db.session.commit()
+
+        # ADD SESSION OBJS
+        farm_id = farm.id
+        print(farm_id)
+        session['set_sys'].update({'user_id': user_id,
+                                'farm_id':farm_id,
+                                'farm_name':farm_name,
+                                'farm_location':farm_location,
+                                'farm_area':farm_area,
+                                'farm_cultivation_process':farm_cultivation_process})
+        session.modified = True
+        print (session['set_sys'])
+
+
+        # FLASH AND REDIRECT
+        flash('''You just created farm: {}
+                    located: {}
+                    with an area: {} m2
+                    growing: {}ally'''.format(farm_name, farm_location, farm_area, farm_cultivation_process))
+        return redirect(url_for('add_agrisys'))
+
+    return render_template('farm_info.html', form=form)
+
+###################
+# SET CONNECT ASS
+###################
+@app.route('/user/welcome/set-sys/add-agrisys', methods=['GET', 'POST'])
+@login_required
+def add_agrisys():
+
+    form = AddAgrisysForm()
+    if form.validate_on_submit(): 
+        # USER OBJS
+        user = current_user
+
+        # ADD AGRISYS OBJS
+        agsys_identifier = form.agsys_identifier.data
+        print(agsys_identifier)
+
+        # OBJS TO DB
+        agrimodulesystem = AgrimoduleSystem(identifier = agsys_identifier, user = user)
+        print(agrimodulesystem)
+
+        # DB COMMANDS
+        db.session.add(agrimodulesystem)
+        db.session.commit()
+
+        # ADD SESSION OBJS
+        session['set_sys'].update({'agsys_identifier':agsys_identifier, 'agrimodulesystem_id':agrimodulesystem.id})
+        session.modified = True
+        print (session['set_sys'])
+        
+        
+        
+        # FLASH AND REDIRECT
+        flash('Your agrimodule system identifier is: {}'.format(agsys_identifier))
+        return redirect(url_for('install_agrisys'))
+    return render_template('add_agrisys.html', form=form)
+
+###################
+# SET INSTALL ASS
+###################
+@app.route('/user/welcome/set-sys/install-agrisys', methods=['GET', 'POST'])
+@login_required
+def install_agrisys():
+    form = InstallAgrisysForm()
+    if form.validate_on_submit():
+        # USER OBJS
+        user = current_user
+
+        # INSTALL AGRISYS OBJS
+        agm_lat = form.agm_lat.data
+        agm_lon = form.agm_lon.data
+        ags_lat = form.ags_lat.data
+        ags_lon = form.ags_lon.data
+        agp_lat = form.agp_lat.data
+        agp_lon = form.agp_lon.data
+        print (form.agm_lat)
+        print (form.agm_lon)
+        print (form.ags_lat)
+        print (form.ags_lon)
+        print (form.agp_lat)
+        print (form.agp_lon)
+
+        # OBJS TO DB
+        agrimodulesystem_id = session['set_sys']['agrimodulesystem_id']
+        agrimodule  = Agrimodule(agrimodulesystem_id = agrimodulesystem_id, lat = agm_lat, lon = agm_lon)
+        agrisensor  = Agrisensor(agrimodulesystem_id = agrimodulesystem_id, lat = ags_lat, lon = ags_lon)
+        agripump    =   Agripump(agrimodulesystem_id = agrimodulesystem_id, lat = agp_lat, lon = agp_lon)
+        print(agrimodulesystem_id)
+        print(agrimodule)
+        print(agrisensor)
+        print(agripump)
+
+        # DB COMMANDS
+        db.session.add(agrimodule)
+        db.session.add(agrisensor)
+        db.session.add(agripump)
+        db.session.commit()   
+
+        # ADD SESSION OBJS
+        session['set_sys'].update({'agrimodule_id':agrimodule.id, 'agrisensor_id':agrisensor.id, 'agripump_id':agripump.id, 'agm_lat':agm_lat, 'agm_lon':agm_lon, 'ags_lat':ags_lat, 'ags_lon':ags_lon, 'agp_lat':agp_lat, 'agp_lon':agp_lon})
+        session.modified = True
+        print (session['set_sys'])
+        
+
+        
+        # FLASH AND REDIRECT
+        flash('''Your Agrimodule location is: LAT: {} LON: {}
+                Your Agrisensor location is: LAT: {} LON: {}
+                Your Agripump location is: LAT: {} LON: {}'''.format(agm_lat, agm_lon, ags_lat, ags_lon, agp_lat, agp_lon))
+        return redirect(url_for('add_pump'))
+    return render_template('install_agrisys.html', form=form)
+
+###################
+# SET ADD PUMP
+###################
+@app.route('/user/welcome/set-sys/add-pump', methods=['GET', 'POST'])
+@login_required
+def add_pump():
+
+    form = AddPumpForm()
+    if form.validate_on_submit():
+        # USER OBJS
+        user = current_user
+        agrimodule_system = user.agrimodule_systems.filter_by(id = session['set_sys']['agrimodulesystem_id']).first()
+        print(agrimodule_system)
+        agripump = agrimodule_system.agripumps.filter_by(id = session['set_sys']['agripump_id']).first()
+        print(agripump)
+
+        # ADD PUMP OBJS
+        pump_brand = form.pump_brand.data
+        pump_flow_rate = form.pump_flow_rate.data
+        pump_head = form.pump_head.data
+        pump_watts = form.pump_watts.data
+        print(pump_brand)
+        print(pump_flow_rate)
+        print(pump_head)
+        print(pump_watts)
+
+        # OBJS TO DB
+        pump = Pump(user = user, pump_brand = pump_brand, pump_flow_rate = pump_flow_rate, pump_head = pump_head, pump_watts = pump_watts)
+        
+        # DB COMMANDS
+        db.session.add(pump)
+        db.session.commit()
+
+        # ADD PUMP TO AGRIPUMP
+        agripump.pump_id = pump.id
+        print(agripump.pump_id)
+        db.session.commit()
+
+
+        # OBJS SAVE ON SESSION
+        session['set_sys'].update({'pump_brand':pump_brand, 'pump_flow_rate':pump_flow_rate, 'pump_head':pump_head, 'pump_watts':pump_watts})
+        session.modified = True
+        print (session['set_sys'])
+
+        
+        # FLASH AND REDIRECT
+        flash('''Your Pump brand: {}
+                Flow rate: {} lph
+                Head pressure: {} m
+                Wattage: {} W'''.format(pump_brand, pump_flow_rate, pump_head, pump_watts))
+        del session['set_sys']
+        return redirect(url_for('welcome'))
+
+    return render_template('add_pump.html', form=form)
 
 ##########################################################
 ##########################################################
@@ -770,7 +1008,7 @@ def home():
         flash('welcome for the first time ' + current_user.name + '!')
         return render_template('welcome.html', current_user=current_user)
     name = current_user.name
-    farm_name = current_user.farms.first().name
+    farm_name = current_user.farms.first().farm_name
     return render_template('home.html', name=name, farm_name=farm_name)
 
 

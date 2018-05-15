@@ -11,11 +11,14 @@
 		<h1>Welcome set system</h1>
 		<div>
 	        <hr>
-	        <p>General links</p>
+	        <h3>We will guide you through the installation of the agrimodule system in four steps.</h3>
 	        <ul>
-	          <li><a href="{{ url_for('home') }}" style="color:#16B6A5;">Home</a><br></li>
-	          <li><a href="{{ url_for('welcome') }}" style="color:#16B6A5;">Go back</a><br></li>
+	          <li>1. Set the information of your farm. (Name, location, full area and cultivation process of your farm)</li>
+	          <li>2. Connect your application to your agrimodule smart system (Read a QR code)</li>
+	          <li>3. Install the agrimodule smart system in your farm (Agrimodule, agripump and agrisensor)</li>
+	          <li>4. Add the pump specs of your farm to your application (Brand, flow rate, head pressure and wattage)</li>
 	        </ul>
+	        <a href="{{ url_for('farm_info') }}" class="btn btn-primary">Start</a>
 		</div>
 
 </div>
