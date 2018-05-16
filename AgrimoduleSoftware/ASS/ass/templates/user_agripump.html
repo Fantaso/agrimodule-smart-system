@@ -62,10 +62,11 @@ fh5co-active
         <p>Energy usage</p>
         <ul>
           <li>Current consumption: <span style="color: black;"> {% if agripump.status: %}     {{ pump.pump_watts }}     {% else %}    {{ 0 }}     {% endif %} kWh</span></li>
-          <li><i>Today:                3,000 KWh</i></li>
+          <li><i>Today used:                3,000 KWh</i></li>
+          <li>Today needed: <span style="color: black;">               {{ pump_consumption_kwh_per_day|round(3, 'floor') }} KWh </span> </li>
           <li>Per cultivation cycle</li>
           <li><i>Used:                 15,000 kWh</i></li>
-          <li>Needed: <span style="color: black;">              {{ pump_consumption_kwh }} kWh</span></li>
+          <li>Needed: <span style="color: black;">              {{ (pump_consumption_kwh_per_day * (crop._dtm + crop._dtg))|round(3, 'floor') }} kWh</span></li>
         </ul>
   </div>
 

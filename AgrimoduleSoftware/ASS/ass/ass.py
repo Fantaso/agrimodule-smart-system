@@ -851,7 +851,7 @@ def welcome_set_field():
         # FIELD OBJS TO DB
         field = Field(  field_name=field_name,
                         farm=farm,
-                        field_cultivation_area=field_cultivation_area,
+                        field_cultivation_area=m2_to_cm2(field_cultivation_area),
                         field_cultivation_start_date=field_cultivation_start_date,
                         field_cultivation_state=field_cultivation_state,
                         field_cultivation_type=field_cultivation_type,
@@ -1242,7 +1242,7 @@ def user_agripump():
     pump_minutes_on = field.field_water_required_day / pump.pump_flow_rate
     pump_Wmin_conmsumption_on = pump_Wmin_consumption * pump_minutes_on
 
-    pump_consumption_kwh = wm_to_kwh(pump_Wmin_conmsumption_on)
+    pump_consumption_kwh_per_day = wm_to_kwh(pump_Wmin_conmsumption_on)
 
 
     # AGRIPUMP
@@ -1269,7 +1269,7 @@ def user_agripump():
     # wh = db.Column(db.Float(precision=2), nullable=False)
 
 
-    return render_template('user_agripump.html', pump = pump_info, agripump = agripump, field = field, crop = crop, pump_consumption_kwh=pump_consumption_kwh)
+    return render_template('user_agripump.html', pump = pump_info, agripump = agripump, field = field, crop = crop, pump_consumption_kwh_per_day=pump_consumption_kwh_per_day)
 
 ##################
 # USER CROP STATUS
@@ -1277,27 +1277,15 @@ def user_agripump():
 @app.route('/user/farm/field/crop-status', methods=['GET'])
 @login_required
 def user_crop_status():
+    
     user = User.query.filter_by(id = current_user.get_id()).first()
     farm = user.farms.first()
     field = farm.fields.first()
-    print (field)
-    print (field.cultivation_area)
-    print (field.cultivation_start_date)
-    print (field.cultivation_finish_date)
-    print (field._current_yield)
     crop = field.crops.first()
-    print (crop)
-    print (crop._variety)
-    print (crop._name)
-    num_of_plants = ( field.cultivation_area / crop._density )
-    cycle_days = ( crop._dtm + crop._dtg )
-    cycle_days_so_far = ( datetime.now() - field.cultivation_start_date ).days
-    print (num_of_plants)
-    print (cycle_days)
-    print (cycle_days_so_far)
-    calc_values = {'num_of_plants' : num_of_plants, 'cycle_days' : cycle_days, 'cycle_days_so_far' : cycle_days_so_far}
-    print (calc_values)
-    return render_template('user_crop_status.html', crop = crop, field = field, calc_values = calc_values)
+
+    cycle_days_so_far = ( datetime.now() - field.field_cultivation_start_date ).days
+    
+    return render_template('user_crop_status.html', crop = crop, field = field, cycle_days_so_far = cycle_days_so_far)
 
 ##################
 # USER NEW CROP
