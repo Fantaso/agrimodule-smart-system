@@ -13,12 +13,16 @@
 			<h1>Hi, {{ current_user.name }} {{ current_user.last_name }}</h1>
 			<p>Looks like its your first time here!
 			<br>We will guide you through setting up your system in no time.</p>
-			<h4>First thing:</h4>
-			<label>1. Set up your Farm</label><br>
-			<a href="{{ url_for('welcome_set_farm') }}" class="btn btn-primary">Set up Farm</a><br>
-			<label>2. Set up you Agrimodule</label><br>
-			<a href="{{ url_for('welcome_set_sys') }}" class="btn btn-primary">Set up ASS</a><br>
-			
+
+			{% if set_sys_flag: %}
+				<h4>First thing:</h4>
+				<label>1. Set up you Agrimodule</label><br>
+				<a href="{{ url_for('welcome_set_sys') }}" class="btn btn-primary">Set up ASS</a><br>
+			{% else %}
+				<h4>Second thing:</h4>
+				<label>2. Set up your Farm</label><br>
+				<a href="{{ url_for('welcome_set_farm') }}" class="btn btn-primary">Set up Farm</a><br>
+			{% endif %}
 			
 		</div>
 	</div>

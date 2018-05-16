@@ -6,17 +6,17 @@ crops = {
 					'_name':'plum',
 					'_variety':'tomato',
 				 	'_family':'fruit',
-					'_yield':2.8, # kg
-					'_space_x':0.3, # m
-					'_space_y':0.3, # m
+					'_yield':2800, # gr
+					'_space_x':30, # cm
+					'_space_y':30, # cm
 					'_space_z':1.1, # m
-					'_density':11.11, # plants/m2
+					'_density':0.001111, # plants/cm2
 					'_fruit_quantity':26,
-					'_fruit_size':0.076, # m
-					'_fruit_weight':0.062, # kg
-					'_water':1, # l/day
+					'_fruit_size':7.6, # cm
+					'_fruit_weight':62, # gr
+					'_water':1000, # ml/day
 					'_nutrient':18, # mSiemens
-					'_radiation':12, # h/day
+					'_radiation':720, # min/day
 					'_dtg':12, # day
 					'_dtm':180, # day
 					'_soil_ph_min':6, 		'_soil_ph_opt':6.5, 		'_soil_ph_max':6.8,			# pH
@@ -31,17 +31,17 @@ crops = {
 					'_name':'romaine',
 					'_variety':'lettuce',
 				 	'_family':'leafy',
-					'_yield':0.626,
-					'_space_x':0.2,
-					'_space_y':0.2,
-					'_space_z':0.35,
-					'_density':25,
+					'_yield':626,
+					'_space_x':20,
+					'_space_y':20,
+					'_space_z':35,
+					'_density':0.0025,
 					'_fruit_quantity':1,
-					'_fruit_size':0.35,
-					'_fruit_weight':0.626,
-					'_water':0.8,
+					'_fruit_size':35,
+					'_fruit_weight':626,
+					'_water':800,
 					'_nutrient':0.8,
-					'_radiation':11,
+					'_radiation':680,
 					'_dtg':10,
 					'_dtm':70,
 					'_soil_ph_min':6, 		'_soil_ph_opt':6.2, 	'_soil_ph_max':6.8,
@@ -56,17 +56,17 @@ crops = {
 					'_name':'arugula',
 					'_variety':'herb',
 				 	'_family':'leafy',
-					'_yield':0.000671,
-					'_space_x':0.0204,
-					'_space_y':0.0204,
-					'_space_z':0.30,
-					'_density':2402.92,
+					'_yield':0.671,
+					'_space_x':2.04,
+					'_space_y':2.04,
+					'_space_z':30,
+					'_density':0.240292,
 					'_fruit_quantity':1,
 					'_fruit_size':25,
-					'_fruit_weight':0.000671,
-					'_water':0.5,
+					'_fruit_weight':0.671,
+					'_water':50,
 					'_nutrient':0.5,
-					'_radiation':10,
+					'_radiation':600,
 					'_dtg':6,
 					'_dtm':47,
 					'_soil_ph_min':6, 		'_soil_ph_opt':6.3, 	'_soil_ph_max':6.8,

@@ -89,6 +89,11 @@ class FarmForm(FlaskForm):
     farm_cultivation_process    = SelectField('Farm Cultivation Process', validators=[DataRequired()], choices=[('Organic','Organic'),('Chemical','Chemical')])
 
 
+
+
+
+
+
 class FieldForm(FlaskForm):
     field_name                    = StringField(label='Field name',
                                                 validators=[
@@ -97,7 +102,7 @@ class FieldForm(FlaskForm):
                                                                                          at least 2 characters.''')])
     
     field_cultivation_area       = FloatField(label='Field Cultivation Area',
-                                                validators=[DataRequired()],render_kw={"placeholder":"500.50"})
+                                                validators=[DataRequired(), NumberRange(min=1, max=5000, message='Cultivation area should be maximum as big as your farm')],render_kw={"placeholder":"500.50"})
 
     field_cultivation_crop        = SelectField(label='Cultivation Crop',
                                                 validators=[DataRequired()],
@@ -111,6 +116,10 @@ class FieldForm(FlaskForm):
     field_cultivation_type        = SelectField(label='Cultivation Type',
                                                 validators=[DataRequired()],
                                                 choices=[('mono','Mono'), ('mix','Mix'), ('multi','Multi')])
+
+
+def function():
+    pass
 
 # Constructor
 class PreUserProfileForm:
@@ -147,8 +156,8 @@ class UserProfileForm(FlaskForm):
 # FARM SETUP SYSTEM
 class FarmInfoForm(FlaskForm):
     farm_name                    = StringField('Farm name',      validators=[DataRequired(), Length(min=2, max=30, message='Your farm name needs to be at least 2 characters long.')])
-    farm_location                = StringField('Farm location',   validators=[DataRequired(), Length(max=30, message='Type the city name and it needs to be max 30 characters long.')])
-    farm_area                    = FloatField('Farm area', validators=[DataRequired(), NumberRange(min=5, max=5000, message='Area between 5 and 5000 m2')])
+    farm_location                = StringField('Farm location (city)',   validators=[DataRequired(), Length(max=30, message='Type the city name and it needs to be max 30 characters long.')])
+    farm_area                    = FloatField('Farm area (meter square)', validators=[DataRequired(), NumberRange(min=5, max=5000, message='Area between 5 and 5000 m2')])
     farm_cultivation_process     = SelectField('Farm Cultivation Process', validators=[DataRequired()], choices=[('Organic','Organic'),('Chemical','Chemical')])
 
 class AddAgrisysForm(FlaskForm):
@@ -163,10 +172,10 @@ class InstallAgrisysForm(FlaskForm):
     agp_lon                 = FloatField('Agripump longitude location',        validators=[DataRequired(), NumberRange(min=-180, max=180, message='write the lon coordinates')])
     
 class AddPumpForm(FlaskForm):
-    pump_brand              = StringField('Pump brand',                 validators=[DataRequired(), Length(min=2, max=30, message='Your pump supplier or brand name')])
-    pump_flow_rate          = FloatField('Pump flow rate',              validators=[DataRequired(), NumberRange(min=1, max=500, message="Your pump's water capacity or water turn over")])
-    pump_head               = FloatField('Pump head',                   validators=[DataRequired(), NumberRange(min=1, max=500, message="Your pump's max head pressure or height power")])
-    pump_watts              = FloatField('Pump power consumption',      validators=[DataRequired(), NumberRange(min=5, max=1000, message="Your pump's wattage consumption")])
+    pump_brand              = StringField('Pump brand',                             validators=[DataRequired(), Length(min=2, max=30, message='Your pump supplier or brand name')])
+    pump_flow_rate          = FloatField('Pump flow rate (liters per sec)',         validators=[DataRequired(), NumberRange(min=1, max=500, message="Your pump's water capacity or water turn over")])
+    pump_head               = FloatField('Pump head (meters)',                      validators=[DataRequired(), NumberRange(min=1, max=500, message="Your pump's max head pressure or height power")])
+    pump_watts              = FloatField('Pump power consumption (kilo Watts)',     validators=[DataRequired(), NumberRange(max=1000, message="Your pump's wattage consumption")])
 
 # FlaskFOrm constructor
 class ContactUsForm:
