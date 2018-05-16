@@ -29,8 +29,8 @@ fh5co-active
         <hr>
         <p>Agrimodule conditions</p>
         <ul>
-          <li>Time recorded: {{ ag_measure.timestamp }}</li>
-          <li>Battery status: {{ ag_measure.batt_status }} %</li>
+          <li>Time recorded: <span style="color: black;">{{ ag_measure.timestamp }}</span></li>
+          <li>Battery status:<span style="color: black;"> {{ ag_measure.batt_status }} %</span></li>
           <li><i>Battery time:   1h 22m</i></li>
         </ul>
   </div>
@@ -40,41 +40,42 @@ fh5co-active
         <p>Weather / Air conditions</p>
         <ul>
           <li>Temperature</li>
-          <li>now:   {{ ag_measure.air_temp }} °C</li>
+          <li>now:   <span style="color: black;">{{ ag_measure.air_temp }} °C</span></li>
           <li><i>min:   18 °C</i></li>
           <li><i>max:   33 °C</i></li>
           <li>Relative humidity</li>
-          <li>now:   {{ ag_measure.air_humi }} %RH</li>
+          <li>now:  <span style="color: black;"> {{ ag_measure.air_humi }} %RH</span></li>
           <li><i>min:   68 %RH</i></li>
           <li><i>max:   92 %RH</i></li>
-          <li>Atmospheric pressure:   {{ ag_measure.air_pres }} kPa</li>
-          <li>Radiation:              {{ ag_measure.solar_radiation }} W/m<sup>2</sup></li>
+          <li>Atmospheric pressure:  <span style="color: black;"> {{ ag_measure.air_pres }} kPa</span></li>
+          <li>Radiation:             <span style="color: black;"> {{ ag_measure.solar_radiation }} W/m<sup>2</sup></span></li>
           <li><i>Weather icon:           "Icon"</i></li>
           <li><i>Weather description:    "Description"</i></li>
           <li><i>API Extra:              "Wind, clouds, Visibility"</i></li>
         </ul>
   </div>
 
+
    <div>
         <hr>
         <p>Soil conditions</p>
         <ul>
           <li>Temperature</li>
-          <li>now:   {{ ag_measure.soil_temp }} °C</li>
-          <li>min:   {{ crop._soil_temp_min }} °C</li>
-          <li>max:   {{ crop._soil_temp_max }} °C</li>
+          <li>now:  <span style="color: black;"> {{ ag_measure.soil_temp }} °C</span></li>
+          <li>min:  <span style="color: black;"> {{ crop._soil_temp_min }} °C</span></li>
+          <li>max:  <span style="color: black;"> {{ crop._soil_temp_max }} °C</span></li>
           <li>Relative humidity</li>
-          <li>now:   {{ ag_measure.soil_humi }} %RH</li>
-          <li>min:   {{ crop._soil_humi_min }} %RH</li>
-          <li>max:   {{ crop._soil_humi_max }} %RH</li>
+          <li>now:  <span style="color: black;"> {{ ag_measure.soil_humi }} %RH</span></li>
+          <li>min:  <span style="color: black;"> {{ crop._soil_humi_min }} %RH</span></li>
+          <li>max:  <span style="color: black;"> {{ crop._soil_humi_max }} %RH</span></li>
           <li>pH</li>
-          <li>now:   {{ ag_measure.soil_ph }}</li>
-          <li>min:   {{ crop._soil_ph_min }}</li>
-          <li>max:   {{ crop._soil_ph_max }}</li>
+          <li>now:  <span style="color: black;"> {{ ag_measure.soil_ph }}</span></li>
+          <li>min:  <span style="color: black;"> {{ crop._soil_ph_min }}</span></li>
+          <li>max:  <span style="color: black;"> {{ crop._soil_ph_max }}</span></li>
           <li>EC / Nutrients</li>
-          <li>now:   {{ ag_measure.soil_nutrient }} %</li>
-          <li>min:   {{ crop._soil_nutrient_min }} %</li>
-          <li>max:   {{ crop._soil_nutrient_max }} %</li>
+          <li>now:  <span style="color: black;"> {{ ag_measure.soil_nutrient }} %</span></li>
+          <li>min:  <span style="color: black;"> {{ crop._soil_nutrient_min }} %</span></li>
+          <li>max:  <span style="color: black;"> {{ crop._soil_nutrient_max }} %</span></li>
         </ul>
   </div>
 

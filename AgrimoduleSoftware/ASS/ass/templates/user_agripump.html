@@ -26,10 +26,10 @@ fh5co-active
         <hr>
         <p>Pump information</p>
         <ul>
-          <li>Brand:                 {{ pump.pump_brand }}</li>
-          <li>Flow rate:             {{ pump.pump_flow_rate }} lps</li>
-          <li>Max height:            {{ pump.pump_head }} m</li>
-          <li>kW:                    {{ pump.pump_watts }} kW</li>
+          <li>Brand:                <span style="color: black;"> {{ pump.pump_brand }}</span></li>
+          <li>Flow rate:            <span style="color: black;"> {{ pump.pump_flow_rate }} lps</span></li>
+          <li>Max height:           <span style="color: black;"> {{ pump.pump_head }} m</span></li>
+          <li>kW:                   <span style="color: black;"> {{ pump.pump_watts }} kW</span></li>
         </ul>
   </div>
 
@@ -49,11 +49,11 @@ fh5co-active
         <hr>
         <p>Water usage</p>
         <ul>
-          <li>Current flow:   {% if agripump.status: %}     {{ pump.pump_flow_rate }}     {% else %}    {{ 0 }}     {% endif %}   lps</li>
+          <li>Current flow: <span style="color: black;"> {% if agripump.status: %}     {{ pump.pump_flow_rate }}     {% else %}    {{ 0 }}     {% endif %}   lps</span></li>
           <li><i>Today:                6,000 l</i></li>
           <li>Per cultivation cycle</li>
           <li><i>Used:                 80,000 l</i></li>
-          <li>Needed:               {{ (field.field_water_required_day * (crop._dtg + crop._dtm)) / 1000 }} l</li>
+          <li>Needed: <span style="color: black;">              {{ (field.field_water_required_day * (crop._dtg + crop._dtm)) / 1000 }} l</span></li>
         </ul>
   </div>
 
@@ -61,11 +61,11 @@ fh5co-active
         <hr>
         <p>Energy usage</p>
         <ul>
-          <li>Current consumption:  {% if agripump.status: %}     {{ pump.pump_watts }}     {% else %}    {{ 0 }}     {% endif %} kWh</li>
+          <li>Current consumption: <span style="color: black;"> {% if agripump.status: %}     {{ pump.pump_watts }}     {% else %}    {{ 0 }}     {% endif %} kWh</span></li>
           <li><i>Today:                3,000 KWh</i></li>
           <li>Per cultivation cycle</li>
           <li><i>Used:                 15,000 kWh</i></li>
-          <li>Needed:               {{ pump_consumption_kwh }} kWh</li>
+          <li>Needed: <span style="color: black;">              {{ pump_consumption_kwh }} kWh</span></li>
         </ul>
   </div>
 
