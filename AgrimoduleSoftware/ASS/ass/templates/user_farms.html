@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+
+{% block title %}
+	Manage Farms
+{% endblock %}
+
+{% block user_farms_active %}
+fh5co-active
+{% endblock %}
+
+{% block content %}
+	<div id = "fh5co-main" class = "container" style = "margin-top: 5%;">
+		<div style="padding-left: 2%; text-align: left;">
+			<h1>My Farms</h1>
+			<hr>
+			<h1></h1>
+			<p></p>			
+			
+			<div>
+        		<h4>Manage farms and fields</h4>
+                <ul>
+					<li><a href="{{ url_for('home') }}" style="color:#16B6A5;">Home</a></li>
+					<li><a href="{{ url_for('welcome_set_farm') }}" style="color:#16B6A5;">New farm</a></li>
+                </ul>
+        	</div>
+
+        	<div>
+                <hr>
+        		<h4>List of my farms</h4>
+                <ul>
+                	
+                	<ol>
+                		{% for farm in farms: %}
+                			<li>
+	                			<span style="color: black;">{{ farm.farm_location }} {{ farm.farm_name }} {{ farm.farm_area / 10000 }} m2 - <input type="checkbox" checked> Default farm</span> 
+	                			<ul class="list-unstyled list-inline">
+	                				
+		                			{% for field in farm.fields.all(): %}
+		                				<li>{{ field.field_cultivation_area / 10000 }} m2</li>
+		                				<li>{{ field.field_cultivation_type }}</li>
+		                					{% for crop in field.crops.all() %}
+
+		                						<li>{{ crop._name|capitalize }} {{ crop._variety|capitalize }}</li>
+
+							                    <li>{{ (( (timenow - field.field_cultivation_start_date).days / (crop._dtm + crop._dtg) ) * 100)|round(1, 'floor') }} %</li>
+							                    <li>(Perico2000)</li>
+							                    <li><a href="#" class="btn btn-default btn-sm">add/edit ASS</a></li>
+							                   	<li><a href="#" class="btn btn-default btn-sm">add/edit field</a> <a href="#" class="btn btn-default btn-sm">edit/del farm</a></li>
+							                   	<br>
+		                					{% endfor %}
+		                			{% endfor %}
+
+		                		<hr>
+	                			</ul>
+	                		</li>
+	                	{% endfor %}
+					</ol>
+                </ul>
+        	</div>
+		</div>
+	</div>
+{% endblock %}
+
+
+_name = db.Column(db.String(25), unique=True, nullable=False)
+    _variety
+	farm_name = db.Column(db.String(25), unique=True, nullable=False)
+    farm_location = db.Column(db.String(20))
+    farm_area = db.Column(db.Float(precision=2))
+    farm_cultivation_process = db.Column(db.String(20))
+
+	field_name = db.Column(db.String(25), nullable=False)
+    field_cultivation_area = db.Column(db.Float(precision=2))
+    field_cultivation_start_date = db.Column(db.DateTime(timezone=True))
+    field_cultivation_finish_date = db.Column(db.DateTime(timezone=True))
+    field_current_yield = db.Column(db.Float(precision=2))
+    field_projected_yield = db.Column(db.Float(precision=2))
+    field_cultivation_state = db.Column(db.String(20))
+    field_cultivation_type = db.Column(db.String(5))
+
+    field_num_plants = db.Column(db.Integer)
+    field_spacing_topology = db.Column(db.String(20))
+    field_water_required_day = db.Column(db.Integer)
