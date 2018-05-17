@@ -750,6 +750,9 @@ def welcome_set_farm():
     
     form = FarmForm()               # CREATE WTForm FORM
     if form.validate_on_submit():   # IF request.methiod == 'POST'
+        def m2_to_cm2(m2):
+            return m2 * 10000
+
         # USER OBJS
         user_id = current_user.get_id()
 
@@ -767,7 +770,7 @@ def welcome_set_farm():
         farm = Farm(    user_id=user_id,
                         farm_name=farm_name,
                         farm_location=farm_location,
-                        farm_area=farm_area,
+                        farm_area=m2_to_cm2(farm_area),
                         farm_cultivation_process=farm_cultivation_process )
         print(farm)
 
@@ -1159,6 +1162,33 @@ def home():
 ##########################################################
 
 ##################
+# USER FARMS
+##################
+@app.route('/user/farm/farms', methods=['GET'])
+@login_required
+def user_farms():
+
+    user = current_user
+    farms = user.farms.all()
+
+    def progress():
+        for farm in farms:
+            print(farm)
+            for field in farm.fields.all():
+                print(field)
+                for crop in field.crops.all():
+                    print(crop)
+                    cycle_days_so_far = ( datetime.now() - field.field_cultivation_start_date ).days
+                    cycle_days = crop._dtm + crop._dtg
+                    progress = (cycle_days_so_far / cycle_days) * 100
+                    print (cycle_days_so_far, cycle_days, progress)
+        
+    progress()
+    timenow= datetime.now()
+    return render_template('user_farms.html', farms = farms, timenow=timenow)
+
+
+##################
 # USER FIELD
 ##################
 # @app.route('/user/farm/field', methods=['GET'])
@@ -1287,6 +1317,7 @@ def user_crop_status():
     
     return render_template('user_crop_status.html', crop = crop, field = field, cycle_days_so_far = cycle_days_so_far)
 
+
 ##################
 # USER NEW CROP
 ##################
@@ -1404,9 +1435,9 @@ def user_profile_edit():
     if form.validate_on_submit():   # IF request.methiod == 'POST'     
         user = User.query.filter_by(id=current_user.get_id()).first()
         # FIELD OBJS  TO DB
-        try:
+        try:            
             # IMAGE HANDLING
-            if user.image:
+            if not form.image.data == user.image:
                 image_filename = photos.save(form.image.data)
                 image_url = photos.url(image_filename)
                 user.image = image_url
