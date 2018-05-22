@@ -36,7 +36,13 @@ fh5co-active
                 			<li>
 	                			<ul class="list-inline" style="color: black;">
 	                				<li>{{ farm.farm_location }} {{ farm.farm_name }} {{ farm.farm_area / 10000 }} m2</li>
-	                				<li><input type="checkbox"> Default farm</li>
+	                				
+	                				{% if farm._default: %}
+	                					<li><input type="checkbox" onclick="return false;" checked> Default farm</li>
+	                				{% else %}
+	                					<li><input type="checkbox" onclick="return false;"> Default farm</li>
+									{% endif %}
+
 									<li><a href="#" class="btn btn-primary btn-sm">new field</a></li>
 									<li><a href="#" class="btn btn-default btn-sm">edit farm</a></li>
 									<li><a href="#" class="btn btn-danger btn-sm">delete farm</a></li>
@@ -52,7 +58,10 @@ fh5co-active
 		                						<li>{{ crop._name|capitalize }} {{ crop._variety|capitalize }}</li>
 
 							                    <li>{{ (( (timenow - field.field_cultivation_start_date).days / (crop._dtm + crop._dtg) ) * 100)|round(1, 'floor') }} %</li>
-							                    <li>(Perico2000)</li>
+
+							                    {% if field.agrimodulesystem.identifier is not none: %}
+							                    	<li>ASS: {{ field.agrimodulesystem.identifier }}</li>
+							                    {% endif %}
 							                   	<li><a href="#" class="btn btn-default btn-sm">edit field</a></li>
 							                   	<li><a href="#" class="btn btn-danger btn-sm">delete field</a></li>
 							                   	<br>
