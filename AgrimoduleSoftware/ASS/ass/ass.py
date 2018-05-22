@@ -806,19 +806,24 @@ def welcome_set_farm():
 @app.route('/user/welcome/set-field', methods=('GET', 'POST'))
 @login_required
 def welcome_set_field():
-    # print('session "farm" in Field: {}'.format(session['farm']))
-    # for farm in session['farm']:
-        # for key, val in farm.items():
-            # print (val)
-    # pre_contact = PreContactUsForm('Carlos','carlos@sv.de','+176-55858585','I would like to get a quotation for my farm 1 hectare located in Berlin')
+
+    crop_choices = Crop.query.all()
+
+
     form = FieldForm()              # CREATE WTForm FORM
+    form.field_cultivation_crop.choices = [ (crop.id, crop._name) for crop in crop_choices ]
+
+
     if form.validate_on_submit():   # IF request.methiod == 'POST'
         # USER OBJS
         user = User.query.filter_by(id = session['set_farm']['user_id']).first()
         farm = user.farms.filter_by(id = session['set_farm']['farm_id']).first()
         
         # FIELD OBJS
-        crop = Crop.query.filter_by(_name = form.field_cultivation_crop.data).first()
+        print(form.field_cultivation_crop.data)
+        print(Crop.query.filter_by(id = form.field_cultivation_crop.data).first())
+
+        crop = Crop.query.filter_by(id = form.field_cultivation_crop.data).first()
         field_name = form.field_name.data
         field_cultivation_area = form.field_cultivation_area.data
         field_cultivation_start_date = form.field_cultivation_start_date.data
@@ -833,7 +838,7 @@ def welcome_set_field():
         def num_plants():
             area_in_cm2 = m2_to_cm2(field_cultivation_area) # cm2
             distance_rows_and_columns = sqrt(area_in_cm2) # cm. since we receive an area instead of a shape, we assumed is perfect square
-            num_of_rows = (floor(distance_rows_and_columns / crop._space_x))/2 # ç
+            num_of_rows = (floor(distance_rows_and_columns / crop._space_x))/2 # 
             num_of_cols = (floor(distance_rows_and_columns / crop._space_y))/2 # since space of plant and space for walk is the same DIVIDE by 2
             num_of_plants = num_of_rows * num_of_cols
             return num_of_plants

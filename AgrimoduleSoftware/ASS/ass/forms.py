@@ -104,9 +104,7 @@ class FieldForm(FlaskForm):
     field_cultivation_area       = FloatField(label='Field Cultivation Area',
                                                 validators=[DataRequired(), NumberRange(min=1, max=5000, message='Cultivation area should be maximum as big as your farm')],render_kw={"placeholder":"500.50"})
 
-    field_cultivation_crop        = SelectField(label='Cultivation Crop',
-                                                validators=[DataRequired()],
-                                                choices=[('plum','Plum'),('romaine','Romaine'),('arugula','Arugula')])
+    field_cultivation_crop        = SelectField(label='Cultivation Crop', validators=[DataRequired()], coerce = int)
 
     field_cultivation_start_date  = DateField(label='Cultivation Start Date', format='%Y-%m-%d',
                                                 validators=[DataRequired()])
