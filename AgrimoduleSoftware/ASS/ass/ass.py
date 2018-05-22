@@ -1185,7 +1185,7 @@ def user_farms():
         
     progress()
     timenow= datetime.now()
-    return render_template('user_farms.html', farms = farms, timenow=timenow)
+    return render_template('user_farms.html', farms = farms, timenow = timenow)
 
 
 ##################
@@ -1461,7 +1461,6 @@ def user_profile_edit():
             db.session.rollback()
         flash('You updated sucessfully your profile')
         return redirect(url_for('user_profile'))
-    flash('passing here')
     return render_template('user_profile_edit.html', form=form)
 
 
