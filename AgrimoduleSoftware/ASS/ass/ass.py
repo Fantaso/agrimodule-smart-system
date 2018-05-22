@@ -123,6 +123,8 @@ class User(db.Model, UserMixin):
     confirmed_at = db.Column(db.DateTime(timezone=True), nullable=True)
     roles = db.relationship('Role', secondary=roles_users, backref=db.backref('users', lazy='dynamic'))
 
+    default_farm_id = db.Column(db.Integer, unique=True)
+
     # RELATIONSHIP
     # USER[1]-FARM[M]
     farms = db.relationship('Farm', backref='user', lazy='dynamic')
@@ -134,6 +136,8 @@ class User(db.Model, UserMixin):
     _time_created = db.Column(db.DateTime(timezone=True), server_default=func.now())
     _time_updated = db.Column(db.DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
 
+    
+    
     def __repr__(self):
         return '<user {}>'.format(self.email)
 
@@ -159,6 +163,7 @@ class Farm(db.Model):
     # FARM[1]-FIELD[M]
     fields = db.relationship('Field', backref='farm', lazy='dynamic')
 
+    _default = db.Column(db.Boolean)
     _time_created = db.Column(db.DateTime(timezone=True), server_default=func.now())
     _time_updated = db.Column(db.DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
 
@@ -188,6 +193,10 @@ class Field(db.Model):
     # field_ = db.Column(db.Float)
     # field_ = db.Column(db.Float)
     # field_ = db.Column(db.Float)
+
+    # RELATIONSHIP TO BE ADDED
+    agrimodulesystem = db.relationship('AgrimoduleSystem', uselist=False, backref='field')
+        # FIELD[1]-AGRIMODULESYSTEM[1]
 
     # RELATIONSHIP
     # FIELD[M]-CROP[M]
@@ -323,13 +332,15 @@ class AgrimoduleSystem(db.Model):
     identifier = db.Column(db.String(50), unique=True, nullable=False)
 
     # RELATIONSHIP
-     # USER[1]-AGRIMODULESYSTEM[M]
+        # USER[1]-AGRIMODULESYSTEM[M]
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-    # AGRIMODULESYSTEM[1]-AGRIMODULE[M]
+        # FIELD[1]-AGRIMODULESYSTEM[1]
+    field_id = db.Column(db.Integer, db.ForeignKey('field.id'))
+        # AGRIMODULESYSTEM[1]-AGRIMODULE[M]
     agrimodules = db.relationship('Agrimodule', backref='agrimodulesystem', lazy='dynamic')
-    # AGRIMODULESYSTEM[1]-AGRISENSOR[M]
+        # AGRIMODULESYSTEM[1]-AGRISENSOR[M]
     agrisensors = db.relationship('Agrisensor', backref='agrimodulesystem', lazy='dynamic')
-    # AGRIMODULESYSTEM[1]-AGRIPUMP[M]
+        # AGRIMODULESYSTEM[1]-AGRIPUMP[M]
     agripumps = db.relationship('Agripump', backref='agrimodulesystem', lazy='dynamic')
    
     _time_created = db.Column(db.DateTime(timezone=True), server_default=func.now())
@@ -771,7 +782,8 @@ def welcome_set_farm():
                         farm_name=farm_name,
                         farm_location=farm_location,
                         farm_area=m2_to_cm2(farm_area),
-                        farm_cultivation_process=farm_cultivation_process )
+                        farm_cultivation_process=farm_cultivation_process,
+                        _default=False)
         print(farm)
 
         # DB COMMANDS
@@ -789,6 +801,14 @@ def welcome_set_farm():
                                 'farm_cultivation_process':farm_cultivation_process})
         session.modified = True
         print (session['set_farm'])
+
+        # DEAFULT FARM
+        if current_user.farms.count() == 1: # if first time and first farm, set it as the default one
+            print('Farm default nummer {} was added and type {}'.format(farm_id, type(farm_id)))
+            current_user.default_farm_id = farm_id
+            farm._default = True
+            db.session.commit()
+
 
         # SUCESS AND REDIRECT TO NEXT STEP
         flash('''You just created farm: {}
@@ -869,9 +889,17 @@ def welcome_set_field():
                         field_water_required_day = field_water_required_day,
                         field_projected_yield = field_projected_yield)
         field.crops.append(crop)
+
         # DB COMMANDS
         db.session.add(field)
         db.session.commit()
+
+        # DEAFULT AGRIMODULE SYSTEM
+        if user.farms.first() == 1 and user.farms.first().fields.count() == 1 and user.agrimodule_systems.count() == 1: # if first time and first field, set it as the default one
+            print('Field default agrimodule system nummer {} was added and type {}'.format(field.id, type(field.id)))
+            field.agrimodulesystem = AgrimoduleSystem.query.first()
+            db.session.commit()
+
         #SUCESS AND REDIRECT TO DASHBOARD
         flash('You just created a {} in your {}'.format(field_name, farm.farm_name))
         del session['set_farm']     # ERASE SESSION OBJS
@@ -1128,7 +1156,7 @@ def add_pump():
 
 
         # OBJS SAVE ON SESSION
-        session['set_sys'].update({'pump_brand':form.pump_brand.data, 'pump_flow_rate':form.pump_flow_rate.data, 'pump_head':form.pump_head.data, 'pump_watts':form.pump_watts.data})
+        session['set_sys'].update({'pump_id':pump.id, 'pump_brand':form.pump_brand.data, 'pump_flow_rate':form.pump_flow_rate.data, 'pump_head':form.pump_head.data, 'pump_watts':form.pump_watts.data})
         session.modified = True
         print (session['set_sys'])
 
@@ -1152,12 +1180,25 @@ def add_pump():
 @app.route('/user/farm', methods=('GET', 'POST'))
 @login_required
 def home():
-    if current_user.farms.count() == 0:
+
+    user = current_user
+    default_farm = Farm.query.filter_by(id = user.default_farm_id).first()
+
+    if current_user.agrimodule_systems.count() == 0:
         flash('welcome for the first time ' + current_user.name + '!')
-        return render_template('welcome.html', current_user=current_user)
-    name = current_user.name
-    farm_name = current_user.farms.first().farm_name
-    return render_template('home.html', name=name, farm_name=farm_name)
+        print('welcome for the first time, ' + current_user.name + '!')
+        set_sys_flag = True
+        return render_template('welcome.html', current_user=current_user, set_sys_flag=set_sys_flag)
+    elif current_user.farms.count() == 0 or current_user.farms.first().fields.count() == 0:
+        flash('Now set your farm, ' + current_user.name + '!')
+        print('Now set your farm, ' + current_user.name + '!')
+        set_sys_flag = False
+        return render_template('welcome.html', current_user=current_user, set_sys_flag=set_sys_flag)
+    else:
+
+        name = current_user.name
+        farm_name = default_farm.farm_name
+        return render_template('home.html', name=name, farm_name=farm_name)
 
 
 ##########################################################
