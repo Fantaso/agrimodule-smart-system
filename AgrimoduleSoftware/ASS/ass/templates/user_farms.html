@@ -21,6 +21,8 @@ fh5co-active
                 <ul>
 					<li><a href="{{ url_for('home') }}" style="color:#16B6A5;">Home</a></li>
 					<li><a href="{{ url_for('welcome_set_farm') }}" style="color:#16B6A5;">New farm</a></li>
+					<li><a href="{{ url_for('welcome_set_sys') }}" style="color:#16B6A5;">New ASS</a></li>
+					<li><a href="{{ url_for('welcome_set_sys') }}" style="color:#16B6A5;">Add AgriSensor/AgriPump</a></li>
                 </ul>
         	</div>
 
@@ -32,7 +34,15 @@ fh5co-active
                 	<ol>
                 		{% for farm in farms: %}
                 			<li>
-	                			<span style="color: black;">{{ farm.farm_location }} {{ farm.farm_name }} {{ farm.farm_area / 10000 }} m2 - <input type="checkbox" checked> Default farm</span> 
+	                			<ul class="list-inline" style="color: black;">
+	                				
+	                				<li>{{ farm.farm_location }} {{ farm.farm_name }} {{ farm.farm_area / 10000 }} m2</li>
+	                				<li><input type="checkbox"> Default farm</li>
+									<li><a href="#" class="btn btn-primary btn-sm">new field</a></li>
+									<li><a href="#" class="btn btn-default btn-sm">edit farm</a></li>
+									<li><a href="#" class="btn btn-danger btn-sm">delete farm</a></li>
+								</ul>
+
 	                			<ul class="list-unstyled list-inline">
 	                				
 		                			{% for field in farm.fields.all(): %}
@@ -44,8 +54,8 @@ fh5co-active
 
 							                    <li>{{ (( (timenow - field.field_cultivation_start_date).days / (crop._dtm + crop._dtg) ) * 100)|round(1, 'floor') }} %</li>
 							                    <li>(Perico2000)</li>
-							                    <li><a href="#" class="btn btn-default btn-sm">add/edit ASS</a></li>
-							                   	<li><a href="#" class="btn btn-default btn-sm">add/edit field</a> <a href="#" class="btn btn-default btn-sm">edit/del farm</a></li>
+							                   	<li><a href="#" class="btn btn-default btn-sm">edit field</a></li>
+							                   	<li><a href="#" class="btn btn-danger btn-sm">delete field</a></li>
 							                   	<br>
 		                					{% endfor %}
 		                			{% endfor %}
@@ -55,6 +65,7 @@ fh5co-active
 	                		</li>
 	                	{% endfor %}
 					</ol>
+
                 </ul>
         	</div>
 		</div>
