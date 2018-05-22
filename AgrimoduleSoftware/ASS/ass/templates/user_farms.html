@@ -26,77 +26,112 @@ fh5co-active
                 </ul>
         	</div>
 
+        	<hr>
         	<div>
-                <hr>
-        		<h4>List of my farms</h4>
-                <ul>
-                	
-                	<ol>
-                		{% for farm in farms: %}
-                			<li>
-	                			<ul class="list-inline" style="color: black;">
-	                				<li>{{ farm.farm_location }} {{ farm.farm_name }} {{ farm.farm_area / 10000 }} m2</li>
-	                				
-	                				{% if farm._default: %}
-	                					<li><input type="checkbox" onclick="return false;" checked> Default farm</li>
-	                				{% else %}
-	                					<li><input type="checkbox" onclick="return false;"> Default farm</li>
-									{% endif %}
 
-									<li><a href="#" class="btn btn-primary btn-sm">new field</a></li>
-									<li><a href="#" class="btn btn-default btn-sm">edit farm</a></li>
-									<li><a href="#" class="btn btn-danger btn-sm">delete farm</a></li>
-								</ul>
+        		<div class="container">
+        		<h2>List of my farms</h2>
+        			
+        			<div class="row">
+        				<div class="col-md-1">
+        					<sup>Main</sup>
+        				</div>
+        				<div class="col-md-2">
+							<sup>Location</sup>
+        				</div>
+        				<div class="col-md-2">
+							<sup>Farm name</sup>
+        				</div>
+        				<div class="col-md-2">
+        					<sup>Farm area</sup>
+        				</div>
+        				<!-- <div class="col-md-5">
+        					<sup>Options</sup>
+        				</div> -->
+        			</div>
+        			{% for farm in farms: %}
+        			<hr>
+        			<!-- EACH FARM -->
+        			<div class="row">
+        				<div class="col-md-1">
+        					{% if farm._default: %}
+            					<input type="checkbox" onclick="return false;" checked>
+            				{% else %}
+            					<input type="checkbox" onclick="return false;">
+							{% endif %}
+        				</div>
+        				<div class="col-md-2">
+        					<h4>{{ farm.farm_location }}</h4>
+        				</div>
+        				<div class="col-md-2">
+        					<h4>{{ farm.farm_name }}</h4>
+        				</div>
+        				<div class="col-md-2">
+        					<h4>{{ farm.farm_area / 10000 }} m<sup>2</sup></h4>
+        				</div>
+        				<div class="col-md-5">
+        					<a href="#" class="btn btn-primary btn-sm">new field</a>
+							<a href="#" class="btn btn-default btn-sm">edit farm</a>
+							<a href="#" class="btn btn-danger btn-sm">delete farm</a>
+        				</div>
+        			</div>
+        			<br>
+        			<div class="row">
+        				<div class="col-md-offset-1 col-md-2">
+        					<sup>Field area</sup>
+        				</div>
+        				<div class="col-md-1">
+							<sup>Type</sup>
+        				</div>
+        				<div class="col-md-1">
+							<sup>Crop</sup>
+        				</div>
+        				<div class="col-md-1">
+        					<sup>Progress</sup>
+        				</div>
+        				<div class="col-md-1">
+        					<sup>ASS</sup>
+        				</div>
+        				<!-- <div class="col-md-4">
+        					<sup>Options</sup>
+        				</div> -->
+        			</div>
+        				<!-- EACH FIELD OF EACH FARM -->
 
-	                			<ul class="list-unstyled list-inline">
-	                				
-		                			{% for field in farm.fields.all(): %}
-		                				<li>{{ field.field_cultivation_area / 10000 }} m2</li>
-		                				<li>{{ field.field_cultivation_type }}</li>
-		                					{% for crop in field.crops.all() %}
+        			<div class="row">
+        				{% for field in farm.fields.all(): %}
+	        			
+	        				<div class="col-md-offset-1 col-md-2">
+	        					<h4>{{ field.field_cultivation_area / 10000 }} m<sup>2</sup></h4>
+	        				</div>
+	        				<div class="col-md-1">
+	        					<h4>{{ field.field_cultivation_type }}</h4>
+	        				</div>
 
-		                						<li>{{ crop._name|capitalize }} {{ crop._variety|capitalize }}</li>
+	        				{% for crop in field.crops.all() %}
+		        				<div class="col-md-1">
+		        					<h4>{{ crop._name|capitalize }} {# {{ crop._variety|capitalize }} #}</h4>
+		        				</div>
+		        				<div class="col-md-1">
+		        					<h4>{{ (( (timenow - field.field_cultivation_start_date).days / (crop._dtm + crop._dtg) ) * 100)|round(1, 'floor') }} %</h4>
+		        				</div>
+		        				<div class="col-md-1">
+		        					{% if field.agrimodulesystem.identifier is not none: %}
+										<h4>{{ field.agrimodulesystem.identifier }}</h4>
+				                    {% endif %}
+				                </div>
+		        				<div class="col-md-4">
+		        					<a href="#" class="btn btn-default btn-sm">edit field</a>
+									<a href="#" class="btn btn-danger btn-sm">delete field</a>
+		        				</div>
+	        				{% endfor %}
 
-							                    <li>{{ (( (timenow - field.field_cultivation_start_date).days / (crop._dtm + crop._dtg) ) * 100)|round(1, 'floor') }} %</li>
+	        			{% endfor %}
+        			</div>
+        			
+        			{% endfor %}
+        			
 
-							                    {% if field.agrimodulesystem.identifier is not none: %}
-							                    	<li>ASS: {{ field.agrimodulesystem.identifier }}</li>
-							                    {% endif %}
-							                   	<li><a href="#" class="btn btn-default btn-sm">edit field</a></li>
-							                   	<li><a href="#" class="btn btn-danger btn-sm">delete field</a></li>
-							                   	<br>
-		                					{% endfor %}
-		                			{% endfor %}
+        		</div>
 
-		                		<hr>
-	                			</ul>
-	                		</li>
-	                	{% endfor %}
-					</ol>
-
-                </ul>
-        	</div>
-		</div>
-	</div>
 {% endblock %}
-
-
-_name = db.Column(db.String(25), unique=True, nullable=False)
-    _variety
-	farm_name = db.Column(db.String(25), unique=True, nullable=False)
-    farm_location = db.Column(db.String(20))
-    farm_area = db.Column(db.Float(precision=2))
-    farm_cultivation_process = db.Column(db.String(20))
-
-	field_name = db.Column(db.String(25), nullable=False)
-    field_cultivation_area = db.Column(db.Float(precision=2))
-    field_cultivation_start_date = db.Column(db.DateTime(timezone=True))
-    field_cultivation_finish_date = db.Column(db.DateTime(timezone=True))
-    field_current_yield = db.Column(db.Float(precision=2))
-    field_projected_yield = db.Column(db.Float(precision=2))
-    field_cultivation_state = db.Column(db.String(20))
-    field_cultivation_type = db.Column(db.String(5))
-
-    field_num_plants = db.Column(db.Integer)
-    field_spacing_topology = db.Column(db.String(20))
-    field_water_required_day = db.Column(db.Integer)
