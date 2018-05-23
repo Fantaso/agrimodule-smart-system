@@ -89,11 +89,6 @@ class FarmForm(FlaskForm):
     farm_cultivation_process    = SelectField('Farm Cultivation Process', validators=[DataRequired()], choices=[('Organic','Organic'),('Chemical','Chemical')])
 
 
-
-
-
-
-
 class FieldForm(FlaskForm):
     field_name                    = StringField(label='Field name',
                                                 validators=[
@@ -129,6 +124,18 @@ class NewCropForm(FlaskForm):
     field_cultivation_state       = SelectField(label='Cultivation State', validators=[DataRequired()], choices=[('new','New'),('already growing','Already Growing')])
     field_cultivation_type        = SelectField(label='Cultivation Type', validators=[DataRequired()], choices=[('mono','Mono'), ('mix','Mix'), ('multi','Multi')])
 
+class PreEditFarmForm:
+    def __init__(self, farm_name, farm_location, farm_area, farm_cultivation_process):
+        self.farm_name                  = farm_name
+        self.farm_location              = farm_location
+        self.farm_area                  = farm_area
+        self.farm_cultivation_process   = farm_cultivation_process
+
+class EditFarmForm(FlaskForm):
+    farm_name                   = StringField('Farm name', validators=[DataRequired(), Length(min=2, max=30, message='''Your name needs at least 2 characters.''')])
+    farm_location               = StringField('Farm location', validators=[DataRequired(), Length(min=2, max=30, message='''Your name needs at least 2 characters.''')])
+    farm_area                   = FloatField('Farm Cultivation Area', validators=[DataRequired(), NumberRange(min=1, max=5000, message='Area between 1 and 5000 m2')])
+    farm_cultivation_process    = SelectField('Farm Cultivation Process', validators=[DataRequired()], choices=[('Organic','Organic'),('Chemical','Chemical')])
 
 
 def function():
