@@ -116,9 +116,7 @@ class FieldForm(FlaskForm):
                                                 choices=[('mono','Mono'), ('mix','Mix'), ('multi','Multi')])
 class PreNewCropForm:
     def __init__(self, field_cultivation_area, field_cultivation_start_date, field_cultivation_state, field_cultivation_type):
-        # self.farm_choices                    = farm_choices
         self.field_cultivation_area          = field_cultivation_area
-        # self.field_cultivation_crop          = field_cultivation_crop
         self.field_cultivation_start_date    = field_cultivation_start_date
         self.field_cultivation_state         = field_cultivation_state
         self.field_cultivation_type          = field_cultivation_type

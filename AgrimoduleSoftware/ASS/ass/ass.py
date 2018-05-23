@@ -1233,7 +1233,7 @@ def user_farms():
                     # print (cycle_days_so_far, cycle_days, progress)
         
     progress()
-    timenow= datetime.now()
+    timenow = datetime.now()
     return render_template('user_farms.html', farms = farms, timenow = timenow)
 
 
@@ -1411,8 +1411,8 @@ def user_new_crop():
             fields_in_farm = farm.fields.all()
             sum_areas = 0
             
-            for field in fields_in_farm:
-                sum_areas += field.field_cultivation_area # in cm2
+            for each_field in fields_in_farm:
+                sum_areas += each_field.field_cultivation_area # in cm2
             new_area = m2_to_cm2(form.field_cultivation_area.data) # in cm2
 
             result = farm_area - sum_areas - new_area
@@ -1475,29 +1475,100 @@ def user_new_crop():
 ##################
 # USER EDIT CROP
 ##################
-@app.route('/user/farm/field/edit-crop', methods=['GET', 'POST'])
+@app.route('/user/farm/field/edit-crop/<field_id>', methods=['GET', 'POST'])
 @login_required
-def user_edit_crop():
+def user_edit_crop(field_id):
     
+
+    # INTERNAL METHODS
+    def cm2_to_m2(cm2):
+        return cm2 / 10000
+
     # get farm id from link
     # get field id from link
 
-    farm = current_user.farms.filter_by(id = 1).first()
-    field = farm.fields.filter_by(id = 1).first()
+    
+    field = Field.query.filter_by(id = field_id).first()
+    print(field)
+    # farm = current_user.farms.filter_by(id = 1).first()
+    farm = Farm.query.filter_by(id = field.farm_id).first()
+    print(farm)
+    crop = field.crops.first()
 
-    myField = PreNewCropForm(field_cultivation_area = 500,
-                            field_cultivation_start_date = datetime(2018, 4, 25),
-                            field_cultivation_state = 'New',
-                            field_cultivation_type = 'Mono')
+    myField = PreNewCropForm(field_cultivation_area = cm2_to_m2(field.field_cultivation_area),
+                            field_cultivation_start_date = field.field_cultivation_start_date,
+                            field_cultivation_state = field.field_cultivation_state,
+                            field_cultivation_type = field.field_cultivation_type)
 
     form = NewCropForm(obj=myField)
-    form.farm_choices.choices = farm_choices = [(1,'sl')] # FARM
-    form.field_cultivation_crop.choices = field_cultivation_crop = [(2,'2')] # CROP
+    form.farm_choices.choices = [ (farm.id, farm.farm_name) ] # FARM
+    form.field_cultivation_crop.choices = [ (crop.id, crop._name) ] # CROP
+    
     # POST REQUEST 
     if form.validate_on_submit():
 
+        def m2_to_cm2(m2):
+            return m2 * 10000
+
+        def num_plants(field_cultivation_area, crop):
+            area_in_cm2 = m2_to_cm2(field_cultivation_area) # cm2
+            distance_rows_and_columns = sqrt(area_in_cm2) # cm. since we receive an area instead of a shape, we assumed is perfect square
+            num_of_rows = (floor(distance_rows_and_columns / crop._space_x))/2 # 
+            num_of_cols = (floor(distance_rows_and_columns / crop._space_y))/2 # since space of plant and space for walk is the same DIVIDE by 2
+            num_of_plants = num_of_rows * num_of_cols
+            return num_of_plants
+
+        # USER OBJS
+        user_id = current_user.get_id()
+        user = User.query.filter_by(id = user_id).first()
+        farm = user.farms.filter_by(id = form.farm_choices.data).first()
+        
+        # VALIDATE FIELD AREA
+        def validate_area():
+            farm_area = farm.farm_area # in cm2
+            print('farm AREA: {}'.format(farm_area))
+            fields_in_farm = farm.fields.all()
+            print('Fields in FARM: {}'.format(fields_in_farm))
+            sum_areas = 0
+            
+            for each_field in fields_in_farm:
+                print(each_field, each_field.id, each_field.field_cultivation_area)
+                if each_field.id != field.id:
+                    print(each_field.id, field_id)
+                    sum_areas += each_field.field_cultivation_area # in cm2
+                    print(sum_areas)
+            new_area = m2_to_cm2(form.field_cultivation_area.data) # in cm2
+
+            result = farm_area - sum_areas - new_area
+            print (result)
+
+            if result < 0:
+                return False    
+            return True
+
+        if not validate_area():
+            flash('Your new crop area should not exceed the available land on your farm: {}'.format(farm.farm_name))
+            return render_template('user_edit_crop.html', form=form, field_id = field.id)
+        
+        # FIELD OBJS TO DB
+        field.field_cultivation_area = m2_to_cm2(form.field_cultivation_area.data) # in m2
+        field.field_cultivation_start_date = form.field_cultivation_start_date.data
+        field.field_cultivation_state = form.field_cultivation_state.data
+        field.field_cultivation_type = form.field_cultivation_type.data
+
+        # Calculated vars
+        field.field_cultivation_finish_date = field.field_cultivation_start_date + timedelta(crop._dtg + crop._dtm) # datetime
+        field.field_num_plants = num_plants(field_cultivation_area = form.field_cultivation_area.data, crop = crop) # number Integer
+        field.field_projected_yield = crop._yield * field.field_num_plants # gr
+        field.field_water_required_day = field.field_num_plants * crop._water
+
+        # DB COMMANDS
+        db.session.commit()
+
+        #SUCESS AND REDIRECT TO DASHBOARD
+        flash('You just edited field: {} in your farm: {}'.format(field.field_name, farm.farm_name))
         return redirect(url_for('user_farms'))
-    return render_template('user_edit_crop.html', form=form)
+    return render_template('user_edit_crop.html', form=form, field_id = field_id)
 
 
 
