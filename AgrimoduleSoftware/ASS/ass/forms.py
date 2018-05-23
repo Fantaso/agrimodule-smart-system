@@ -114,6 +114,14 @@ class FieldForm(FlaskForm):
     field_cultivation_type        = SelectField(label='Cultivation Type',
                                                 validators=[DataRequired()],
                                                 choices=[('mono','Mono'), ('mix','Mix'), ('multi','Multi')])
+class PreNewCropForm:
+    def __init__(self, field_cultivation_area, field_cultivation_start_date, field_cultivation_state, field_cultivation_type):
+        # self.farm_choices                    = farm_choices
+        self.field_cultivation_area          = field_cultivation_area
+        # self.field_cultivation_crop          = field_cultivation_crop
+        self.field_cultivation_start_date    = field_cultivation_start_date
+        self.field_cultivation_state         = field_cultivation_state
+        self.field_cultivation_type          = field_cultivation_type
 
 class NewCropForm(FlaskForm):
     farm_choices                  = SelectField(label='Choose Farm', validators=[DataRequired()], coerce = int)
@@ -122,6 +130,7 @@ class NewCropForm(FlaskForm):
     field_cultivation_start_date  = DateField(label='Cultivation Start Date', format='%Y-%m-%d', validators=[DataRequired()])
     field_cultivation_state       = SelectField(label='Cultivation State', validators=[DataRequired()], choices=[('new','New'),('already growing','Already Growing')])
     field_cultivation_type        = SelectField(label='Cultivation Type', validators=[DataRequired()], choices=[('mono','Mono'), ('mix','Mix'), ('multi','Multi')])
+
 
 
 def function():
