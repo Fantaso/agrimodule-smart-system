@@ -1367,6 +1367,46 @@ def user_crop_status():
     return render_template('user_crop_status.html', crop = crop, field = field, cycle_days_so_far = cycle_days_so_far)
 
 
+
+
+
+
+
+##################
+# USER DELETE FARM
+##################
+@app.route('/user/farm/delete-farm/<farm_id>', methods=['GET'])
+@login_required
+def user_delete_farm(farm_id):
+
+    try:
+        farm_to_del = Farm.query.filter_by(id = farm_id).first()
+        fields_to_del_in_farm = farm_to_del.fields.all()
+        for field in fields_to_del_in_farm:
+            db.session.delete(field)
+        db.session.delete(farm_to_del)
+        db.session.commit()
+        flash('You just deleted the farm: {}'.format(farm_to_del.farm_name))
+        return redirect(url_for('user_farms'))
+    except Exception as e:
+        flash('Error: ' + e)
+        db.session.rollback()
+    else:
+        pass
+    finally:
+        pass
+    
+
+    flash('Error in TRY')
+    return render_template('user_farms.html')
+
+
+
+
+
+
+
+
 ##################
 # USER NEW CROP
 ##################
