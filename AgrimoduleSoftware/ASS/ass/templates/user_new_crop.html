@@ -17,10 +17,9 @@ fh5co-active
         <hr>
         <br>
         <ul>
-          <li><a href="{{ url_for('home') }}" style="color:#16B6A5;">Home</a><br></li>
-          <li><a href="{{ url_for('user_weather') }}" style="color:#16B6A5;">Weather</a><br></li>
-
+          <li><a href="{{ url_for('user_farms') }}" style="color:#16B6A5;">My Farms</a><br></li>
         </ul>
+        <hr>
           <div class="container">
             <form method="POST" action="{{ url_for('user_new_crop') }}">
               {{ form.csrf_token }}
