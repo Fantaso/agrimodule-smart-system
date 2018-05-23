@@ -70,7 +70,7 @@ fh5co-active
         					<h3>{{ farm.farm_area / 10000 }} m<sup>2</sup></h3>
         				</div>
         				<div class="col-md-5">
-        					<a href="#" class="btn btn-primary btn-sm">new crop</a>
+        					<a href="{{ url_for('user_new_crop', farm_id=farm.id) }}" class="btn btn-primary btn-sm">new crop</a>
 							<a href="#" class="btn btn-default btn-sm">edit</a>
 							<a href="#" class="btn btn-danger btn-sm">delete</a>
         				</div>

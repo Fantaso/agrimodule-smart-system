@@ -1371,15 +1371,20 @@ def user_crop_status():
 # USER NEW CROP
 ##################
 @app.route('/user/farm/field/new-crop', methods=['GET', 'POST'])
+@app.route('/user/farm/field/new-crop/<farm_id>', methods=['GET'])
 @login_required
-def user_new_crop():
+def user_new_crop(farm_id = None):
 
     # DYNAMIC FORM
     farm_choices = current_user.farms.all() # FARM CHOICE
     crop_choices = Crop.query.all() # CROP CHOICE
 
     form = NewCropForm()
-    form.farm_choices.choices = [ (farm.id, farm.farm_name) for farm in farm_choices ] # FARM
+    if farm_id == None:
+        form.farm_choices.choices = [ (farm.id, farm.farm_name) for farm in farm_choices ] # FARM
+    else:
+        farm = current_user.farms.filter_by(id = farm_id).first()
+        form.farm_choices.choices = [ (farm.id, farm.farm_name) ] # FARM
     form.field_cultivation_crop.choices = [ (crop.id, crop._name) for crop in crop_choices ] # CROP
 
     # POST REQUEST 
