@@ -15,7 +15,7 @@ from forms import EmailForm, EmailAndTextForm, ContactUsForm # Wesite Forms and 
 from forms import RegisterFormExt, UserProfileForm, PreUserProfileForm # User Forms
 from forms import FarmForm, FieldForm # Welcome Forms
 from forms import FarmInfoForm, AddAgrisysForm, InstallAgrisysForm, AddPumpForm # Set-up System Forms
-from forms import NewCropForm # Manage Farms Forms
+from forms import NewCropForm, PreNewCropForm # Manage Farms Forms
 from flask_uploads import UploadSet, configure_uploads, IMAGES
 
 from datetime import datetime, timedelta
@@ -1462,6 +1462,54 @@ def user_new_crop():
         return redirect(url_for('user_farms'))
 
     return render_template('user_new_crop.html', form=form)
+
+
+
+
+
+
+
+
+
+
+##################
+# USER EDIT CROP
+##################
+@app.route('/user/farm/field/edit-crop', methods=['GET', 'POST'])
+@login_required
+def user_edit_crop():
+    
+    # get farm id from link
+    # get field id from link
+
+    farm = current_user.farms.filter_by(id = 1).first()
+    field = farm.fields.filter_by(id = 1).first()
+
+    myField = PreNewCropForm(field_cultivation_area = 500,
+                            field_cultivation_start_date = datetime(2018, 4, 25),
+                            field_cultivation_state = 'New',
+                            field_cultivation_type = 'Mono')
+
+    form = NewCropForm(obj=myField)
+    form.farm_choices.choices = farm_choices = [(1,'sl')] # FARM
+    form.field_cultivation_crop.choices = field_cultivation_crop = [(2,'2')] # CROP
+    # POST REQUEST 
+    if form.validate_on_submit():
+
+        return redirect(url_for('user_farms'))
+    return render_template('user_edit_crop.html', form=form)
+
+
+
+
+
+
+
+
+
+
+
+
 
 ##################
 # USER WEATHER
