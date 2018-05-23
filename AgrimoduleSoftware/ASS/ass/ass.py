@@ -1571,8 +1571,31 @@ def user_edit_crop(field_id):
     return render_template('user_edit_crop.html', form=form, field_id = field_id)
 
 
+##################
+# USER DELETE CROP
+##################
+@app.route('/user/farm/field/delete-crop/<field_id>', methods=['GET'])
+@login_required
+def user_delete_crop(field_id):
 
+    try:
+        field_to_del = Field.query.filter_by(id = field_id).first()
+        farm = Farm.query.filter_by(id = field_to_del.farm_id).first()
+        db.session.delete(field_to_del)
+        db.session.commit()
+        flash('You just deleted field: {} in your farm: {}'.format(field_to_del.field_name, farm.farm_name))
+        return redirect(url_for('user_farms'))
+    except Exception as e:
+        flash('Error: ' + e)
+        db.session.rollback()
+    else:
+        pass
+    finally:
+        pass
+    
 
+    flash('Error in TRY')
+    return render_template('user_farms.html')
 
 
 

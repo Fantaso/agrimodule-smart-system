@@ -122,7 +122,7 @@ fh5co-active
 				                </div>
 		        				<div class="col-md">
 		        					<a href="{{ url_for('user_edit_crop', field_id=field.id) }}" class="btn btn-default btn-sm">edit</a>
-									<a href="#" class="btn btn-danger btn-sm">delete</a>
+									<a href="{{ url_for('user_delete_crop', field_id=field.id) }}" class="btn btn-danger btn-sm">delete</a>
 		        				</div>
 	        				{% endfor %}
 
