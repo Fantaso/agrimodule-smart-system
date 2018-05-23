@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% from "_renderfield.html" import render_field, render_field_with_errors %}
 
 {% block title %}
 	New Crop
@@ -20,6 +21,38 @@ fh5co-active
           <li><a href="{{ url_for('user_weather') }}" style="color:#16B6A5;">Weather</a><br></li>
 
         </ul>
+          <div class="container">
+            <form method="POST" action="{{ url_for('user_new_crop') }}">
+              {{ form.csrf_token }}
+              <div class="row">
+                <div class="col-md-12">
+                  <!-- Choose farm -->
+                  <div class="form-group">
+                    {{ render_field_with_errors(form.farm_choices, class="form-control") }}
+                  </div>
+                  <!--  -->
+                  <div class="form-group">
+                    {{ render_field_with_errors(form.field_cultivation_area, class="form-control") }}
+                  </div>
+                  <div class="form-group">
+                    {{ render_field_with_errors(form.field_cultivation_crop, class="form-control") }}
+                  </div>
+                  <div class="form-group">
+                    {{ render_field_with_errors(form.field_cultivation_start_date, class="form-control") }}
+                  </div>
+                  <div class="form-group">
+                    {{ render_field_with_errors(form.field_cultivation_state, class="form-control") }}
+                  </div>
+                  <div class="form-group">
+                    {{ render_field_with_errors(form.field_cultivation_type, class="form-control") }}
+                  </div>
+                  <div class="form-group">
+                    <input type="submit" class="btn btn-primary btn-md" value="Create Field!">
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
 	</div>
 
 </div>

@@ -61,18 +61,18 @@ fh5co-active
 							{% endif %}
         				</div>
         				<div class="col-md-2">
-        					<h4>{{ farm.farm_location }}</h4>
+        					<h3>{{ farm.farm_location }}</h3>
         				</div>
         				<div class="col-md-2">
-        					<h4>{{ farm.farm_name }}</h4>
+        					<h3>{{ farm.farm_name }}</h3>
         				</div>
         				<div class="col-md-2">
-        					<h4>{{ farm.farm_area / 10000 }} m<sup>2</sup></h4>
+        					<h3>{{ farm.farm_area / 10000 }} m<sup>2</sup></h3>
         				</div>
         				<div class="col-md-5">
-        					<a href="#" class="btn btn-primary btn-sm">new field</a>
-							<a href="#" class="btn btn-default btn-sm">edit farm</a>
-							<a href="#" class="btn btn-danger btn-sm">delete farm</a>
+        					<a href="#" class="btn btn-primary btn-sm">new crop</a>
+							<a href="#" class="btn btn-default btn-sm">edit</a>
+							<a href="#" class="btn btn-danger btn-sm">delete</a>
         				</div>
         			</div>
         			<br>
@@ -97,15 +97,15 @@ fh5co-active
         				</div> -->
         			</div>
         				<!-- EACH FIELD OF EACH FARM -->
-
-        			<div class="row">
-        				{% for field in farm.fields.all(): %}
+        			{% for field in farm.fields.all(): %}
+        				<div class="row">
+        				
 	        			
 	        				<div class="col-md-offset-1 col-md-2">
 	        					<h4>{{ field.field_cultivation_area / 10000 }} m<sup>2</sup></h4>
 	        				</div>
 	        				<div class="col-md-1">
-	        					<h4>{{ field.field_cultivation_type }}</h4>
+	        					<h4>{{ field.field_cultivation_type|capitalize }}</h4>
 	        				</div>
 
 	        				{% for crop in field.crops.all() %}
@@ -120,14 +120,15 @@ fh5co-active
 										<h4>{{ field.agrimodulesystem.identifier }}</h4>
 				                    {% endif %}
 				                </div>
-		        				<div class="col-md-4">
-		        					<a href="#" class="btn btn-default btn-sm">edit field</a>
-									<a href="#" class="btn btn-danger btn-sm">delete field</a>
+		        				<div class="col-md">
+		        					<a href="#" class="btn btn-default btn-sm">edit</a>
+									<a href="#" class="btn btn-danger btn-sm">delete</a>
 		        				</div>
 	        				{% endfor %}
 
-	        			{% endfor %}
-        			</div>
+	        			
+        				</div>
+        			{% endfor %}
         			
         			{% endfor %}
         			
