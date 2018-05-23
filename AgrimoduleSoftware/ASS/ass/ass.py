@@ -1222,15 +1222,15 @@ def user_farms():
 
     def progress():
         for farm in farms:
-            print(farm)
+            # print(farm)
             for field in farm.fields.all():
-                print(field)
+                # print(field)
                 for crop in field.crops.all():
-                    print(crop)
+                    # print(crop)
                     cycle_days_so_far = ( datetime.now() - field.field_cultivation_start_date ).days
                     cycle_days = crop._dtm + crop._dtg
                     progress = (cycle_days_so_far / cycle_days) * 100
-                    print (cycle_days_so_far, cycle_days, progress)
+                    # print (cycle_days_so_far, cycle_days, progress)
         
     progress()
     timenow= datetime.now()
@@ -1374,66 +1374,23 @@ def user_crop_status():
 @login_required
 def user_new_crop():
 
-    # FARM CHOICE
-    farm_choices = current_user.farms.all()
-    # AREA VALIDATOR
-    # , NumberRange(min=1, max=5000, message='Cultivation area should be maximum as big as your farm')],render_kw={"placeholder":"500.50"}
+    # DYNAMIC FORM
+    farm_choices = current_user.farms.all() # FARM CHOICE
+    crop_choices = Crop.query.all() # CROP CHOICE
 
-    # CROP CHOICE
-    crop_choices = Crop.query.all()
-
-    # FORM
     form = NewCropForm()
     form.farm_choices.choices = [ (farm.id, farm.farm_name) for farm in farm_choices ] # FARM
-    # form.field_cultivation_area.render_kw = [ {'placeholder':'Field area should not exceed the available land on your farm'} ] # CROP
-    # NumberRange(min=5, max=5000, message='Area between 5 and 5000 m2')
     form.field_cultivation_crop.choices = [ (crop.id, crop._name) for crop in crop_choices ] # CROP
 
-    
+    # POST REQUEST 
     if form.validate_on_submit():
 
+        # INTERNAL METHODS
         def cm2_to_m2(cm2):
             return cm2 / 10000
 
         def m2_to_cm2(m2):
             return m2 * 10000
-
-        user_id = current_user.get_id()
-
-
-        # USER OBJS
-        user = User.query.filter_by(id = user_id).first()
-        farm = user.farms.filter_by(id = form.farm_choices.data).first()
-        
-        # VALIDATE FIELD AREA
-        def validate_area():
-            farm_area = farm.farm_area # in cm2
-            fields_in_farm = farm.fields.all()
-            for field in fields_in_farm:
-                sum_areas =+ field.field_cultivation_area # in cm2
-            new_area = m2_to_cm2(form.field_cultivation_area.data) # in cm2
-
-            result = farm_area - sum_areas - new_area
-
-            if result <= 0:
-                return False
-                
-            return True
-
-        if not validate_area():
-            flash('Your new crop area should not exceed the available land on your farm: {}'.format(farm.farm_name))
-            return redirect(url_for('user_new_crop', form=form))
-
-        # FIELD OBJS
-        # print(form.field_cultivation_crop.data)
-        # print(Crop.query.filter_by(id = form.field_cultivation_crop.data).first())
-
-        crop = Crop.query.filter_by(id = form.field_cultivation_crop.data).first()
-        field_cultivation_area = form.field_cultivation_area.data
-        field_cultivation_start_date = form.field_cultivation_start_date.data
-        field_cultivation_state = form.field_cultivation_state.data
-        field_cultivation_type = form.field_cultivation_type.data
-
 
         def num_plants():
             area_in_cm2 = m2_to_cm2(field_cultivation_area) # cm2
@@ -1443,18 +1400,44 @@ def user_new_crop():
             num_of_plants = num_of_rows * num_of_cols
             return num_of_plants
 
+        # USER OBJS
+        user_id = current_user.get_id()
+        user = User.query.filter_by(id = user_id).first()
+        farm = user.farms.filter_by(id = form.farm_choices.data).first()
+        
+        # VALIDATE FIELD AREA
+        def validate_area():
+            farm_area = farm.farm_area # in cm2
+            fields_in_farm = farm.fields.all()
+            sum_areas = 0
+            
+            for field in fields_in_farm:
+                sum_areas += field.field_cultivation_area # in cm2
+            new_area = m2_to_cm2(form.field_cultivation_area.data) # in cm2
+
+            result = farm_area - sum_areas - new_area
+
+            if result < 0:
+                return False    
+            return True
+
+        if not validate_area():
+            flash('Your new crop area should not exceed the available land on your farm: {}'.format(farm.farm_name))
+            return render_template('user_new_crop.html', form=form)
+            
+        # Data from Form
+        crop = Crop.query.filter_by(id = form.field_cultivation_crop.data).first()
+        field_cultivation_area = form.field_cultivation_area.data # in m2
+        field_cultivation_start_date = form.field_cultivation_start_date.data
+        field_cultivation_state = form.field_cultivation_state.data
+        field_cultivation_type = form.field_cultivation_type.data
+
         # Calculated vars
         field_cultivation_finish_date = field_cultivation_start_date + timedelta(crop._dtg + crop._dtm) # datetime
         field_num_plants = num_plants() # number Integer
         field_projected_yield = crop._yield * field_num_plants # gr
         field_current_yield = 0
         field_water_required_day = field_num_plants * crop._water
-
-        print('''finish date: {}
-                 num plants: {} #
-                 project yield: {} gr
-                 water per day {} ml'''.format(field_cultivation_finish_date, field_num_plants, field_projected_yield, field_water_required_day))
-        
 
         # FIELD OBJS TO DB
         field = Field(  field_name=crop._name,
@@ -1473,12 +1456,6 @@ def user_new_crop():
         # DB COMMANDS
         db.session.add(field)
         db.session.commit()
-
-        # # DEAFULT AGRIMODULE SYSTEM
-        # if user.farms.first() == 1 and user.farms.first().fields.count() == 1 and user.agrimodule_systems.count() == 1: # if first time and first field, set it as the default one
-        #     print('Field default agrimodule system nummer {} was added and type {}'.format(field.id, type(field.id)))
-        #     field.agrimodulesystem = AgrimoduleSystem.query.first()
-        #     db.session.commit()
 
         #SUCESS AND REDIRECT TO DASHBOARD
         flash('You just created a {} in your {}'.format(crop._name, farm.farm_name))
