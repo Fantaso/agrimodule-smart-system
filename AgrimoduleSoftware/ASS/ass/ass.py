@@ -15,7 +15,7 @@ from forms import EmailForm, EmailAndTextForm, ContactUsForm # Wesite Forms and 
 from forms import RegisterFormExt, UserProfileForm, PreUserProfileForm # User Forms
 from forms import FarmForm, FieldForm # Welcome Forms
 from forms import FarmInfoForm, AddAgrisysForm, InstallAgrisysForm, AddPumpForm # Set-up System Forms
-from forms import NewCropForm, PreNewCropForm # Manage Farms Forms
+from forms import NewCropForm, PreNewCropForm, EditFarmForm, PreEditFarmForm # Manage Farms Forms
 from flask_uploads import UploadSet, configure_uploads, IMAGES
 
 from datetime import datetime, timedelta
@@ -1369,6 +1369,84 @@ def user_crop_status():
 
 
 
+##################
+# USER EDIT FARM
+##################
+@app.route('/user/farm/edit-farm/<farm_id>', methods=['GET', 'POST'])
+@login_required
+def user_edit_farm(farm_id = 0):
+    
+    try:
+        
+
+
+        # None should pass to this route without the farm ID
+        if farm_id == 0:
+            return redirect(url_for('home'))
+
+        # INTERNAL METHODS
+        def cm2_to_m2(cm2):
+            return cm2 / 10000
+
+        def m2_to_cm2(m2):
+            return m2 * 10000
+
+
+        farm = Farm.query.filter_by(id = farm_id).first()
+
+        myFarm = PreEditFarmForm(   farm_name = farm.farm_name,
+                                    farm_location = farm.farm_location,
+                                    farm_area = cm2_to_m2(farm.farm_area),
+                                    farm_cultivation_process = farm.farm_cultivation_process)
+
+
+        form = EditFarmForm(obj=myFarm)
+        if form.validate_on_submit():
+
+            # VALIDATE FIELD AREA
+            def validate_area():
+                farm_area = m2_to_cm2(form.farm_area.data) # in cm2
+                fields_in_farm = farm.fields.all()
+                sum_areas = 0
+                
+                for each_field in fields_in_farm:
+                    sum_areas += each_field.field_cultivation_area # in cm2
+                result = farm_area - sum_areas
+
+                if result < 0:
+                    return False    
+                return True
+
+            if not validate_area():
+                flash('Your new farm area should not be smaller than the total land of all your fields in: {}'.format(farm.farm_name))
+                return render_template('user_edit_farm.html', form=form, farm_id = farm.id)
+
+
+            # SAVING FORM DATA IN SESSION OBJ
+            farm.farm_name = form.farm_name.data
+            farm.farm_location = form.farm_location.data
+            farm.farm_area = m2_to_cm2(form.farm_area.data)
+            farm.farm_cultivation_process = form.farm_cultivation_process.data
+
+            # DB COMMANDS
+            db.session.commit()
+
+            flash('You just edited your farm: {}'.format(farm.farm_name))
+            return redirect(url_for('user_farms'))
+    
+
+        return render_template('user_edit_farm.html', form=form, farm_id = farm_id)
+    
+
+
+
+
+    except Exception as e:
+        flash('that farm doesnt exist' + str(e))
+    
+    
+    
+
 
 
 
@@ -1391,6 +1469,7 @@ def user_delete_farm(farm_id):
     except Exception as e:
         flash('Error: ' + e)
         db.session.rollback()
+        return render_template('user_farms.html')
     else:
         pass
     finally:
@@ -1571,21 +1650,15 @@ def user_edit_crop(field_id):
         # VALIDATE FIELD AREA
         def validate_area():
             farm_area = farm.farm_area # in cm2
-            print('farm AREA: {}'.format(farm_area))
             fields_in_farm = farm.fields.all()
-            print('Fields in FARM: {}'.format(fields_in_farm))
             sum_areas = 0
             
             for each_field in fields_in_farm:
-                print(each_field, each_field.id, each_field.field_cultivation_area)
                 if each_field.id != field.id:
-                    print(each_field.id, field_id)
                     sum_areas += each_field.field_cultivation_area # in cm2
-                    print(sum_areas)
             new_area = m2_to_cm2(form.field_cultivation_area.data) # in cm2
 
             result = farm_area - sum_areas - new_area
-            print (result)
 
             if result < 0:
                 return False    
