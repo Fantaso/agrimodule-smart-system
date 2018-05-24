@@ -131,8 +131,8 @@ class User(db.Model, UserMixin):
     # RELATIONSHIP
     # USER[1]-FARM[M]
     farms = db.relationship('Farm', backref='user', lazy='dynamic')
-    # USER[1]-AGRIMODULESYSTEM[M]
-    agrimodule_systems = db.relationship('AgrimoduleSystem', backref='user', lazy='dynamic')
+    # USER[1]-AGRIMODULE[M]
+    agrimodules = db.relationship('Agrimodule', backref='user', lazy='dynamic')
     # USER[1]-PUMP[M]
     pumps = db.relationship('Pump', backref='user', lazy='dynamic')
 
@@ -198,8 +198,8 @@ class Field(db.Model):
     # field_ = db.Column(db.Float)
 
     # RELATIONSHIP TO BE ADDED
-    agrimodulesystem = db.relationship('AgrimoduleSystem', uselist=False, backref='field')
-        # FIELD[1]-AGRIMODULESYSTEM[1]
+    agrimodule = db.relationship('Agrimodule', uselist=False, backref='field')
+        # FIELD[1]-AGRIMODULE[1]
 
     # RELATIONSHIP
     # FIELD[M]-CROP[M]
@@ -326,73 +326,69 @@ class Pump(db.Model):
     def __repr__(self):
         return '<pump {}>'.format(self.pump_brand)   
 
-class AgrimoduleSystem(db.Model):
+class Agrimodule(db.Model):
     """Each agrimodule smart system is unique and has am agrimodule an agripump and maybe agresiensor and other agripumps depending on the complaexity of the farm
     and can be added to any user any farm with a unique identuifier which can connect the data being sent to server to an specific User.Model/Field.Model
     Each agrimodule"""
-    __tablename__ = 'agrimodulesystem'
+    __tablename__ = 'agrimodules'
     id = db.Column(db.Integer, primary_key=True)
     identifier = db.Column(db.String(50), unique=True, nullable=False)
+    lat = db.Column(db.Float(precision=8))
+    lon = db.Column(db.Float(precision=8))
+    batt_status = db.Column(db.Integer)
+
 
     # RELATIONSHIP
-        # USER[1]-AGRIMODULESYSTEM[M]
+        # USER[1]-agrimodule[M]
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-        # FIELD[1]-AGRIMODULESYSTEM[1]
+        # FIELD[1]-agrimodule[1]
     field_id = db.Column(db.Integer, db.ForeignKey('field.id'))
-        # AGRIMODULESYSTEM[1]-AGRIMODULE[M]
-    agrimodules = db.relationship('Agrimodule', backref='agrimodulesystem', lazy='dynamic')
-        # AGRIMODULESYSTEM[1]-AGRISENSOR[M]
-    agrisensors = db.relationship('Agrisensor', backref='agrimodulesystem', lazy='dynamic')
-        # AGRIMODULESYSTEM[1]-AGRIPUMP[M]
-    agripumps = db.relationship('Agripump', backref='agrimodulesystem', lazy='dynamic')
+        # AGRIMODULE[1]-MEASUREMENT[M]
+    measurements = db.relationship('Measurement', backref='agrimodule', lazy='dynamic')
+        # AGRIMODULE[1]-AGRISENSOR[M]
+    agrisensors = db.relationship('Agrisensor', backref='agrimodule', lazy='dynamic')
+        # AGRIMODULE[1]-AGRIPUMP[M]
+    agripumps = db.relationship('Agripump', backref='agrimodule', lazy='dynamic')
    
     _time_created = db.Column(db.DateTime(timezone=True), server_default=func.now())
     _time_updated = db.Column(db.DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
 
     def __repr__(self):
-        return '<agrimodulesystem {}>'.format(self.identifier)
+        return '<agrimodule {}>'.format(self.identifier)
 
 
-class Agrimodule(db.Model):
-    """each agrimodule has a different table where all data that is measured by agrimodule is saved in this model"""
-    __tablename__ = 'agrimodule'
-    id = db.Column(db.Integer, primary_key=True)
-    identifier = db.Column(db.String(50), unique=True)    
-    lat = db.Column(db.Float(precision=8))
-    lon = db.Column(db.Float(precision=8))
-    
-    soil_ph = db.Column(db.Float(precision=4))
-    soil_nutrient = db.Column(db.Float(precision=4))
-    soil_temp = db.Column(db.Float(precision=4))
-    soil_humi = db.Column(db.Float(precision=4))
-
-    air_temp = db.Column(db.Float(precision=4))
-    air_humi = db.Column(db.Float(precision=4))
-    air_pres = db.Column(db.Float(precision=4))
-    
-    solar_radiation = db.Column(db.Float(precision=4))
-    batt_status = db.Column(db.Integer)
-    
-    timestamp = db.Column(db.DateTime(timezone=True))
-    
-    # RELATIONSHIP
-    # AGRIMODULESYSTEM[1]-AGRIMODULE[M]
-    agrimodulesystem_id = db.Column(db.Integer, db.ForeignKey('agrimodulesystem.id'))
-
-    _time_created = db.Column(db.DateTime(timezone=True), server_default=func.now())
-    _time_updated = db.Column(db.DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
-
-    def __repr__(self):
-        return '<agrimodule {}>'.format(self.id)
 
 class Agrisensor(db.Model):
     """each agrimodule has a different table where all data that is measured by agrimodule is saved in this model"""
-    __tablename__ = 'agrisensor'
+    __tablename__ = 'agrisensors'
+    
     id = db.Column(db.Integer, primary_key=True)
+   
     identifier = db.Column(db.String(50), unique=True)
     lat = db.Column(db.Float(precision=8))
     lon = db.Column(db.Float(precision=8))
+    batt_status = db.Column(db.Integer)
     
+    
+    # RELATIONSHIP
+    # agrimodule[1]-AGRIMODULE[M]
+    agrimodule_id = db.Column(db.Integer, db.ForeignKey('agrimodules.id'))
+    # AGRIMODULE[1]-MEASUREMENT[M]
+    measurements = db.relationship('Measurement', backref='agrisensor', lazy='dynamic')
+
+    # SETTINGS
+    _time_created = db.Column(db.DateTime(timezone=True), server_default=func.now())
+    _time_updated = db.Column(db.DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
+
+    def __repr__(self):
+        return '<agrisensor {}>'.format(self.identifier)
+
+class Measurement(db.Model):
+    __tablename__ = 'measurements'
+
+    id = db.Column(db.Integer, primary_key=True)
+    timestamp = db.Column(db.DateTime(timezone=True))
+
     soil_ph = db.Column(db.Float(precision=4))
     soil_nutrient = db.Column(db.Float(precision=4))
     soil_temp = db.Column(db.Float(precision=4))
@@ -401,60 +397,67 @@ class Agrisensor(db.Model):
     air_temp = db.Column(db.Float(precision=4))
     air_humi = db.Column(db.Float(precision=4))
     air_pres = db.Column(db.Float(precision=4))
-    
     solar_radiation = db.Column(db.Float(precision=4))
-    batt_status = db.Column(db.Integer)
-    
-    timestamp = db.Column(db.DateTime(timezone=True))
-    
-    # RELATIONSHIP
-    # AGRIMODULESYSTEM[1]-AGRIMODULE[M]
-    agrimodulesystem_id = db.Column(db.Integer, db.ForeignKey('agrimodulesystem.id'))
 
-    _time_created = db.Column(db.DateTime(timezone=True), server_default=func.now())
-    _time_updated = db.Column(db.DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
+    batt_status = db.Column(db.Integer)
+    lat = db.Column(db.Float(precision=8))
+    lon = db.Column(db.Float(precision=8))
+
+
+    # REALTIONSHIPS
+    # AGRIMODULE[1]-MEASUREMENT[M]
+    agrimodule_id = db.Column(db.Integer, db.ForeignKey('agrimodules.id'))
+    # AGRIPUMP[1]-MEASUREMENT[M]
+    agripump_id = db.Column(db.Integer, db.ForeignKey('agrisensors.id'))
 
     def __repr__(self):
-        return '<agrisensor {}>'.format(self.id)
+        return '<measurement {}>'.format(self.id)
+
 
 class Agripump(db.Model):
     """pump schedule for each farm and agripump, it requires to know which Pump.Model is used in order to make the calculations"""
-    __tablename__ = 'agripump'
+    __tablename__ = 'agripumps'
+    
     id = db.Column(db.Integer, primary_key=True)
+    
     identifier = db.Column(db.String(50), unique=True)
     lat = db.Column(db.Float(precision=8))
     lon = db.Column(db.Float(precision=8))
-    # REQUIREMENTS
     status = db.Column(db.Boolean)
+
+
+    # REQUIREMENTS
     _daily_water = db.Column(db.Float(precision=3))
     _date = db.Column(db.DateTime(timezone=True))
     # SCHEDULE IN MINUTES
-    _00_HOUR = db.Column(db.Float(precision=1))
-    _01_HOUR = db.Column(db.Float(precision=1))
-    _02_HOUR = db.Column(db.Float(precision=1))
-    _03_HOUR = db.Column(db.Float(precision=1))
-    _04_HOUR = db.Column(db.Float(precision=1))
-    _05_HOUR = db.Column(db.Float(precision=1))
-    _06_HOUR = db.Column(db.Float(precision=1))
-    _07_HOUR = db.Column(db.Float(precision=1))
+    # _00_HOUR = db.Column(db.Float(precision=1))
+    # _01_HOUR = db.Column(db.Float(precision=1))
+    # _02_HOUR = db.Column(db.Float(precision=1))
+    # _03_HOUR = db.Column(db.Float(precision=1))
+    # _04_HOUR = db.Column(db.Float(precision=1))
+    # _05_HOUR = db.Column(db.Float(precision=1))
+    # _06_HOUR = db.Column(db.Float(precision=1))
+    # _07_HOUR = db.Column(db.Float(precision=1))
 
-    _08_HOUR = db.Column(db.Float(precision=1))
-    _09_HOUR = db.Column(db.Float(precision=1))
-    _10_HOUR = db.Column(db.Float(precision=1))
-    _11_HOUR = db.Column(db.Float(precision=1))
-    _12_HOUR = db.Column(db.Float(precision=1))
-    _13_HOUR = db.Column(db.Float(precision=1))
-    _14_HOUR = db.Column(db.Float(precision=1))
-    _15_HOUR = db.Column(db.Float(precision=1))
-    _16_HOUR = db.Column(db.Float(precision=1))
-    _17_HOUR = db.Column(db.Float(precision=1))
+    # _08_HOUR = db.Column(db.Float(precision=1))
+    # _09_HOUR = db.Column(db.Float(precision=1))
+    # _10_HOUR = db.Column(db.Float(precision=1))
+    # _11_HOUR = db.Column(db.Float(precision=1))
+    # _12_HOUR = db.Column(db.Float(precision=1))
+    # _13_HOUR = db.Column(db.Float(precision=1))
+    # _14_HOUR = db.Column(db.Float(precision=1))
+    # _15_HOUR = db.Column(db.Float(precision=1))
+    # _16_HOUR = db.Column(db.Float(precision=1))
+    # _17_HOUR = db.Column(db.Float(precision=1))
 
-    _18_HOUR = db.Column(db.Float(precision=1))
-    _19_HOUR = db.Column(db.Float(precision=1))
-    _20_HOUR = db.Column(db.Float(precision=1))
-    _21_HOUR = db.Column(db.Float(precision=1))
-    _22_HOUR = db.Column(db.Float(precision=1))
-    _23_HOUR = db.Column(db.Float(precision=1))
+    # _18_HOUR = db.Column(db.Float(precision=1))
+    # _19_HOUR = db.Column(db.Float(precision=1))
+    # _20_HOUR = db.Column(db.Float(precision=1))
+    # _21_HOUR = db.Column(db.Float(precision=1))
+    # _22_HOUR = db.Column(db.Float(precision=1))
+    # _23_HOUR = db.Column(db.Float(precision=1))
+    
+
     # TIME USAGE
     start_hour_per_day = db.Column(db.Integer)
     qty_hour_per_day = db.Column(db.Integer)
@@ -471,17 +474,20 @@ class Agripump(db.Model):
     energy_per_day = db.Column(db.Integer)
     energy_per_cycle = db.Column(db.Integer)
 
+
     # REALTIONSHIPS
-    # AGRIMODULESYSTEM[1]-AGRIPUMP[M]
-    agrimodulesystem_id = db.Column(db.Integer, db.ForeignKey('agrimodulesystem.id'))
+    # AGRIMODULE[1]-AGRIPUMP[M]
+    agrimodule_id = db.Column(db.Integer, db.ForeignKey('agrimodules.id'))
     # PUMP[1]-AGRIPUMP[M]
     pump_id = db.Column(db.Integer, db.ForeignKey('pump.id'))
     
+
+    # SETTINGS
     _time_created = db.Column(db.DateTime(timezone=True), server_default=func.now())
     _time_updated = db.Column(db.DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
 
     def __repr__(self):
-        return '<agripump {}>'.format(self.id)   
+        return '<agripump {}>'.format(self.identifier)   
 
 
 #############################
@@ -715,7 +721,7 @@ def dashboard():
 @app.route('/user/welcome', methods=['GET'])
 @login_required
 def welcome():
-    if current_user.agrimodule_systems.count() == 0:
+    if current_user.agrimodules.count() == 0:
         flash('welcome for the first time, ' + current_user.name + '!')
         print('welcome for the first time, ' + current_user.name + '!')
         set_sys_flag = True
@@ -898,9 +904,9 @@ def welcome_set_field():
         db.session.commit()
 
         # DEAFULT AGRIMODULE SYSTEM
-        if current_user.farms.count() == 1 and current_user.farms.first().fields.count() == 1 and current_user.agrimodule_systems.count() > 0: # if first time and first field, set it as the default one
+        if current_user.farms.count() == 1 and current_user.farms.first().fields.count() == 1 and current_user.agrimodules.count() > 0: # if first time and first field, set it as the default one
             print('Field default agrimodule system nummer {} was added and type {}'.format(field.id, type(field.id)))
-            field.agrimodulesystem = AgrimoduleSystem.query.first()
+            field.agrimodule = Agrimodule.query.first()
             db.session.commit()
 
         #SUCESS AND REDIRECT TO DASHBOARD
@@ -1035,26 +1041,26 @@ def add_agrisys():
         user = current_user
 
         # ADD AGRISYS OBJS
-        agsys_identifier = form.agsys_identifier.data
-        print(agsys_identifier)
+        agrimodule_identifier = form.agrimodule_identifier.data
+        print(agrimodule_identifier)
 
         # OBJS TO DB
-        agrimodulesystem = AgrimoduleSystem(identifier = agsys_identifier, user = user)
-        print(agrimodulesystem)
+        agrimodule = Agrimodule(identifier = agrimodule_identifier, user = user)
+        print(agrimodule)
 
         # DB COMMANDS
-        db.session.add(agrimodulesystem)
+        db.session.add(agrimodule)
         db.session.commit()
 
         # ADD SESSION OBJS
-        session['set_sys'].update({'agsys_identifier':agsys_identifier, 'agrimodulesystem_id':agrimodulesystem.id})
+        session['set_sys'].update({'agrimodule_identifier':agrimodule_identifier, 'agrimodule_id':agrimodule.id})
         session.modified = True
         print (session['set_sys'])
         
         
         
         # FLASH AND REDIRECT
-        flash('Your agrimodule system identifier is: {}'.format(agsys_identifier))
+        flash('Your agrimodule identifier is: {}'.format(agrimodule_identifier))
         return redirect(url_for('install_agrisys'))
     return render_template('add_agrisys.html', form=form)
 
@@ -1084,17 +1090,17 @@ def install_agrisys():
         print (form.agp_lon)
 
         # OBJS TO DB
-        agrimodulesystem_id = session['set_sys']['agrimodulesystem_id']
-        agrimodule  = Agrimodule(agrimodulesystem_id = agrimodulesystem_id, lat = agm_lat, lon = agm_lon)
-        agrisensor  = Agrisensor(agrimodulesystem_id = agrimodulesystem_id, lat = ags_lat, lon = ags_lon)
-        agripump    =   Agripump(agrimodulesystem_id = agrimodulesystem_id, lat = agp_lat, lon = agp_lon)
-        print(agrimodulesystem_id)
-        print(agrimodule)
+        agrimodule_id = session['set_sys']['agrimodule_id']
+        agrisensor  = Agrisensor(agrimodule_id = agrimodule_id, lat = ags_lat, lon = ags_lon)
+        agripump    =   Agripump(agrimodule_id = agrimodule_id, lat = agp_lat, lon = agp_lon)
+        agrimodule = Agrimodule.query.filter_by(id = agrimodule_id).first()
+        agrimodule.lat = agm_lat
+        agrimodule.lon = agm_lon
+        print(agrimodule_id)
         print(agrisensor)
         print(agripump)
 
         # DB COMMANDS
-        db.session.add(agrimodule)
         db.session.add(agrisensor)
         db.session.add(agripump)
         db.session.commit()   
@@ -1124,9 +1130,9 @@ def add_pump():
     if form.validate_on_submit():
         # USER OBJS
         user = current_user
-        agrimodule_system = user.agrimodule_systems.filter_by(id = session['set_sys']['agrimodulesystem_id']).first()
-        print(agrimodule_system)
-        agripump = agrimodule_system.agripumps.filter_by(id = session['set_sys']['agripump_id']).first()
+        agrimodule = user.agrimodules.filter_by(id = session['set_sys']['agrimodule_id']).first()
+        print(agrimodule)
+        agripump = agrimodule.agripumps.filter_by(id = session['set_sys']['agripump_id']).first()
         print(agripump)
 
         def lps_to_mlpm(lps):
@@ -1187,7 +1193,7 @@ def home():
     user = current_user
     default_farm = Farm.query.filter_by(id = user.default_farm_id).first()
 
-    if current_user.agrimodule_systems.count() == 0:
+    if current_user.agrimodules.count() == 0:
         flash('welcome for the first time ' + current_user.name + '!')
         print('welcome for the first time, ' + current_user.name + '!')
         set_sys_flag = True
@@ -1604,9 +1610,9 @@ def user_new_crop(farm_id = None):
         db.session.commit()
 
         # DEAFULT AGRIMODULE SYSTEM
-        if user.farms.count() == 1 and user.farms.first().fields.count() == 1 and user.agrimodule_systems.count() > 0: # if first time and first field, set it as the default one
+        if user.farms.count() == 1 and user.farms.first().fields.count() == 1 and user.agrimodules.count() > 0: # if first time and first field, set it as the default one
             print('Field default agrimodule system nummer {} was added and type {}'.format(field.id, type(field.id)))
-            field.agrimodulesystem = AgrimoduleSystem.query.first()
+            field.agrimodule = Agrimodule.query.first()
             db.session.commit()
 
         #SUCESS AND REDIRECT TO DASHBOARD
