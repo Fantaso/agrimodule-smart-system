@@ -332,6 +332,7 @@ class Agrimodule(db.Model):
     Each agrimodule"""
     __tablename__ = 'agrimodules'
     id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(20))
     identifier = db.Column(db.String(50), unique=True, nullable=False)
     lat = db.Column(db.Float(precision=8))
     lon = db.Column(db.Float(precision=8))
@@ -1041,12 +1042,13 @@ def add_agrisys():
         user = current_user
 
         # ADD AGRISYS OBJS
+        agrimodule_name = form.agrimodule_name.data
         agrimodule_identifier = form.agrimodule_identifier.data
-        print(agrimodule_identifier)
+
 
         # OBJS TO DB
-        agrimodule = Agrimodule(identifier = agrimodule_identifier, user = user)
-        print(agrimodule)
+        agrimodule = Agrimodule(agrimodule_name = agrimodule_name, identifier = agrimodule_identifier, user = user)
+
 
         # DB COMMANDS
         db.session.add(agrimodule)
@@ -1055,9 +1057,7 @@ def add_agrisys():
         # ADD SESSION OBJS
         session['set_sys'].update({'agrimodule_identifier':agrimodule_identifier, 'agrimodule_id':agrimodule.id})
         session.modified = True
-        print (session['set_sys'])
-        
-        
+                
         
         # FLASH AND REDIRECT
         flash('Your agrimodule identifier is: {}'.format(agrimodule_identifier))
@@ -1346,6 +1346,7 @@ def user_crop_status():
 @login_required
 def user_farms():
 
+    # USER FARMS
     user = current_user
     farms = user.farms.all()
 
@@ -1360,10 +1361,33 @@ def user_farms():
                     cycle_days = crop._dtm + crop._dtg
                     progress = (cycle_days_so_far / cycle_days) * 100
                     # print (cycle_days_so_far, cycle_days, progress)
-        
+    
     progress()
     timenow = datetime.now()
-    return render_template('user_farms.html', farms = farms, timenow = timenow)
+    
+
+
+    user = current_user
+    farm_db = Farm.query
+    field_db = Field.query
+    # USER SYSTEMS
+    user = current_user
+    agrimodules = user.agrimodules.all()
+
+    def list_agrimodules():
+        for agrimodule in agrimodules:
+            print(agrimodule, agrimodule.identifier)
+            for agripump in agrimodule.agripumps.all():
+                print(agripump, agripump.identifier)
+            for agrisensor in agrimodule.agrisensors.all():
+                print(agrisensor, agrisensor.identifier)
+
+    list_agrimodules()
+
+
+
+
+    return render_template('user_farms.html', farms = farms, timenow = timenow, agrimodules=agrimodules, farm_db = farm_db, field_db = field_db)
 
 ##################
 # USER MAKE FARM DEFAULT
