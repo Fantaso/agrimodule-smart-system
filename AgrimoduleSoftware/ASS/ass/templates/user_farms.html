@@ -168,6 +168,102 @@ fh5co-active
 
 
 
+        		<!-- LIST OF ASS -->
+        		<br>
+        		<div class="container">
+
+        			<h2>List of my agrimodules smart systems</h2>
+        			<!-- ASS TABLE TITLES -->
+        			<div class="row">
+        				<div class="col-md-2">
+        					<sup>Name</sup>
+        				</div>
+        				<div class="col-md-2">
+							<sup>Identifier</sup>
+        				</div>
+        				<div class="col-md-2">
+							<sup>Farm</sup>
+        				</div>
+        				<div class="col-md-2">
+        					<sup>Field</sup>
+        				</div>
+        			</div>
+        			<!-- END ASS TABLE TITLES -->
+
+        			<!-- EACH ASS -->
+        			{% for farm in farms: %}
+	        			<!-- EACH ASS DATA -->
+	        			<hr>
+	        			<div class="row">
+	        				<div class="col-md-2">
+	        					<h3>Primer AgSys</h3>
+	        				</div>
+	        				<div class="col-md-2">
+	        					<h3>Perico2200</h3>
+	        				</div>
+	        				<div class="col-md-2">
+	        					<h3>Aquaponics</h3>
+	        				</div>
+	        				<div class="col-md-2">
+	        					<h3>Cabbage</h3>
+	        				</div>
+	        				<div class="col-md-4">
+	        					<a href="{{ url_for('user_new_crop', farm_id=farm.id) }}" class="btn btn-primary btn-sm">add</a>
+								<a href="{{ url_for('user_edit_farm', farm_id=farm.id) }}" class="btn btn-default btn-sm">edit</a>
+								<a href="{{ url_for('user_delete_farm', farm_id=farm.id) }}" class="btn btn-default btn-sm">field</a>
+								<a href="{{ url_for('user_delete_farm', farm_id=farm.id) }}" class="btn btn-danger btn-sm">delete</a>
+	        				</div>
+	        			</div>
+	        			<br>
+	        			<!-- END EACH ASS DATA -->
+
+	        			<!-- SENSOR TABLE TITLES -->
+	        			<div class="row">
+	        				<div class="col-md-offset-1 col-md-2">
+	        					<sup>Type</sup>
+	        				</div>
+	        				<div class="col-md-2">
+								<sup>Identifier</sup>
+	        				</div>
+	        				<div class="col-md-2">
+	        					<sup>Pump / Location</sup>
+	        				</div>
+	        				<div class="col-md-1">
+	        					<sup>Status</sup>
+	        				</div>
+	        			</div>
+	        			<!-- END SENSOR TABLE TITLES -->
+
+	        				<!-- EACH SENSOR OF EACH ASS -->
+		        			{% for field in farm.fields.all(): %}
+		        				<div class="row">
+
+			        				<div class="col-md-offset-1 col-md-2">
+			        					<h4>Agripump</h4>
+			        				</div>
+			        				<div class="col-md-2">
+			        					<h4>Agripump2500</h4>
+			        				</div>
+			        				<div class="col-md-2">
+			        					<h4>DANFOSS 125 lps</h4>
+			        				</div>
+			        				<div class="col-md-1">
+			        					<h4>ON</h4>
+					                </div>
+			        				<div class="col-md-4">
+			        					<a href="{{ url_for('user_edit_crop', field_id=field.id) }}" class="btn btn-default btn-sm">pump</a>
+										<a href="{{ url_for('user_delete_crop', field_id=field.id) }}" class="btn btn-danger btn-sm">delete</a>
+			        				</div>
+
+		        				</div>
+		        			{% endfor %}
+		        			<!-- END EACH SENSOR OF EACH ASS -->
+        			
+        			{% endfor %}
+        			<!-- END EACH ASS -->
+        		</div>
+        		<hr>
+        		<!-- END LIST OF ASS -->
 
 
 
