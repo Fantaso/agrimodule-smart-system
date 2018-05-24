@@ -132,6 +132,7 @@ class FarmInfoForm(FlaskForm):
     farm_cultivation_process     = SelectField('Farm Cultivation Process', validators=[DataRequired()], choices=[('Organic','Organic'),('Chemical','Chemical')])
 
 class AddAgrisysForm(FlaskForm):
+    agrimodule_name              = StringField('Agrimodule name', validators=[DataRequired(), Length(min=2, max=20, message='Give it a name for sanity MAX 30.')])
     agrimodule_identifier        = StringField('Agrimodule code', validators=[DataRequired(), Length(min=2, max=30, message='Your agrimodule system identifier is in the back of your agrimodule.')])
 
 class InstallAgrisysForm(FlaskForm):
