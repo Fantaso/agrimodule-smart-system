@@ -1210,40 +1210,7 @@ def home():
 ##########################################################
 ##########################################################
 
-##################
-# USER FARMS
-##################
-@app.route('/user/farm/farms', methods=['GET'])
-@login_required
-def user_farms():
 
-    user = current_user
-    farms = user.farms.all()
-
-    def progress():
-        for farm in farms:
-            # print(farm)
-            for field in farm.fields.all():
-                # print(field)
-                for crop in field.crops.all():
-                    # print(crop)
-                    cycle_days_so_far = ( datetime.now() - field.field_cultivation_start_date ).days
-                    cycle_days = crop._dtm + crop._dtg
-                    progress = (cycle_days_so_far / cycle_days) * 100
-                    # print (cycle_days_so_far, cycle_days, progress)
-        
-    progress()
-    timenow = datetime.now()
-    return render_template('user_farms.html', farms = farms, timenow = timenow)
-
-
-##################
-# USER FIELD
-##################
-# @app.route('/user/farm/field', methods=['GET'])
-# @login_required
-# def user_field():
-#     return render_template('field.html')
 
 ##################
 # USER AGRIMODULE
@@ -1366,7 +1333,61 @@ def user_crop_status():
     
     return render_template('user_crop_status.html', crop = crop, field = field, cycle_days_so_far = cycle_days_so_far)
 
+##################
+# USER FARMS
+##################
+@app.route('/user/farm/myfarms', methods=['GET'])
+@login_required
+def user_farms():
 
+    user = current_user
+    farms = user.farms.all()
+
+    def progress():
+        for farm in farms:
+            # print(farm)
+            for field in farm.fields.all():
+                # print(field)
+                for crop in field.crops.all():
+                    # print(crop)
+                    cycle_days_so_far = ( datetime.now() - field.field_cultivation_start_date ).days
+                    cycle_days = crop._dtm + crop._dtg
+                    progress = (cycle_days_so_far / cycle_days) * 100
+                    # print (cycle_days_so_far, cycle_days, progress)
+        
+    progress()
+    timenow = datetime.now()
+    return render_template('user_farms.html', farms = farms, timenow = timenow)
+
+##################
+# USER MAKE FARM DEFAULT
+##################
+@app.route('/user/myfarms/default', methods=['GET'])
+@app.route('/user/myfarms/default/<farm_id>', methods=['GET'])
+@login_required
+def user_farm_default(farm_id = None):
+
+    if farm_id == None:
+        flash('This page does not exist')
+        return redirect(url_for('user_farms'))
+    
+    farm_default_old = current_user.farms.filter_by(_default = True).one()
+    farm_default_old._default = False
+    farm_default_new = current_user.farms.filter_by(id = farm_id).first()
+    farm_default_new._default = True
+    db.session.commit()
+    
+    flash('New default farm: {}'.format(farm_default_new.farm_name))
+    return redirect(url_for('user_farms'))
+
+
+##################
+# USER FIELD
+##################
+# @app.route('/user/farm/field', methods=['GET'])
+# @login_required
+# def user_field():
+#     return render_template('field.html')
 
 
 ##################

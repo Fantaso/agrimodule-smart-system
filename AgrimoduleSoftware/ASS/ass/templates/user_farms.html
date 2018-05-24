@@ -59,6 +59,8 @@ fh5co-active
             				{% else %}
             					<input type="checkbox" onclick="return false;">
 							{% endif %}
+							<a href="{{ url_for('user_farm_default', farm_id=farm.id) }}" style="color:gray; font-size: 70%;">default</a>
+
         				</div>
         				<div class="col-md-2">
         					<h3>{{ farm.farm_location }}</h3>
