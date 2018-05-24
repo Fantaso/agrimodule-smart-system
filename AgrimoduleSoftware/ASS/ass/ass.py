@@ -834,7 +834,7 @@ def welcome_set_field():
 
 
     form = FieldForm()              # CREATE WTForm FORM
-    form.field_cultivation_crop.choices = [ (crop.id, crop._name) for crop in crop_choices ]
+    form.field_cultivation_crop.choices = [ (crop.id,  str.capitalize(crop._name)) for crop in crop_choices ]
 
 
     if form.validate_on_submit():   # IF request.methiod == 'POST'
@@ -898,7 +898,7 @@ def welcome_set_field():
         db.session.commit()
 
         # DEAFULT AGRIMODULE SYSTEM
-        if user.farms.first() == 1 and user.farms.first().fields.count() == 1 and user.agrimodule_systems.count() == 1: # if first time and first field, set it as the default one
+        if current_user.farms.count() == 1 and current_user.farms.first().fields.count() == 1 and current_user.agrimodule_systems.count() > 0: # if first time and first field, set it as the default one
             print('Field default agrimodule system nummer {} was added and type {}'.format(field.id, type(field.id)))
             field.agrimodulesystem = AgrimoduleSystem.query.first()
             db.session.commit()
@@ -1467,7 +1467,7 @@ def user_delete_farm(farm_id):
         flash('You just deleted the farm: {}'.format(farm_to_del.farm_name))
         return redirect(url_for('user_farms'))
     except Exception as e:
-        flash('Error: ' + e)
+        flash('Error: ' + str(e))
         db.session.rollback()
         return render_template('user_farms.html')
     else:
@@ -1504,7 +1504,8 @@ def user_new_crop(farm_id = None):
     else:
         farm = current_user.farms.filter_by(id = farm_id).first()
         form.farm_choices.choices = [ (farm.id, farm.farm_name) ] # FARM
-    form.field_cultivation_crop.choices = [ (crop.id, crop._name) for crop in crop_choices ] # CROP
+
+    form.field_cultivation_crop.choices = [ (crop.id, str.capitalize(crop._name)) for crop in crop_choices ] # CROP
 
     # POST REQUEST 
     if form.validate_on_submit():
@@ -1580,6 +1581,12 @@ def user_new_crop(farm_id = None):
         # DB COMMANDS
         db.session.add(field)
         db.session.commit()
+
+        # DEAFULT AGRIMODULE SYSTEM
+        if user.farms.count() == 1 and user.farms.first().fields.count() == 1 and user.agrimodule_systems.count() > 0: # if first time and first field, set it as the default one
+            print('Field default agrimodule system nummer {} was added and type {}'.format(field.id, type(field.id)))
+            field.agrimodulesystem = AgrimoduleSystem.query.first()
+            db.session.commit()
 
         #SUCESS AND REDIRECT TO DASHBOARD
         flash('You just created a {} in your {}'.format(crop._name, farm.farm_name))
@@ -1704,7 +1711,7 @@ def user_delete_crop(field_id):
         flash('You just deleted field: {} in your farm: {}'.format(field_to_del.field_name, farm.farm_name))
         return redirect(url_for('user_farms'))
     except Exception as e:
-        flash('Error: ' + e)
+        flash('Error: ' + str(e))
         db.session.rollback()
     else:
         pass
