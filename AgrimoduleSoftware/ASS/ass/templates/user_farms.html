@@ -191,33 +191,37 @@ fh5co-active
         			<!-- END ASS TABLE TITLES -->
 
         			<!-- EACH ASS -->
-        			{% for farm in farms: %}
+        			{% for agrimodule in agrimodules: %}
 	        			<!-- EACH ASS DATA -->
 	        			<hr>
 	        			<div class="row">
 	        				<div class="col-md-2">
-	        					<h3>Primer AgSys</h3>
+	        					<h3>{{ agrimodule.name }}</h3>
 	        				</div>
 	        				<div class="col-md-2">
-	        					<h3>Perico2200</h3>
+	        					<h3>{{ agrimodule.identifier }}</h3>
 	        				</div>
 	        				<div class="col-md-2">
-	        					<h3>Aquaponics</h3>
+	        					{% if field_db.filter_by(id = agrimodule.field_id).first().farm_id: %}
+	        						<h3>{{ farm_db.filter_by( id = field_db.filter_by(id = agrimodule.field_id).first().farm_id ).first().farm_name }}</h3>
+	        					{% else %}
+	        						<h3>Not in Use</h3>
+	        					{% endif %}
 	        				</div>
 	        				<div class="col-md-2">
-	        					<h3>Cabbage</h3>
+	        					<h3>{{ field_db.filter_by(id = agrimodule.field_id).first().field_name }}</h3>
 	        				</div>
 	        				<div class="col-md-4">
-	        					<a href="{{ url_for('user_new_crop', farm_id=farm.id) }}" class="btn btn-primary btn-sm">add</a>
-								<a href="{{ url_for('user_edit_farm', farm_id=farm.id) }}" class="btn btn-default btn-sm">edit</a>
-								<a href="{{ url_for('user_delete_farm', farm_id=farm.id) }}" class="btn btn-default btn-sm">field</a>
-								<a href="{{ url_for('user_delete_farm', farm_id=farm.id) }}" class="btn btn-danger btn-sm">delete</a>
+	        					<a href="#" class="btn btn-primary btn-sm">add</a>
+								<a href="#" class="btn btn-default btn-sm">edit</a>
+								<a href="#" class="btn btn-default btn-sm">field</a>
+								<a href="#" class="btn btn-danger btn-sm">delete</a>
 	        				</div>
 	        			</div>
 	        			<br>
 	        			<!-- END EACH ASS DATA -->
 
-	        			<!-- SENSOR TABLE TITLES -->
+	        			<!-- AGRIPUMP TABLE TITLES -->
 	        			<div class="row">
 	        				<div class="col-md-offset-1 col-md-2">
 	        					<sup>Type</sup>
@@ -226,38 +230,80 @@ fh5co-active
 								<sup>Identifier</sup>
 	        				</div>
 	        				<div class="col-md-2">
-	        					<sup>Pump / Location</sup>
+	        					<sup>Pump</sup>
 	        				</div>
 	        				<div class="col-md-1">
 	        					<sup>Status</sup>
 	        				</div>
 	        			</div>
-	        			<!-- END SENSOR TABLE TITLES -->
+	        			<!-- END AGRIPUMP TABLE TITLES -->
 
-	        				<!-- EACH SENSOR OF EACH ASS -->
-		        			{% for field in farm.fields.all(): %}
+	        				<!-- EACH AGRIPUMP OF EACH ASS -->
+		        			{% for agripump in agrimodule.agripumps.all(): %}
 		        				<div class="row">
 
 			        				<div class="col-md-offset-1 col-md-2">
 			        					<h4>Agripump</h4>
 			        				</div>
 			        				<div class="col-md-2">
-			        					<h4>Agripump2500</h4>
+			        					<h4>{{ agripump.identifier }}</h4>
 			        				</div>
 			        				<div class="col-md-2">
-			        					<h4>DANFOSS 125 lps</h4>
+			        					<h4>{{ agripump.id }}</h4>
 			        				</div>
 			        				<div class="col-md-1">
-			        					<h4>ON</h4>
+			        					<h4>{% if agripump.status: %} {{ 'ON' }} {% else %} {{ 'OFF' }} {% endif %} </h4>
 					                </div>
 			        				<div class="col-md-4">
-			        					<a href="{{ url_for('user_edit_crop', field_id=field.id) }}" class="btn btn-default btn-sm">pump</a>
-										<a href="{{ url_for('user_delete_crop', field_id=field.id) }}" class="btn btn-danger btn-sm">delete</a>
+			        					<a href="#" class="btn btn-default btn-sm">pump</a>
+										<a href="#" class="btn btn-danger btn-sm">delete</a>
 			        				</div>
 
 		        				</div>
 		        			{% endfor %}
-		        			<!-- END EACH SENSOR OF EACH ASS -->
+		        			<!-- END EACH AGRIPUMP OF EACH ASS -->
+
+
+		        		<!-- AGRIPUMP TABLE TITLES -->
+	        			<div class="row">
+	        				<div class="col-md-offset-1 col-md-2">
+	        					<sup>Type</sup>
+	        				</div>
+	        				<div class="col-md-2">
+								<sup>Identifier</sup>
+	        				</div>
+	        				<div class="col-md-2">
+	        					<sup>Lat & Lon</sup>
+	        				</div>
+	        				<div class="col-md-1">
+	        					<sup>Batt</sup>
+	        				</div>
+	        			</div>
+	        			<!-- END AGRIPUMP TABLE TITLES -->
+
+		        			<!-- EACH AGRISENSOR OF EACH ASS -->
+		        			{% for agrisensor in agrimodule.agrisensors.all(): %}
+		        				<div class="row">
+
+			        				<div class="col-md-offset-1 col-md-2">
+			        					<h4>Agrisensor</h4>
+			        				</div>
+			        				<div class="col-md-2">
+			        					<h4>{{ agrisensor.identifier }}</h4>
+			        				</div>
+			        				<div class="col-md-2">
+			        					<h4>{{ agrisensor.lat }} {{ agrisensor.lon }}</h4>
+			        				</div>
+			        				<div class="col-md-1">
+			        					<h4>{{ agrisensor.batt_status }}</h4>
+					                </div>
+			        				<div class="col-md-4">
+										<a href="#" class="btn btn-danger btn-sm">delete</a>
+			        				</div>
+
+		        				</div>
+		        			{% endfor %}
+		        			<!-- END EACH AGRISENSOR OF EACH ASS -->
         			
         			{% endfor %}
         			<!-- END EACH ASS -->
