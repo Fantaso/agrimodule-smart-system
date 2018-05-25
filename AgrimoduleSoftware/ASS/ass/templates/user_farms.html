@@ -49,7 +49,7 @@ fh5co-active
         		<br>
         		<div class="container">
 
-        			<h2>List of my farms</h2>
+        			<h2>My Farms</h2>
         			<!-- FARM TABLE TITLES -->
         			<div class="row">
         				<div class="col-md-1">
@@ -172,20 +172,20 @@ fh5co-active
         		<br>
         		<div class="container">
 
-        			<h2>List of my agrimodules smart systems</h2>
+        			<h2>My Agrimodule Systems</h2>
         			<!-- ASS TABLE TITLES -->
         			<div class="row">
         				<div class="col-md-2">
-        					<sup>Name</sup>
-        				</div>
-        				<div class="col-md-2">
-							<sup>Identifier</sup>
+        					<sup>System Name</sup>
         				</div>
         				<div class="col-md-2">
 							<sup>Farm</sup>
         				</div>
         				<div class="col-md-2">
-        					<sup>Field</sup>
+							<sup>Field</sup>
+        				</div>
+        				<div class="col-md-2">
+        					<sup>Field Area</sup>
         				</div>
         			</div>
         			<!-- END ASS TABLE TITLES -->
@@ -199,9 +199,6 @@ fh5co-active
 	        					<h3>{{ agrimodule.name }}</h3>
 	        				</div>
 	        				<div class="col-md-2">
-	        					<h3>{{ agrimodule.identifier }}</h3>
-	        				</div>
-	        				<div class="col-md-2">
 	        					{% if field_db.filter_by(id = agrimodule.field_id).first().farm_id: %}
 	        						<h3>{{ farm_db.filter_by( id = field_db.filter_by(id = agrimodule.field_id).first().farm_id ).first().farm_name }}</h3>
 	        					{% else %}
@@ -210,6 +207,9 @@ fh5co-active
 	        				</div>
 	        				<div class="col-md-2">
 	        					<h3>{{ field_db.filter_by(id = agrimodule.field_id).first().field_name }}</h3>
+	        				</div>
+	        				<div class="col-md-2">
+	        					<h3>{{ field_db.filter_by(id = agrimodule.field_id).first().field_cultivation_area / 10000 }} m<sup>2</sup></h3>
 	        				</div>
 	        				<div class="col-md-4">
 	        					<a href="#" class="btn btn-primary btn-sm">add</a>
@@ -220,6 +220,65 @@ fh5co-active
 	        			</div>
 	        			<br>
 	        			<!-- END EACH ASS DATA -->
+
+	        			<!-- AGRIPUMP TABLE TITLES -->
+		        			<div class="row">
+		        				<div class="col-md-offset-1 col-md-2">
+		        					<sup>Type</sup>
+		        				</div>
+		        				<div class="col-md-2">
+									<sup>Identifier</sup>
+		        				</div>
+		        				<div class="col-md-2">
+		        					<sup>Lat & Lon</sup>
+		        				</div>
+		        				<div class="col-md-1">
+		        					<sup>Batt</sup>
+		        				</div>
+		        			</div>
+	        			<!-- END AGRIPUMP TABLE TITLES -->
+	        				<!-- THE AGRIMODULE ITSELF -->
+	        				<div class="row">
+
+		        				<div class="col-md-offset-1 col-md-2">
+		        					<h4>Agrimodule</h4>
+		        				</div>
+		        				<div class="col-md-2">
+		        					<h4>{{ agrimodule.identifier }}</h4>
+		        				</div>
+		        				<div class="col-md-2">
+		        					<h4>{{ agrimodule.lat }} {{ agrimodule.lon }}</h4>
+		        				</div>
+		        				<div class="col-md-1">
+		        					<h4>{{ agrimodule.batt_status }} %</h4>
+				                </div>
+
+	        				</div>
+		        			<!-- END THE AGRIMODULE ITSELF -->
+
+		        			<!-- EACH AGRISENSOR OF EACH ASS -->
+		        			{% for agrisensor in agrimodule.agrisensors.all(): %}
+		        				<div class="row">
+
+			        				<div class="col-md-offset-1 col-md-2">
+			        					<h4>Agrisensor</h4>
+			        				</div>
+			        				<div class="col-md-2">
+			        					<h4>{{ agrisensor.identifier }}</h4>
+			        				</div>
+			        				<div class="col-md-2">
+			        					<h4>{{ agrisensor.lat }} {{ agrisensor.lon }}</h4>
+			        				</div>
+			        				<div class="col-md-1">
+			        					<h4>{{ agrisensor.batt_status }} %</h4>
+					                </div>
+			        				<div class="col-md-4">
+										<a href="#" class="btn btn-danger btn-sm">delete</a>
+			        				</div>
+
+		        				</div>
+		        			{% endfor %}
+		        			<!-- END EACH AGRISENSOR OF EACH ASS -->
 
 	        			<!-- AGRIPUMP TABLE TITLES -->
 	        			<div class="row">
@@ -249,7 +308,7 @@ fh5co-active
 			        					<h4>{{ agripump.identifier }}</h4>
 			        				</div>
 			        				<div class="col-md-2">
-			        					<h4>{{ agripump.id }}</h4>
+			        					<h4>{{ pump_db.filter_by(id = agripump.pump_id).first().pump_brand }}</h4>
 			        				</div>
 			        				<div class="col-md-1">
 			        					<h4>{% if agripump.status: %} {{ 'ON' }} {% else %} {{ 'OFF' }} {% endif %} </h4>
@@ -262,48 +321,6 @@ fh5co-active
 		        				</div>
 		        			{% endfor %}
 		        			<!-- END EACH AGRIPUMP OF EACH ASS -->
-
-
-		        		<!-- AGRIPUMP TABLE TITLES -->
-	        			<div class="row">
-	        				<div class="col-md-offset-1 col-md-2">
-	        					<sup>Type</sup>
-	        				</div>
-	        				<div class="col-md-2">
-								<sup>Identifier</sup>
-	        				</div>
-	        				<div class="col-md-2">
-	        					<sup>Lat & Lon</sup>
-	        				</div>
-	        				<div class="col-md-1">
-	        					<sup>Batt</sup>
-	        				</div>
-	        			</div>
-	        			<!-- END AGRIPUMP TABLE TITLES -->
-
-		        			<!-- EACH AGRISENSOR OF EACH ASS -->
-		        			{% for agrisensor in agrimodule.agrisensors.all(): %}
-		        				<div class="row">
-
-			        				<div class="col-md-offset-1 col-md-2">
-			        					<h4>Agrisensor</h4>
-			        				</div>
-			        				<div class="col-md-2">
-			        					<h4>{{ agrisensor.identifier }}</h4>
-			        				</div>
-			        				<div class="col-md-2">
-			        					<h4>{{ agrisensor.lat }} {{ agrisensor.lon }}</h4>
-			        				</div>
-			        				<div class="col-md-1">
-			        					<h4>{{ agrisensor.batt_status }}</h4>
-					                </div>
-			        				<div class="col-md-4">
-										<a href="#" class="btn btn-danger btn-sm">delete</a>
-			        				</div>
-
-		        				</div>
-		        			{% endfor %}
-		        			<!-- END EACH AGRISENSOR OF EACH ASS -->
         			
         			{% endfor %}
         			<!-- END EACH ASS -->
