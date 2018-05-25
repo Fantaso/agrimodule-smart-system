@@ -89,8 +89,32 @@ class EditFarmForm(FlaskForm):
     farm_cultivation_process    = SelectField('Farm Cultivation Process', validators=[DataRequired()], choices=[('Organic','Organic'),('Chemical','Chemical')])
 
 
-def function():
-    pass
+
+# MANAGE SYSTEMS FORMS
+# '/user/farm/field/agrimodule/add-sensor'
+class AgrimoduleAddSensorForm(FlaskForm):
+    agrimodule_choices  = SelectField(label='Agrimodule choices', validators=[DataRequired()], coerce = int)
+    sensor_choices      = SelectField(label='Agrimodule choices', validators=[DataRequired()], choices=[('Agrisensor','Agrisensor'),('Agripump','Agripump')])
+    identifier          = StringField('Sensor code', validators=[DataRequired(), Length(min=2, max=30, message='Your sensor system identifier is in the back of your device.')])
+
+# '/user/farm/field/agrimodule/edit-agrimodule/<agrimodule_id>'
+class PreEditAgrimoduleForm:
+    def __init__(self, agrimodule_name):
+        self.agrimodule_name = agrimodule_name
+
+class EditAgrimoduleForm(FlaskForm):
+    agrimodule_name     = StringField('Agrimodule name', validators=[DataRequired(), Length(min=2, max=20, message='Give it a name for sanity MAX 30.')])
+    field_choices       = SelectField(label='Field choices', validators=[DataRequired()], coerce = int)
+
+# '/user/farm/field/agripump/change-pump/'
+class PreEditAgripumpForm:
+    def __init__(self, pump_name):
+        self.pump_name = pump_name
+
+class EditAgripumpForm(FlaskForm):
+    pump_choices        = SelectField(label='Pump choices', validators=[DataRequired()], coerce = int)
+
+
 
 # Constructor
 class PreUserProfileForm:
@@ -142,8 +166,17 @@ class InstallAgrisysForm(FlaskForm):
     ags_lon                 = FloatField('Agrisensor longitude location',      validators=[DataRequired(), NumberRange(min=-180, max=180, message='write the lon coordinates')])
     agp_lat                 = FloatField('Agripump latitude location',         validators=[DataRequired(), NumberRange(min=-90, max=90, message='write the lat coordinates')])
     agp_lon                 = FloatField('Agripump longitude location',        validators=[DataRequired(), NumberRange(min=-180, max=180, message='write the lon coordinates')])
-    
+
+class PreAddPumpForm:
+    def __init__(self, pump_name, pump_brand, pump_flow_rate, pump_head, pump_watts):
+        self.pump_name       = pump_name
+        self.pump_brand      = pump_brand
+        self.pump_flow_rate  = pump_flow_rate
+        self.pump_head       = pump_head
+        self.pump_watts      = pump_watts
+
 class AddPumpForm(FlaskForm):
+    pump_name               = StringField('Pump name',                              validators=[DataRequired(), Length(min=2, max=30, message='Give it a name for sanity MAX 30.')])
     pump_brand              = StringField('Pump brand',                             validators=[DataRequired(), Length(min=2, max=30, message='Your pump supplier or brand name')])
     pump_flow_rate          = FloatField('Pump flow rate (liters per sec)',         validators=[DataRequired(), NumberRange(min=1, max=500, message="Your pump's water capacity or water turn over")])
     pump_head               = FloatField('Pump head (meters)',                      validators=[DataRequired(), NumberRange(min=1, max=500, message="Your pump's max head pressure or height power")])
