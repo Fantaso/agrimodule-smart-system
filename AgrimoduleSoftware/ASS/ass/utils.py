@@ -79,6 +79,9 @@
 			# AGRIMODULE
 ##############################################						'/user/farm/field/agrimodule/'
 			'/user/farm/field/agrimodule/settings/'
+			'/user/farm/field/agrimodule/add-sensor'
+			'/user/farm/field/agrimodule/edit/<agrimodule_id>'
+			'/user/farm/field/agrimodule/delete/<agrimodule_id>'
 			'/user/farm/field/agrimodule/notifications/'
 			'/user/farm/field/agrimodule/weather/'
 			'/user/farm/field/agrimodule/weather/radiation/'
@@ -97,6 +100,8 @@
 			'/user/farm/field/agripump/on/'
 			'/user/farm/field/agripump/off/'
 			'/user/farm/field/agripump/flow/' # refers to a graph
+			'/user/farm/field/agripump/delete/<agripump_id>'
+			'/user/farm/field/agripump/change-pump/'
 			'/user/farm/field/agripump/schedule/'
 			# CROP
 ##############################################						'/user/farm/field/crop-status/'
