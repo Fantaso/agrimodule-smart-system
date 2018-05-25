@@ -1370,6 +1370,7 @@ def user_farms():
     user = current_user
     farm_db = Farm.query
     field_db = Field.query
+    pump_db = Pump.query
     # USER SYSTEMS
     user = current_user
     agrimodules = user.agrimodules.all()
@@ -1387,7 +1388,7 @@ def user_farms():
 
 
 
-    return render_template('user_farms.html', farms = farms, timenow = timenow, agrimodules=agrimodules, farm_db = farm_db, field_db = field_db)
+    return render_template('user_farms.html', farms = farms, timenow = timenow, agrimodules=agrimodules, farm_db = farm_db, field_db = field_db, pump_db = pump_db)
 
 ##################
 # USER MAKE FARM DEFAULT
