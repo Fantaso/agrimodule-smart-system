@@ -16,6 +16,8 @@ from forms import RegisterFormExt, UserProfileForm, PreUserProfileForm # User Fo
 from forms import FarmForm, FieldForm # Welcome Forms
 from forms import FarmInfoForm, AddAgrisysForm, InstallAgrisysForm, AddPumpForm # Set-up System Forms
 from forms import NewCropForm, PreNewCropForm, EditFarmForm, PreEditFarmForm # Manage Farms Forms
+from forms import AgrimoduleAddSensorForm, PreEditAgrimoduleForm, EditAgrimoduleForm, EditAgripumpForm # Manage Systems Forms
+from forms import PreAddPumpForm # Manage Pumps Forms
 from flask_uploads import UploadSet, configure_uploads, IMAGES
 
 from datetime import datetime, timedelta
@@ -309,6 +311,7 @@ class Pump(db.Model):
     """pump database used for each field or each agripump whichi is installed in the farm. one farm can ahve as many pump the want as long as the have an agripump for it"""
     __tablename__ = 'pump'
     id = db.Column(db.Integer, primary_key=True)
+    pump_name = db.Column(db.String(30))
     pump_brand = db.Column(db.String(25))
     pump_flow_rate = db.Column(db.Float(precision=2), nullable=False)
     pump_head = db.Column(db.Float(presicion=2), nullable=False)
@@ -1136,12 +1139,13 @@ def add_pump():
         print(agripump)
 
         def lps_to_mlpm(lps):
-            return lps * 1000 * 60
+            return lps * (1000 * 60)
         def m_to_cm(m):
             return m * 100
         def kw_to_w(kw):
             return kw * 1000
         # ADD PUMP OBJS
+        pump_name = form.pump_name.data          
         pump_brand = form.pump_brand.data          
         pump_flow_rate = lps_to_mlpm(form.pump_flow_rate.data)
         pump_head = m_to_cm(form.pump_head.data)
@@ -1152,7 +1156,7 @@ def add_pump():
         print(pump_watts)
 
         # OBJS TO DB
-        pump = Pump(user = user, pump_brand = pump_brand, pump_flow_rate = pump_flow_rate, pump_head = pump_head, pump_watts = pump_watts)
+        pump = Pump(user = user, pump_name = pump_name, pump_brand = pump_brand, pump_flow_rate = pump_flow_rate, pump_head = pump_head, pump_watts = pump_watts)
         
         # DB COMMANDS
         db.session.add(pump)
@@ -1367,11 +1371,9 @@ def user_farms():
     
 
 
-    user = current_user
-    farm_db = Farm.query
-    field_db = Field.query
-    pump_db = Pump.query
-    # USER SYSTEMS
+
+
+    # USER AGRIMODULES
     user = current_user
     agrimodules = user.agrimodules.all()
 
@@ -1384,11 +1386,15 @@ def user_farms():
                 print(agrisensor, agrisensor.identifier)
 
     list_agrimodules()
+    # USER PUMPS
+    pumps = user.pumps.all()
 
+    farm_db = Farm.query
+    field_db = Field.query
+    pump_db = Pump.query
+    agripump_db = Agripump.query
 
-
-
-    return render_template('user_farms.html', farms = farms, timenow = timenow, agrimodules=agrimodules, farm_db = farm_db, field_db = field_db, pump_db = pump_db)
+    return render_template('user_farms.html', farms = farms, timenow = timenow, agrimodules=agrimodules, farm_db = farm_db, field_db = field_db, pump_db = pump_db, pumps=pumps, agripump_db = agripump_db)
 
 ##################
 # USER MAKE FARM DEFAULT
@@ -1776,11 +1782,329 @@ def user_delete_crop(field_id):
 
 
 
+# AgrimoduleAddSensorForm, PreEditAgrimoduleForm, EditAgrimoduleForm, PreEditAgripumpForm, EditAgripumpForm
+
+# '/user/farm/field/agrimodule/add-sensor'
+##################
+# USER ADD SENSOR
+##################
+@app.route('/user/farm/field/agrimodule/add-sensor', methods=['GET', 'POST'])
+@app.route('/user/farm/field/agrimodule/add-sensor/<agrimodule_id>', methods=['GET', 'POST'])
+@login_required
+def user_add_sensor(agrimodule_id = 0):
+
+    form = AgrimoduleAddSensorForm()
+
+    if int(agrimodule_id) <= 0:
+
+        agrimodule_choices = current_user.agrimodules.all()
+        form.agrimodule_choices.choices = [ (agrimodule.id, agrimodule.name) for agrimodule in agrimodule_choices ] # AGRIMODULE
+    else:
+        agrimodule = current_user.agrimodules.filter_by(id = agrimodule_id).first()
+        form.agrimodule_choices.choices = [ (agrimodule.id, agrimodule.name) ] # AGRIMODULE
+
+    
+    
+
+    
+    if form.validate_on_submit():   # IF request.methiod == 'POST'
+        
+        agrimodule_id = form.agrimodule_choices.data
+        sensor_type = form.sensor_choices.data
+        identifier = form.identifier.data
+
+        if sensor_type == 'Agripump':
+            agripump = Agripump(agrimodule_id = agrimodule_id, identifier = identifier)
+            db.session.add(agripump)
+
+        if sensor_type == 'Agrisensor':
+            agrisensor = Agrisensor(agrimodule_id = agrimodule_id, identifier = identifier)
+            db.session.add(agrisensor)
+
+        # DB COMMANDS
+        db.session.commit()
+
+        flash('You just added a sensor: {} in your system: {}'.format('field_to_del.field_name', 'farm.farm_name'))
+        return redirect(url_for('user_farms'))
+    return render_template('user_add_sensor.html', form=form)
 
 
 
+# '/user/farm/field/agripump/edit/<agripump_id>'
+##################
+# USER EDIT AGRIPUMP
+##################
+@app.route('/user/farm/field/agripump/edit', methods=['GET', 'POST'])
+@app.route('/user/farm/field/agripump/edit/<agripump_id>', methods=['GET', 'POST'])
+@login_required
+def user_edit_agripump(agripump_id = 0):
+
+    # validate thats is an valid id # add later the query if id actually exist
+    if int(agripump_id) <= 0:
+        flash('This Agripump done not exist.')
+        return redirect(url_for('user_farms'))
+
+    # pass to template
+    agripump_to_edit = Agripump.query.filter_by(id = agripump_id).first()
 
 
+    pump_choices = current_user.pumps.all()
+    
+    # Prepopulate form
+    form = EditAgripumpForm()
+    form.pump_choices.choices = [ (pump.id, pump.pump_name) for pump in pump_choices ] # PUMP
+    
+    if form.validate_on_submit():   # IF request.methiod == 'POST'     
+        # FIELD OBJS  TO DB
+        try:            
+            # REST OF FORM HANDLING
+            agripump_to_edit.pump_id = form.pump_choices.data
+            db.session.commit()
+            new_pump = Pump.query.filter_by(id =  agripump_to_edit.pump_id).first()
+            flash('You just change your agripumps pump to work on pump: {}'.format(new_pump.pump_name ))
+            return redirect(url_for('user_farms'))
+        except Exception as e:
+            flash('Error: ' + str(e))
+            print('Error: ' + str(e))
+            db.session.rollback()
+            return redirect(url_for('user_farms'))
+    return render_template('user_edit_agripump.html', form=form, agripump_to_edit = agripump_to_edit)
+
+   
+
+    
+# '/user/farm/field/agrimodule/edit-agrimodule/<agrimodule_id>'
+##################
+# USER EDIT AGRIMODULE
+##################
+@app.route('/user/farm/field/agrimodule/edit', methods=['GET', 'POST'])
+@app.route('/user/farm/field/agrimodule/edit/<agrimodule_id>', methods=['GET', 'POST'])
+@login_required
+def user_edit_agrimodule(agrimodule_id = 0):
+
+    if int(agrimodule_id) <= 0:
+        flash('This Agrimodule done not exist.')
+        return redirect(url_for('home'))
+
+    agrimodule_to_edit = current_user.agrimodules.filter_by(id = agrimodule_id).first()
+    myAgrimodule = PreEditAgrimoduleForm(agrimodule_name = agrimodule_to_edit.name)
+
+    form = EditAgrimoduleForm(obj = myAgrimodule)
+    if form.validate_on_submit():   # IF request.methiod == 'POST'
+
+    
+        flash('You just added a sensor: {} in your system: {}'.format('field_to_del.field_name', 'farm.farm_name'))
+        return redirect(url_for('user_farms'))
+    return render_template('user_farms.html', form=form)
+
+
+# '/user/farm/field/agrimodule/delete/<agrimodule_id>'
+##################
+# USER DELETE AGRIMODULE
+##################
+@app.route('/user/farm/field/agrimodule/delete', methods=['GET'])
+@app.route('/user/farm/field/agrimodule/delete/<agrimodule_id>', methods=['GET'])
+@login_required
+def user_delete_agrimodule(agrimodule_id = 0):
+
+    if int(agrimodule_id) <= 0:
+        flash('This Agrimodule done not exist.')
+        return redirect(url_for('user_farms'))
+    
+
+    flash('You just deleted agrimodule: {}'.format('agrimodule name'))
+    return render_template('user_farms.html', form=form)
+
+
+# '/user/farm/field/agripump/delete/<agripump_id>'
+##################
+# USER DELETE AGRIPUMP
+##################
+@app.route('/user/farm/field/agripump/delete', methods=['GET'])
+@app.route('/user/farm/field/agripump/delete/<agripump_id>', methods=['GET'])
+@login_required
+def user_delete_agripump(agripump_id = 0):
+
+    if int(agripump_id) <= 0:
+        flash('This Agripump done not exist.')
+        return redirect(url_for('user_farms'))
+
+    try:
+        agripump_to_del = Agripump.query.filter_by(id = agripump_id).first()
+        db.session.delete(agripump_to_del)
+        db.session.commit()
+        flash('You just deleted agripump: {}'.format(agripump_to_del.identifier))
+        return redirect(url_for('user_farms'))
+    except Exception as e:
+        flash('Error: ' + str(e))
+        db.session.rollback()
+        return render_template('user_farms.html')
+    else:
+        pass
+    finally:
+        pass
+    
+
+    flash('Error in user_Delete_Agripump')
+    return render_template('user_farms.html')
+
+
+# '/user/farm/field/agrisensor/delete/<agrisensor_id>'
+##################
+# USER DELETE AGRISENSOR
+##################
+@app.route('/user/farm/field/agrisensor/delete', methods=['GET'])
+@app.route('/user/farm/field/agrisensor/delete/<agrisensor_id>', methods=['GET'])
+@login_required
+def user_delete_agrisensor(agrisensor_id = 0):
+
+    try:
+        agrisensor_to_del = Agrisensor.query.filter_by(id = agrisensor_id).first()
+        db.session.delete(agrisensor_to_del)
+        db.session.commit()
+        flash('You just deleted agrisensor: {}'.format(agrisensor_to_del.identifier))
+        return redirect(url_for('user_farms'))
+    except Exception as e:
+        flash('Error: ' + str(e))
+        db.session.rollback()
+        return render_template('user_farms.html')
+    else:
+        pass
+    finally:
+        pass
+    
+
+    flash('Error in user_Delete_Agripump')
+    return render_template('user_farms.html')
+
+###################
+# USER ADD PUMP
+###################
+@app.route('/user/farm/add-pump', methods=['GET', 'POST'])
+@login_required
+def user_add_pump():
+
+    form = AddPumpForm()
+    if form.validate_on_submit():
+
+        def lps_to_mlpm(lps):
+            return lps * (1000 * 60)
+        def m_to_cm(m):
+            return m * 100
+        def kw_to_w(kw):
+            return kw * 1000
+        # ADD PUMP OBJS
+        pump_name = form.pump_name.data          
+        pump_brand = form.pump_brand.data          
+        pump_flow_rate = lps_to_mlpm(form.pump_flow_rate.data)
+        pump_head = m_to_cm(form.pump_head.data)
+        pump_watts = kw_to_w(form.pump_watts.data)
+        print(pump_brand)
+        print(pump_flow_rate)
+        print(pump_head)
+        print(pump_watts)
+
+        # OBJS TO DB
+        pump = Pump(user = current_user, pump_name = pump_name, pump_brand = pump_brand, pump_flow_rate = pump_flow_rate, pump_head = pump_head, pump_watts = pump_watts)
+        
+        # DB COMMANDS
+        db.session.add(pump)
+        db.session.commit()
+        
+        # FLASH AND REDIRECT
+        flash('''Your Pump brand: {}
+                Flow rate: {} lps
+                Head pressure: {} m
+                Wattage: {} kW'''.format(form.pump_brand, form.pump_flow_rate.data, form.pump_head.data, form.pump_watts.data))
+        return redirect(url_for('user_farms'))
+
+    return render_template('user_add_pump.html', form=form)
+
+
+###################
+# USER EDIT PUMP
+###################
+@app.route('/user/farm/edit-pump', methods=['GET', 'POST'])
+@app.route('/user/farm/edit-pump/<pump_id>', methods=['GET', 'POST'])
+@login_required
+def user_edit_pump(pump_id = 0):
+
+    if int(pump_id) <= 0:
+        flash('This Pump does not exist.')
+        return redirect(url_for('user_farms'))
+
+    def mlpm_to_lps(mlpm):
+        return mlpm / (1000 * 60)
+    def cm_to_m(cm):
+        return cm / 100
+    def w_to_kw(w):
+        return w / 1000
+
+    pump_to_edit = current_user.pumps.filter_by(id = pump_id).first()
+
+
+    myPump = PreAddPumpForm(pump_name = pump_to_edit.pump_name, pump_brand = pump_to_edit.pump_brand, pump_flow_rate = mlpm_to_lps(pump_to_edit.pump_flow_rate), pump_head = cm_to_m(pump_to_edit.pump_head), pump_watts = w_to_kw(pump_to_edit.pump_watts))
+
+    form = AddPumpForm(obj = myPump)
+    if form.validate_on_submit():
+
+        def lps_to_mlpm(lps):
+            return lps * (1000 * 60)
+        def m_to_cm(m):
+            return m * 100
+        def kw_to_w(kw):
+            return kw * 1000
+        # ADD PUMP OBJS
+        pump_to_edit.pump_name = form.pump_name.data          
+        pump_to_edit.pump_brand = form.pump_brand.data          
+        pump_to_edit.pump_flow_rate = lps_to_mlpm(form.pump_flow_rate.data)
+        pump_to_edit.pump_head = m_to_cm(form.pump_head.data)
+        pump_to_edit.pump_watts = kw_to_w(form.pump_watts.data)
+
+        
+        # DB COMMANDS
+        db.session.commit()
+        
+        # FLASH AND REDIRECT
+        flash('''Your Pump brand: {}
+                Flow rate: {} lps
+                Head pressure: {} m
+                Wattage: {} kW'''.format(form.pump_brand, form.pump_flow_rate.data, form.pump_head.data, form.pump_watts.data))
+        return redirect(url_for('user_farms'))
+
+    return render_template('user_edit_pump.html', form=form, pump_id = pump_id)
+
+
+##################
+# USER DELETE PUMP
+##################
+@app.route('/user/farm/delete-pump', methods=['GET'])
+@app.route('/user/farm/delete-pump/<pump_id>', methods=['GET'])
+@login_required
+def user_delete_pump(pump_id = 0):
+
+    if int(pump_id) <= 0:
+        flash('Cant delete. This Pump does not exist.')
+        return redirect(url_for('user_farms'))
+
+    try:
+        pump_to_del = Pump.query.filter_by(id = pump_id).first()
+        db.session.delete(pump_to_del)
+        db.session.commit()
+        flash('You just deleted pump: {}'.format(pump_to_del.pump_name))
+        return redirect(url_for('user_farms'))
+    except Exception as e:
+        flash('Error: ' + str(e))
+        db.session.rollback()
+        return render_template('user_farms.html')
+    else:
+        pass
+    finally:
+        pass
+    
+
+    flash('Error in user_delete_pump')
+    return render_template('user_farms.html')
 
 ##################
 # USER WEATHER
