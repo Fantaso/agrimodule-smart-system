@@ -15,7 +15,7 @@ from forms import EmailForm, EmailAndTextForm, ContactUsForm # Wesite Forms and 
 from forms import RegisterFormExt, UserProfileForm, PreUserProfileForm # User Forms
 from forms import FarmForm, FieldForm # Welcome Forms
 from forms import FarmInfoForm, AddAgrisysForm, InstallAgrisysForm, AddPumpForm # Set-up System Forms
-from forms import NewCropForm, PreNewCropForm, EditFarmForm, PreEditFarmForm # Manage Farms Forms
+from forms import NewCropForm, PreDateNewCropForm, PreNewCropForm, EditFarmForm, PreEditFarmForm # Manage Farms Forms
 from forms import AgrimoduleAddSensorForm, PreEditAgrimoduleForm, EditAgrimoduleForm, EditAgripumpForm # Manage Systems Forms
 from forms import PreAddPumpForm # Manage Pumps Forms
 from flask_uploads import UploadSet, configure_uploads, IMAGES
@@ -845,7 +845,7 @@ def welcome_set_field():
 
     form = FieldForm()              # CREATE WTForm FORM
     form.field_cultivation_crop.choices = [ (crop.id,  str.capitalize(crop._name)) for crop in crop_choices ]
-
+    form.field_cultivation_crop.choices.insert(0, ('0' ,'Choose:'))
 
     if form.validate_on_submit():   # IF request.methiod == 'POST'
         # USER OBJS
@@ -1426,6 +1426,48 @@ def user_farm_default(farm_id = None):
 # def user_field():
 #     return render_template('field.html')
 
+##################
+# USER NEW FARM
+##################
+@app.route('/user/farm/new-farm', methods=['GET', 'POST'])
+@login_required
+def user_new_farm():
+
+    form = FarmForm()               # CREATE WTForm FORM
+    if form.validate_on_submit():   # IF request.methiod == 'POST'
+        def m2_to_cm2(m2):
+            return m2 * 10000
+
+        # USER OBJS
+        user_id = current_user.get_id()
+
+        # FARM OBJS
+        farm_name = form.farm_name.data
+        farm_location = form.farm_location.data
+        farm_area = form.farm_area.data
+        farm_cultivation_process = form.farm_cultivation_process.data
+
+        # FARM OBJS  TO DB
+        farm = Farm(    user_id=user_id,
+                        farm_name=farm_name,
+                        farm_location=farm_location,
+                        farm_area=m2_to_cm2(farm_area),
+                        farm_cultivation_process=farm_cultivation_process,
+                        _default=False)
+
+        # DB COMMANDS
+        db.session.add(farm)
+        db.session.commit()
+
+        # SUCESS AND REDIRECT TO NEXT STEP
+        flash('''You just created farm: {}
+                    located: {}
+                    with an area: {} m2
+                    growing: {}ally'''.format(farm_name, farm_location, farm_area, farm_cultivation_process))
+        return redirect(url_for('user_farms'))
+
+    return render_template('user_new_farm.html', form=form)
+
 
 ##################
 # USER EDIT FARM
@@ -1556,14 +1598,22 @@ def user_new_crop(farm_id = None):
     farm_choices = current_user.farms.all() # FARM CHOICE
     crop_choices = Crop.query.all() # CROP CHOICE
 
-    form = NewCropForm()
+
+    today = datetime.now()
+    in_a_week = today + timedelta(7)
+    myDate = PreDateNewCropForm(field_cultivation_start_date = in_a_week)
+
+    form = NewCropForm(obj = myDate)
     if farm_id == None:
         form.farm_choices.choices = [ (farm.id, farm.farm_name) for farm in farm_choices ] # FARM
+        form.farm_choices.choices.insert(0, ('0' ,'Choose:'))
     else:
         farm = current_user.farms.filter_by(id = farm_id).first()
         form.farm_choices.choices = [ (farm.id, farm.farm_name) ] # FARM
+        form.farm_choices.choices.insert(0, ('0' ,'Choose:'))
 
     form.field_cultivation_crop.choices = [ (crop.id, str.capitalize(crop._name)) for crop in crop_choices ] # CROP
+    form.field_cultivation_crop.choices.insert(0, ('0' ,'Choose:'))
 
     # POST REQUEST 
     if form.validate_on_submit():
@@ -1683,6 +1733,7 @@ def user_edit_crop(field_id):
     farm = Farm.query.filter_by(id = field.farm_id).first()
     print(farm)
     crop = field.crops.first()
+    print(field.field_cultivation_start_date)
 
     myField = PreNewCropForm(field_cultivation_area = cm2_to_m2(field.field_cultivation_area),
                             field_cultivation_start_date = field.field_cultivation_start_date,
@@ -1799,9 +1850,11 @@ def user_add_sensor(agrimodule_id = 0):
 
         agrimodule_choices = current_user.agrimodules.all()
         form.agrimodule_choices.choices = [ (agrimodule.id, agrimodule.name) for agrimodule in agrimodule_choices ] # AGRIMODULE
+        form.agrimodule_choices.choices.insert(0, ('0' ,'Choose:'))
     else:
         agrimodule = current_user.agrimodules.filter_by(id = agrimodule_id).first()
         form.agrimodule_choices.choices = [ (agrimodule.id, agrimodule.name) ] # AGRIMODULE
+        form.agrimodule_choices.choices.insert(0, ('0' ,'Choose:'))
 
     
     
@@ -1853,6 +1906,7 @@ def user_edit_agripump(agripump_id = 0):
     # Prepopulate form
     form = EditAgripumpForm()
     form.pump_choices.choices = [ (pump.id, pump.pump_name) for pump in pump_choices ] # PUMP
+    form.pump_choices.choices.insert(0, ('0' ,'Choose:'))
     
     if form.validate_on_submit():   # IF request.methiod == 'POST'     
         # FIELD OBJS  TO DB
@@ -1898,14 +1952,16 @@ def user_edit_agrimodule(agrimodule_id = 0):
         for field in farm.fields.all():
             field_choices.append(field)
 
+
     def get_farm_name(id):
         return current_user.farms.filter_by(id = id).first().farm_name
     def get_farm_location(id):
         return current_user.farms.filter_by(id = id).first().farm_location
     def cm2_to_m2(cm2):
             return cm2 / 10000
-
     form.field_choices.choices = [ (field.id, field.field_name + ' ' + str(cm2_to_m2(field.field_cultivation_area)) + ' m2 ' + get_farm_location(field.farm_id) + ' ' + get_farm_name(field.farm_id)) for field in field_choices ]
+    form.field_choices.choices.insert(0, ('0' ,'Choose:'))
+    # form.field_choices.choices = [ (field.id, field.field_name + ' ' + str(cm2_to_m2(field.field_cultivation_area)) + ' m2 ' + get_farm_location(field.farm_id) + ' ' + get_farm_name(field.farm_id)) for field in field_choices ]
     if form.validate_on_submit():   # IF request.methiod == 'POST'
 
         agrimodule_to_edit.name = form.name.data
