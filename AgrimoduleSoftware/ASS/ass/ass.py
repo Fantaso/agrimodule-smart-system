@@ -1887,15 +1887,34 @@ def user_edit_agrimodule(agrimodule_id = 0):
         return redirect(url_for('home'))
 
     agrimodule_to_edit = current_user.agrimodules.filter_by(id = agrimodule_id).first()
-    myAgrimodule = PreEditAgrimoduleForm(agrimodule_name = agrimodule_to_edit.name)
+    myAgrimodule = PreEditAgrimoduleForm(name = agrimodule_to_edit.name)
+
 
     form = EditAgrimoduleForm(obj = myAgrimodule)
+
+    farms = current_user.farms.all()
+    field_choices = []
+    for farm in farms:
+        for field in farm.fields.all():
+            field_choices.append(field)
+
+    def get_farm_name(id):
+        return current_user.farms.filter_by(id = id).first().farm_name
+    def get_farm_location(id):
+        return current_user.farms.filter_by(id = id).first().farm_location
+    def cm2_to_m2(cm2):
+            return cm2 / 10000
+
+    form.field_choices.choices = [ (field.id, field.field_name + ' ' + str(cm2_to_m2(field.field_cultivation_area)) + ' m2 ' + get_farm_location(field.farm_id) + ' ' + get_farm_name(field.farm_id)) for field in field_choices ]
     if form.validate_on_submit():   # IF request.methiod == 'POST'
 
+        agrimodule_to_edit.name = form.name.data
+        agrimodule_to_edit.field_id = form.field_choices.data
+        db.session.commit()
     
-        flash('You just added a sensor: {} in your system: {}'.format('field_to_del.field_name', 'farm.farm_name'))
+        flash('You just edited your agrimodule: {}'.format(agrimodule_to_edit.name))
         return redirect(url_for('user_farms'))
-    return render_template('user_farms.html', form=form)
+    return render_template('user_edit_agrimodule.html', form=form, agrimodule_to_edit=agrimodule_to_edit)
 
 
 # '/user/farm/field/agrimodule/delete/<agrimodule_id>'
@@ -1910,10 +1929,31 @@ def user_delete_agrimodule(agrimodule_id = 0):
     if int(agrimodule_id) <= 0:
         flash('This Agrimodule done not exist.')
         return redirect(url_for('user_farms'))
-    
+
+    try:
+        agrimodule = current_user.agrimodules.filter_by(id = agrimodule_id).first()
+
+        agripumps = agrimodule.agripumps.all()
+        agripumps_qty = agrimodule.agripumps.count()
+        
+        agrisensors = agrimodule.agrisensors.all()
+        agrisensors_qty = agrimodule.agrisensors.count()
+
+        for agripump in agripumps:
+            db.session.delete(agripump)
+        for agrisensor in agrisensors:
+                db.session.delete(agrisensor)
+        db.session.delete(agrimodule)
+        db.session.commit()
+        flash('You just deleted agrimodule: {}, with {} agripumps and {} agrisensors'.format(agrimodule.name, agripumps_qty, agrisensors_qty))
+        return redirect(url_for('user_farms'))
+    except Exception as e:
+        flash('Error: ' + str(e))
+        db.session.rollback()
+        return render_template('user_farms.html')
 
     flash('You just deleted agrimodule: {}'.format('agrimodule name'))
-    return render_template('user_farms.html', form=form)
+    return render_template('user_farms.html')
 
 
 # '/user/farm/field/agripump/delete/<agripump_id>'
