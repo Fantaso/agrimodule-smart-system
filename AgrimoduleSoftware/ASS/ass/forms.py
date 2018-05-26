@@ -99,11 +99,11 @@ class AgrimoduleAddSensorForm(FlaskForm):
 
 # '/user/farm/field/agrimodule/edit-agrimodule/<agrimodule_id>'
 class PreEditAgrimoduleForm:
-    def __init__(self, agrimodule_name):
-        self.agrimodule_name = agrimodule_name
+    def __init__(self, name):
+        self.name = name
 
 class EditAgrimoduleForm(FlaskForm):
-    agrimodule_name     = StringField('Agrimodule name', validators=[DataRequired(), Length(min=2, max=20, message='Give it a name for sanity MAX 30.')])
+    name                = StringField('Agrimodule name', validators=[DataRequired(), Length(min=2, max=20, message='Give it a name for sanity MAX 30.')])
     field_choices       = SelectField(label='Field choices', validators=[DataRequired()], coerce = int)
 
 # '/user/farm/field/agripump/change-pump/'
