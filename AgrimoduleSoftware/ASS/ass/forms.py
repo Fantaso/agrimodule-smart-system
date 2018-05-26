@@ -66,6 +66,9 @@ class PreNewCropForm:
         self.field_cultivation_start_date    = field_cultivation_start_date
         self.field_cultivation_state         = field_cultivation_state
         self.field_cultivation_type          = field_cultivation_type
+class PreDateNewCropForm:
+    def __init__(self, field_cultivation_start_date):
+        self.field_cultivation_start_date = field_cultivation_start_date
 
 class NewCropForm(FlaskForm):
     farm_choices                  = SelectField(label='Choose Farm', validators=[DataRequired()], coerce = int)
