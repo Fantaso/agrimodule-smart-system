@@ -1050,7 +1050,7 @@ def add_agrisys():
 
 
         # OBJS TO DB
-        agrimodule = Agrimodule(agrimodule_name = agrimodule_name, identifier = agrimodule_identifier, user = user)
+        agrimodule = Agrimodule(name = agrimodule_name, identifier = agrimodule_identifier, user = user)
 
 
         # DB COMMANDS

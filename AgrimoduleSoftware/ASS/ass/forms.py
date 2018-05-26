@@ -189,6 +189,11 @@ class ContactUsForm:
         self.email = email
         self.phone = phone 
         self.msg = msg
+class ContactUsForm(FlaskForm):
+    name    = StringField(label='Fullname', validators=[DataRequired(), Length(min=3, max=30, message=None)])
+    email   = StringField('Email', validators=[DataRequired(), Length(min=5, max=30, message=None), Email()])
+    phone   = StringField('Phone', validators=[DataRequired(), Length(min=7, max=30, message=None)])
+    msg     = TextAreaField ('Message', validators=[DataRequired(), Length(min=-1, max=1000, message='Maximum characters: 1000')])
 
 # field enclosures - can
 class PhoneForm(Form):
