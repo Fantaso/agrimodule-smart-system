@@ -16,7 +16,7 @@ from forms import RegisterFormExt, UserProfileForm, PreUserProfileForm # User Fo
 from forms import FarmForm, FieldForm # Welcome Forms
 from forms import FarmInfoForm, AddAgrisysForm, InstallAgrisysForm, AddPumpForm # Set-up System Forms
 from forms import NewCropForm, PreDateNewCropForm, PreNewCropForm, EditFarmForm, PreEditFarmForm # Manage Farms Forms
-from forms import AgrimoduleAddSensorForm, PreEditAgrimoduleForm, EditAgrimoduleForm, EditAgripumpForm, NewAgrimoduleForm # Manage Systems Forms
+from forms import AgrimoduleAddSensorForm, PreEditAgrimoduleForm, EditAgrimoduleForm, EditAgripumpForm, PreEditAgripumpForm, NewAgrimoduleForm # Manage Systems Forms
 from forms import PreAddPumpForm # Manage Pumps Forms
 from flask_uploads import UploadSet, configure_uploads, IMAGES
 
@@ -1612,7 +1612,6 @@ def user_new_crop(farm_id = None):
     else:
         farm = current_user.farms.filter_by(id = farm_id).first()
         form.farm_choices.choices = [ (farm.id, farm.farm_name) ] # FARM
-        form.farm_choices.choices.insert(0, ('0' ,'Choose:'))
 
     form.field_cultivation_crop.choices = [ (crop.id, str.capitalize(crop._name)) for crop in crop_choices ] # CROP
     form.field_cultivation_crop.choices.insert(0, ('0' ,'Choose:'))
@@ -1744,7 +1743,7 @@ def user_edit_crop(field_id):
 
     form = NewCropForm(obj=myField)
     form.farm_choices.choices = [ (farm.id, farm.farm_name) ] # FARM
-    form.field_cultivation_crop.choices = [ (crop.id, crop._name) ] # CROP
+    form.field_cultivation_crop.choices = [ (crop.id, str.capitalize(crop._name)) ] # CROP
     
     # POST REQUEST 
     if form.validate_on_submit():
@@ -1909,7 +1908,7 @@ def user_edit_agrimodule(agrimodule_id = 0):
         return redirect(url_for('home'))
 
     agrimodule_to_edit = current_user.agrimodules.filter_by(id = agrimodule_id).first()
-    myAgrimodule = PreEditAgrimoduleForm(name = agrimodule_to_edit.name)
+    myAgrimodule = PreEditAgrimoduleForm(name = agrimodule_to_edit.name, field_choices = agrimodule_to_edit.field_id)
 
 
     form = EditAgrimoduleForm(obj = myAgrimodule)
@@ -2017,11 +2016,11 @@ def user_edit_agripump(agripump_id = 0):
     # pass to template
     agripump_to_edit = Agripump.query.filter_by(id = agripump_id).first()
 
-
+    myAgripump = PreEditAgripumpForm(pump_choices = agripump_to_edit.pump_id)
     pump_choices = current_user.pumps.all()
     
     # Prepopulate form
-    form = EditAgripumpForm()
+    form = EditAgripumpForm(obj = myAgripump)
     form.pump_choices.choices = [ (pump.id, pump.pump_name) for pump in pump_choices ] # PUMP
     form.pump_choices.choices.insert(0, (0 ,'Choose:'))
     form.pump_choices.choices.append((1000 ,'Disconnect!'))

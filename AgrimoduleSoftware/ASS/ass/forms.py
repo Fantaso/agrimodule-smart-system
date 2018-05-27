@@ -110,8 +110,9 @@ class AgrimoduleAddSensorForm(FlaskForm):
 
 # '/user/farm/field/agrimodule/edit-agrimodule/<agrimodule_id>'
 class PreEditAgrimoduleForm:
-    def __init__(self, name):
+    def __init__(self, name, field_choices):
         self.name = name
+        self.field_choices = field_choices
 
 class EditAgrimoduleForm(FlaskForm):
     name                = StringField('Agrimodule name', validators=[DataRequired(), Length(min=2, max=30, message='Give it a name for sanity MAX 30.')])
@@ -119,8 +120,8 @@ class EditAgrimoduleForm(FlaskForm):
 
 # '/user/farm/field/agripump/change-pump/'
 class PreEditAgripumpForm:
-    def __init__(self, pump_name):
-        self.pump_name = pump_name
+    def __init__(self, pump_choices):
+        self.pump_choices = pump_choices
 
 class EditAgripumpForm(FlaskForm):
     pump_choices        = SelectField(label='Pump choices', validators=[Optional(strip_whitespace=True)], coerce = int)
