@@ -1932,6 +1932,21 @@ def user_edit_agrimodule(agrimodule_id = 0):
     # form.field_choices.choices = [ (field.id, field.field_name + ' ' + str(cm2_to_m2(field.field_cultivation_area)) + ' m2 ' + get_farm_location(field.farm_id) + ' ' + get_farm_name(field.farm_id)) for field in field_choices ]
     if form.validate_on_submit():   # IF request.methiod == 'POST'
 
+        # if agrimodule is already in that field
+        def has_agrimodule(field_id):
+            if Agrimodule.query.filter_by(field_id = field_id).count() > 0:
+                return True
+            else:
+                return False
+
+        print(has_agrimodule(form.field_choices.data))
+
+        if has_agrimodule(form.field_choices.data):
+            agrimodule = current_user.agrimodules.filter_by(field_id = form.field_choices.data).first()
+            flash('That field is being monitored already by agrimodule: {}'.format(agrimodule.name))
+            print('sadasdasdadadas')
+            return redirect(url_for('user_edit_agrimodule', form=form, agrimodule_id = agrimodule_id))
+
         # REST OF FORM HANDLING
         if form.field_choices.data == 0:
             flash('Nothing changed!'.format())
