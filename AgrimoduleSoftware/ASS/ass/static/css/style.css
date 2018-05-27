@@ -255,9 +255,6 @@ nav > div > span {
 }
 /*end banner slider*/
 
-/*banner2*/
-
-/*end banner2*/
 
 
 
@@ -276,6 +273,9 @@ nav > div > span {
   -o-transition: 0.5s;
   transition: 0.5s;
 }
+
+
+
 #fh5co-aside.border {
   border-right: 1px solid #e6e6e6;
 }
