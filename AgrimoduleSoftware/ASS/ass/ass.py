@@ -24,6 +24,14 @@ from datetime import datetime, timedelta
 from math import sqrt, floor
 
 
+# fix welcome set system
+# add the before and after request
+# date validation start cultivation date
+# measurement API
+# route for post, get, delete, patch or put the Measurement
+# plot or shows sensor data
+
+####
 #############################
 #############################
 # APP
@@ -1196,8 +1204,7 @@ def add_pump():
 @login_required
 def home():
 
-    user = current_user
-    default_farm = Farm.query.filter_by(id = user.default_farm_id).first()
+    # default_farm = Farm.query.filter_by(id = user.default_farm_id).first()
 
     if current_user.agrimodules.count() == 0:
         flash('welcome for the first time ' + current_user.name + '!')
@@ -1211,9 +1218,12 @@ def home():
         return render_template('welcome.html', current_user=current_user, set_sys_flag=set_sys_flag)
     else:
 
-        name = current_user.name
-        farm_name = default_farm.farm_name
-        return render_template('home.html', name=name, farm_name=farm_name)
+        default_farm = current_user.farms.filter_by(_default = 1).one()
+        fields = Field.query.filter_by(farm_id = default_farm.id).all()
+        pump_db = Pump.query
+
+
+        return render_template('home.html', user=current_user, default_farm = default_farm, fields = fields, pump_db =pump_db)
 
 
 ##########################################################
@@ -1410,10 +1420,13 @@ def user_farm_default(farm_id = None):
         flash('This page does not exist')
         return redirect(url_for('user_farms'))
     
-    farm_default_old = current_user.farms.filter_by(_default = True).one()
-    farm_default_old._default = False
-    farm_default_new = current_user.farms.filter_by(id = farm_id).first()
-    farm_default_new._default = True
+    # GET CURRENT DEFAULT FARM'S ID
+    farm_default_old = current_user.farms.filter_by(_default = 1).one()
+    farm_default_old._default = False # ERASE THE DEFAULT LABEL
+    # GET NEW DEFAULT FARM
+    farm_default_new = current_user.farms.filter_by(id = farm_id).one()
+    farm_default_new._default = True # ADD THE DEFAULT LABEL
+    current_user.default_farm_id = farm_id # COPY FARM DEFAULT ID TO USER'S TABLE
     db.session.commit()
     
     flash('New default farm: {}'.format(farm_default_new.farm_name))
