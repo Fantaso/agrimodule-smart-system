@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% from "_renderfield.html" import render_field, render_field_with_errors %}
+
+{% block title %}
+	New agrimodule
+{% endblock %}
+
+{% block content %}
+<div id = "fh5co-main" class = "container" style = "margin-top: 5%;">
+	<div style="padding-left: 2%; text-align: left;">
+    <h1>New agrimodule</h1>
+    <hr>
+      
+    <h2>Instructions:</h2>
+    <br>
+    <ul>
+      <li><h3>1. Name your agrimodule system.</h3></li>
+      <li><h3>2. Write your agrimodule's identifier</h3></li>
+      <li><h3>3. Go install Agrimodule where we tell you.</h3></li>
+      <li><h3>Optional: Which field will you be monitoring?</h3></li>
+    </ul>
+
+    <hr>
+    <form method="POST" action="{{ url_for('user_new_agrimodule') }}">
+        {{ form.csrf_token }}
+        <div class="form-group">
+          {{ render_field_with_errors(form.name, class="form-control", placeholder="Aquaponics Farm System") }}
+        </div>
+        <div class="form-group">
+          {{ render_field_with_errors(form.identifier, class="form-control", placeholder="AgMo27021986") }}
+        </div>
+        <div class="form-group">
+          {{ render_field_with_errors(form.lat, class="form-control") }}
+        </div>
+        <div class="form-group">
+          {{ render_field_with_errors(form.lon, class="form-control") }}
+        </div>
+        <div class="form-group">
+          {{ render_field_with_errors(form.field_choices, class="form-control") }}
+        </div>
+        <div class="form-group">
+          <input type="submit" class="btn btn-primary btn-md" value="Add ASS">
+        </div>
+      </form>
+      <a href="{{ url_for('user_farms') }}" class="btn btn-default btn-sm" style="color:black;">Cancel</a>
+  </div>
+
+  
+
+</div>
+
+{% endblock %}
