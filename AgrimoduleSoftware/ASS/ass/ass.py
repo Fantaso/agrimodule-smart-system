@@ -1939,12 +1939,21 @@ def user_edit_agrimodule(agrimodule_id = 0):
             else:
                 return False
 
-        print(has_agrimodule(form.field_choices.data))
+        def same_agrimodule(form_field_id, agrimodule_to_edit_pump_id):
+            if agrimodule_to_edit_pump_id == form_field_id:
+                return True
+            else:
+                return False
+
+
+        if same_agrimodule(form.field_choices.data, agrimodule_to_edit.field_id):
+            field = Field.query.filter_by(id = form.field_choices.data).first()
+            flash('Nothing changed. You are alraedy monitoring the field: {}!'.format(field.field_name))
+            return redirect(url_for('user_farms'))
 
         if has_agrimodule(form.field_choices.data):
             agrimodule = current_user.agrimodules.filter_by(field_id = form.field_choices.data).first()
             flash('That field is being monitored already by agrimodule: {}'.format(agrimodule.name))
-            print('sadasdasdadadas')
             return redirect(url_for('user_edit_agrimodule', form=form, agrimodule_id = agrimodule_id))
 
         # REST OF FORM HANDLING
@@ -2045,6 +2054,30 @@ def user_edit_agripump(agripump_id = 0):
     if form.validate_on_submit():   # IF request.methiod == 'POST'     
         # FIELD OBJS  TO DB
         try:
+
+            # if agrimodule is already in that field
+            def has_agripump(pump_id):
+                if Agripump.query.filter_by(pump_id = pump_id).count() > 0:
+                    return True
+                else:
+                    return False
+            def same_agripump(form_pump_id, agripump_to_edit_pump_id):
+                if agripump_to_edit_pump_id == form_pump_id:
+                    return True
+                else:
+                    return False
+
+
+            if same_agripump(form.pump_choices.data, agripump_to_edit.pump_id):
+                pump = Pump.query.filter_by(id = form.pump_choices.data).first()
+                flash('Nothing changed. You are already controlling the pump: {}!'.format(pump.pump_name))
+                return redirect(url_for('user_farms'))
+
+            if has_agripump(form.pump_choices.data):
+                agripump = Agripump.query.filter_by(pump_id = form.pump_choices.data).first()
+                pump = Pump.query.filter_by(id = form.pump_choices.data).first()
+                flash('That pump {} is controlled already by agripump: {}'.format(pump.pump_name, agripump.identifier))
+                return redirect(url_for('user_edit_agripump', form=form, agripump_id = agripump_id))
 
             # REST OF FORM HANDLING
             if form.pump_choices.data == 0:
