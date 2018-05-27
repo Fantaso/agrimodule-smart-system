@@ -82,14 +82,36 @@ fh5co-active
     				<div class="col-md-3"style="">
     					<a href="{{ url_for('user_alerts') }}">
     						<div class="row">
-								<div class="col-md-12" style="border: 2px solid black; border-radius: 5%; background-color: lightgray; padding: 4px;">
-									<h4>Water	</h4>
+    							<div class="col-md-4">
+    								<h6>Water</h6>
 								</div>
-								<div class="col-md-12" style="border: 2px solid black; border-radius: 5%; background-color: lightgray; padding: 4px;">
-									<h4>Sun</h4>
+								<div class="col-md-8">
+									<div class="progress">
+										<div class="progress-bar" role="progressbar" aria-valuenow="100" aria-valuemin="100" aria-valuemax="0" style="width:68%">
+										</div>
+									</div>
 								</div>
-								<div class="col-md-12" style="border: 2px solid black; border-radius: 5%; background-color: lightgray; padding: 4px;">
-									<h4>Fertlizer</h4>
+							</div>
+							<div class="row">
+    							<div class="col-md-4">
+    								<h6>Sun</h6>
+								</div>
+								<div class="col-md-8">
+									<div class="progress">
+										<div class="progress-bar" role="progressbar" aria-valuenow="100" aria-valuemin="100" aria-valuemax="0" style="width:88%">
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="row">
+    							<div class="col-md-4">
+    								<h6>Fertilizer</h6>
+								</div>
+								<div class="col-md-8">
+									<div class="progress">
+										<div class="progress-bar" role="progressbar" aria-valuenow="100" aria-valuemin="100" aria-valuemax="0" style="width:75%">
+										</div>
+									</div>
 								</div>
 							</div>
 						</a>
@@ -118,8 +140,14 @@ fh5co-active
 			        				<div class="col-md-6">
 			        					<h4>{{ crop._name|capitalize }} {# {{ crop._variety|capitalize }} #}</h4>
 			        				</div>
-			        				<div class="col-md-6">
-			        					<h4>{{ (( (timenow - field.field_cultivation_start_date).days / (crop._dtm + crop._dtg) ) * 100)|round(1, 'floor') }} %</h4>
+			        				<div class="col-md-2">
+			        					<h6>{{ (( (timenow - field.field_cultivation_start_date).days / (crop._dtm + crop._dtg) ) * 100)|round(1, 'floor') }} %</h6>
+			        				</div>
+			        				<div class="col-md-3">
+			        					<div class="progress">
+											<div class="progress-bar" role="progressbar" aria-valuenow="100" aria-valuemin="100" aria-valuemax="0" style="width:{{ (( (timenow - field.field_cultivation_start_date).days / (crop._dtm + crop._dtg) ) * 100)|round(1, 'floor') }}%">
+											</div>
+										</div>
 			        				</div>
 		        				{% endfor %}
 	    					</div>
