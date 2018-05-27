@@ -49,33 +49,52 @@ fh5co-active
 
     			<!-- FIRST ROW (weather, farm name and reosurce day container) -->
     			<div class="row">
-    				<div class="col-md-3" style="background-color: yellow;">
-    					
-    					<div class="row">
-							<div class="col-md-3">
-								<div>
-									<img src="{{ url_for('static', filename='uploads/cloud.png') }}" alt="weather icon">
+    				<div class="col-md-3" style="">
+    					<a href="{{ url_for('user_weather') }}">
+	    					<div class="row" style="border: 2px solid black; border-radius: 5%; background-color: lightgray; padding: 10px;">
+								<div class="col-md-3">
+									<div>
+										<img src="{{ url_for('static', filename='uploads/cloud.png') }}" alt="weather icon">
+									</div>
+								</div>
+								<div class="col-md-4">
+									<h2>14<sup>°</sup></h2>
+									<h2>68<sup>%</sup></h2>
+								</div>
+								<div class="col-md-5">
+									<h2>Berlin</h2>
+									<h4>LAT: 26</h4>
+									<h4>LON: 25</h4>
+									<h2>22:54</h2>
 								</div>
 							</div>
-							<div class="col-md-4">
-								<h2>14<sup>°</sup></h2>
-								<h2>68<sup>%</sup></h2>
-							</div>
-							<div class="col-md-5">
-								<h2>Berlin</h2>
-								<h4>LAT: 26</h4>
-								<h4>LON: 25</h4>
-								<h2>22:54</h2>
-							</div>
-						</div>
-
-    					<!-- <h2>WEATHER</h2> -->
-
+						</a>
     				</div>
-    				<div class="col-md-1"><h2></h2></div>
-    				<div class="col-md-4" style="background-color: yellow;"><h2>{{ default_farm.farm_name }}'s Farm</h2></div>
-    				<div class="col-md-1"><h2></h2></div>
-    				<div class="col-md-3"style="background-color: yellow;"><h2>RESOURCES</h2></div>
+
+    				<div class="col-md-1"></div>
+    				
+    				<div class="col-md-4 home-weather" style=" text-align: center; border: 2px solid black; border-radius: 5%; background-color: lightgray; padding: 10px;">
+    					<h2>{{ default_farm.farm_name }}'s Farm</h2>
+    				</div>
+    				
+    				<div class="col-md-1"></div>
+    				
+    				<div class="col-md-3"style="">
+    					<a href="{{ url_for('user_alerts') }}">
+    						<div class="row">
+								<div class="col-md-12" style="border: 2px solid black; border-radius: 5%; background-color: lightgray; padding: 4px;">
+									<h4>Water	</h4>
+								</div>
+								<div class="col-md-12" style="border: 2px solid black; border-radius: 5%; background-color: lightgray; padding: 4px;">
+									<h4>Sun</h4>
+								</div>
+								<div class="col-md-12" style="border: 2px solid black; border-radius: 5%; background-color: lightgray; padding: 4px;">
+									<h4>Fertlizer</h4>
+								</div>
+							</div>
+						</a>
+    				</div>
+
     			</div>
     			<hr>
     			<!-- END FIRST ROW (weather, farm name and reosurce day container) -->
@@ -89,15 +108,30 @@ fh5co-active
     				{% for field in fields %}
     				
 	    				<!-- FIELD NUM n -->
-	    				<div class="col-md-4" style="background-color: yellow;">
-	    					<h2>{{ field.field_name }}</h2>
+	    				<div class="col-md-4"  style="border: 2px solid black; border-radius: 5%; background-color: white; padding: 10px;">
+	    					<a href="{{ url_for('user_crop_status') }}">
+	    						<h2>{{ field.field_name }}</h2>
+	    					</a>
 	    					<hr>
-	    					
 	    					<div class="row">
-	    						<div class="col-md-6">
-	    							<h3>{{ field.agrimodule.name }}</h3>
+    							{% for crop in field.crops %}
+			        				<div class="col-md-6">
+			        					<h4>{{ crop._name|capitalize }} {# {{ crop._variety|capitalize }} #}</h4>
+			        				</div>
+			        				<div class="col-md-6">
+			        					<h4>{{ (( (timenow - field.field_cultivation_start_date).days / (crop._dtm + crop._dtg) ) * 100)|round(1, 'floor') }} %</h4>
+			        				</div>
+		        				{% endfor %}
+	    					</div>
+
+	    					<div class="row">
+	    						<div class="col-md-8">
+	    							<sup style="margin:0; padding: 0;">AgModule</sup>
+	    							<a href="{{ url_for('user_agrimodule') }}">
+			    						<h3>{{ field.agrimodule.name }}</h3>
+			    					</a>
 	    						</div>
-	    						<div class="col-md-6">
+	    						<div class="col-md-3">
 	    							<sup>LAT: {{ field.agrimodule.lat }} LON: {{ field.agrimodule.lon }}</sup>
 	    						</div>
 	    					</div>
@@ -107,22 +141,49 @@ fh5co-active
 	    					
 
 	    					{% for agrisensor in field.agrimodule.agrisensors %}
-	    						<h3>{{ agrisensor.identifier }}
-	    							<br>
-	    							<sup>LAT: {{ agrisensor.lat }} LON: {{ agrisensor.lon }}</sup>
-	    						</h3>
+	    						<div class="row">
+	    							<div class="col-md-12">
+	    								<sup style="margin:0; padding: 0;">AgSensor</sup>
+	    							</div>
+	    							<div class="col-md-8">
+	    								<a href="{{ url_for('user_agrimodule') }}">
+				    						<h3 style="text-align: center;">{{ agrisensor.identifier }}</h3>
+				    					</a>
+	    							</div>
+	    							<div class="col-md-3">
+	    								<sup>LAT: {{ agrisensor.lat }} LON: {{ agrisensor.lon }}</sup>
+	    							</div>
+	    						</div>
 							{% endfor %}
 							
 							{% for agripump in field.agrimodule.agripumps %}
-	    						<h3>{{ agripump.identifier }}
-	    							<br>
-	    							<sup>LAT: {{ agripump.lat }} LON: {{ agripump.lon }}</sup>
-	    						</h3>
-	    						<h5>
-	    							{{ pump_db.filter_by(id = agripump.pump_id).first().pump_name }}
-	    							<br>
-	    							{{ pump_db.filter_by(id = agripump.pump_id).first().pump_brand }}
-	    						</h5>
+
+								<div class="row">
+									<div class="col-md-12">
+										<sup style="margin:0; padding: 0; color: blue;">AgPump</sup>
+	    							</div>
+	    							<div class="col-md-8">
+	    								<a href="{{ url_for('user_agripump') }}">
+				    						<h3 style="text-align: center;">{{ agripump.identifier }}</h3>
+				    					</a>
+		    							
+		    							<sup><h4 style="text-align: center;">
+			    							<sup>{{ pump_db.filter_by(id = agripump.pump_id).first().pump_name }}
+			    							<br>
+			    							{{ pump_db.filter_by(id = agripump.pump_id).first().pump_brand }}</sup>
+			    						</h4></sup>
+	    							</div>
+	    							<div class="col-md-3">
+	    								<sup>LAT: {{ agripump.lat }} LON: {{ agripump.lon }}</sup>
+	    								<br>
+										{% if agripump.status == 1: %}
+											<h4 style="color: green;">ON</h4>
+										{% else %}
+											<h4 style="color: red;">OFF</h4>
+										{% endif %}
+	    							</div>
+	    						</div>
+
 							{% endfor %}
 
 	    				</div>
