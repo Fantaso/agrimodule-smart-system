@@ -16,7 +16,7 @@ from forms import RegisterFormExt, UserProfileForm, PreUserProfileForm # User Fo
 from forms import FarmForm, FieldForm # Welcome Forms
 from forms import FarmInfoForm, AddAgrisysForm, InstallAgrisysForm, AddPumpForm # Set-up System Forms
 from forms import NewCropForm, PreDateNewCropForm, PreNewCropForm, EditFarmForm, PreEditFarmForm # Manage Farms Forms
-from forms import AgrimoduleAddSensorForm, PreEditAgrimoduleForm, EditAgrimoduleForm, EditAgripumpForm # Manage Systems Forms
+from forms import AgrimoduleAddSensorForm, PreEditAgrimoduleForm, EditAgrimoduleForm, EditAgripumpForm, NewAgrimoduleForm # Manage Systems Forms
 from forms import PreAddPumpForm # Manage Pumps Forms
 from flask_uploads import UploadSet, configure_uploads, IMAGES
 
@@ -1067,6 +1067,8 @@ def add_agrisys():
         return redirect(url_for('install_agrisys'))
     return render_template('add_agrisys.html', form=form)
 
+
+
 ###################
 # SET INSTALL ASS
 ###################
@@ -1377,15 +1379,15 @@ def user_farms():
     user = current_user
     agrimodules = user.agrimodules.all()
 
-    def list_agrimodules():
-        for agrimodule in agrimodules:
-            print(agrimodule, agrimodule.identifier)
-            for agripump in agrimodule.agripumps.all():
-                print(agripump, agripump.identifier)
-            for agrisensor in agrimodule.agrisensors.all():
-                print(agrisensor, agrisensor.identifier)
+    # def list_agrimodules():
+        # for agrimodule in agrimodules:
+            # print(agrimodule, agrimodule.identifier)
+            # for agripump in agrimodule.agripumps.all():
+                # print(agripump, agripump.identifier)
+            # for agrisensor in agrimodule.agrisensors.all():
+                # print(agrisensor, agrisensor.identifier)
 
-    list_agrimodules()
+    # list_agrimodules()
     # USER PUMPS
     pumps = user.pumps.all()
 
@@ -1835,6 +1837,121 @@ def user_delete_crop(field_id):
 
 # AgrimoduleAddSensorForm, PreEditAgrimoduleForm, EditAgrimoduleForm, PreEditAgripumpForm, EditAgripumpForm
 
+###################
+# USER NEW AGRIMODULE
+###################
+@app.route('/user/settings/agrimodule/new', methods=['GET', 'POST'])
+@login_required
+def user_new_agrimodule():
+
+
+    def get_farm_name(id):
+        return current_user.farms.filter_by(id = id).first().farm_name
+    def get_farm_location(id):
+        return current_user.farms.filter_by(id = id).first().farm_location
+    def cm2_to_m2(cm2):
+            return cm2 / 10000
+
+    # Get list of all fields
+    farms = current_user.farms.all()
+    field_choices = []
+    for farm in farms:
+        for field in farm.fields.all():
+            field_choices.append(field)
+
+    # declare form
+    form = NewAgrimoduleForm()
+    # add dynamic choices
+    form.field_choices.choices = [ (field.id, field.field_name + ' ' + str(cm2_to_m2(field.field_cultivation_area)) + ' m2 ' + get_farm_location(field.farm_id) + ' ' + get_farm_name(field.farm_id)) for field in field_choices ]
+    form.field_choices.choices.insert(0, (0 ,'Choose:'))
+
+
+    if form.validate_on_submit(): 
+
+        # ADD AGRISYS OBJS
+        name = form.name.data
+        identifier = form.identifier.data
+        lat = form.lat.data
+        lon = form.lon.data
+        field_choice = form.field_choices.data
+        print(name, identifier, lat, lon, field_choice)
+
+        # OBJS TO DB
+        agrimodule = Agrimodule(user = current_user,
+                                name = name,
+                                identifier = identifier,
+                                lat = lat,
+                                lon = lon,
+                                field_id = field_choice)
+        print(agrimodule.field_id)
+
+        # DB COMMANDS
+        db.session.add(agrimodule)
+        db.session.commit()
+        
+        
+        # FLASH AND REDIRECT
+        flash('You just added a new agrimodule: {}'.format(name))
+        return redirect(url_for('user_farms'))
+    return render_template('user_new_agrimodule.html', form=form)
+
+
+##################
+# USER EDIT AGRIMODULE
+##################
+@app.route('/user/settings/agrimodule/edit', methods=['GET', 'POST'])
+@app.route('/user/settings/agrimodule/edit/<agrimodule_id>', methods=['GET', 'POST'])
+@login_required
+def user_edit_agrimodule(agrimodule_id = 0):
+
+    if int(agrimodule_id) <= 0:
+        flash('This Agrimodule done not exist.')
+        return redirect(url_for('home'))
+
+    agrimodule_to_edit = current_user.agrimodules.filter_by(id = agrimodule_id).first()
+    myAgrimodule = PreEditAgrimoduleForm(name = agrimodule_to_edit.name)
+
+
+    form = EditAgrimoduleForm(obj = myAgrimodule)
+
+    farms = current_user.farms.all()
+    field_choices = []
+    for farm in farms:
+        for field in farm.fields.all():
+            field_choices.append(field)
+
+
+    def get_farm_name(id):
+        return current_user.farms.filter_by(id = id).first().farm_name
+    def get_farm_location(id):
+        return current_user.farms.filter_by(id = id).first().farm_location
+    def cm2_to_m2(cm2):
+            return cm2 / 10000
+    form.field_choices.choices = [ (field.id, field.field_name + ' ' + str(cm2_to_m2(field.field_cultivation_area)) + ' m2 ' + get_farm_location(field.farm_id) + ' ' + get_farm_name(field.farm_id)) for field in field_choices ]
+    form.field_choices.choices.insert(0, (0 ,'Choose:'))
+    form.field_choices.choices.append((1000 ,'Disconnect!'))
+    # form.field_choices.choices = [ (field.id, field.field_name + ' ' + str(cm2_to_m2(field.field_cultivation_area)) + ' m2 ' + get_farm_location(field.farm_id) + ' ' + get_farm_name(field.farm_id)) for field in field_choices ]
+    if form.validate_on_submit():   # IF request.methiod == 'POST'
+
+        # REST OF FORM HANDLING
+        if form.field_choices.data == 0:
+            flash('Nothing changed!'.format())
+        elif form.field_choices.data == 1000:
+            field = Field.query.filter_by(id = agrimodule_to_edit.field_id).first()
+            flash('You just disconnected your agrimodule {} from field: {}'.format(agrimodule_to_edit.name, field.field_name))
+            agrimodule_to_edit.field_id = None
+        else:
+            field = Field.query.filter_by(id = form.field_choices.data).first()
+            flash('You just change your agrimodule {} to monitor: {}'.format(agrimodule_to_edit.name, field.field_name ))
+            agrimodule_to_edit.field_id = form.field_choices.data
+
+        agrimodule_to_edit.name = form.name.data
+        db.session.commit()
+    
+        return redirect(url_for('user_farms'))
+    return render_template('user_edit_agrimodule.html', form=form, agrimodule_to_edit=agrimodule_to_edit)
+
+
 # '/user/farm/field/agrimodule/add-sensor'
 ##################
 # USER ADD SENSOR
@@ -1906,16 +2023,30 @@ def user_edit_agripump(agripump_id = 0):
     # Prepopulate form
     form = EditAgripumpForm()
     form.pump_choices.choices = [ (pump.id, pump.pump_name) for pump in pump_choices ] # PUMP
-    form.pump_choices.choices.insert(0, ('0' ,'Choose:'))
+    form.pump_choices.choices.insert(0, (0 ,'Choose:'))
+    form.pump_choices.choices.append((1000 ,'Disconnect!'))
+
+
     
     if form.validate_on_submit():   # IF request.methiod == 'POST'     
         # FIELD OBJS  TO DB
-        try:            
+        try:
+
             # REST OF FORM HANDLING
-            agripump_to_edit.pump_id = form.pump_choices.data
+            if form.pump_choices.data == 0:
+                flash('Nothing changed!'.format())
+            elif form.pump_choices.data == 1000:
+                pump = current_user.pumps.filter_by(id = agripump_to_edit.pump_id).first()
+                flash('You just disconnected your agripump from pump: {}'.format(pump.pump_name))
+                agripump_to_edit.pump_id = None
+            else:
+                pump = current_user.pumps.filter_by(id = form.pump_choices.data).first()
+                agripump_to_edit.pump_id = form.pump_choices.data
+                flash('You just change your agripumps pump to work on pump: {}'.format(pump.pump_name))
+            
+            # DB COMMANDS
             db.session.commit()
-            new_pump = Pump.query.filter_by(id =  agripump_to_edit.pump_id).first()
-            flash('You just change your agripumps pump to work on pump: {}'.format(new_pump.pump_name ))
+            
             return redirect(url_for('user_farms'))
         except Exception as e:
             flash('Error: ' + str(e))
@@ -1927,51 +2058,6 @@ def user_edit_agripump(agripump_id = 0):
    
 
     
-# '/user/farm/field/agrimodule/edit-agrimodule/<agrimodule_id>'
-##################
-# USER EDIT AGRIMODULE
-##################
-@app.route('/user/farm/field/agrimodule/edit', methods=['GET', 'POST'])
-@app.route('/user/farm/field/agrimodule/edit/<agrimodule_id>', methods=['GET', 'POST'])
-@login_required
-def user_edit_agrimodule(agrimodule_id = 0):
-
-    if int(agrimodule_id) <= 0:
-        flash('This Agrimodule done not exist.')
-        return redirect(url_for('home'))
-
-    agrimodule_to_edit = current_user.agrimodules.filter_by(id = agrimodule_id).first()
-    myAgrimodule = PreEditAgrimoduleForm(name = agrimodule_to_edit.name)
-
-
-    form = EditAgrimoduleForm(obj = myAgrimodule)
-
-    farms = current_user.farms.all()
-    field_choices = []
-    for farm in farms:
-        for field in farm.fields.all():
-            field_choices.append(field)
-
-
-    def get_farm_name(id):
-        return current_user.farms.filter_by(id = id).first().farm_name
-    def get_farm_location(id):
-        return current_user.farms.filter_by(id = id).first().farm_location
-    def cm2_to_m2(cm2):
-            return cm2 / 10000
-    form.field_choices.choices = [ (field.id, field.field_name + ' ' + str(cm2_to_m2(field.field_cultivation_area)) + ' m2 ' + get_farm_location(field.farm_id) + ' ' + get_farm_name(field.farm_id)) for field in field_choices ]
-    form.field_choices.choices.insert(0, ('0' ,'Choose:'))
-    # form.field_choices.choices = [ (field.id, field.field_name + ' ' + str(cm2_to_m2(field.field_cultivation_area)) + ' m2 ' + get_farm_location(field.farm_id) + ' ' + get_farm_name(field.farm_id)) for field in field_choices ]
-    if form.validate_on_submit():   # IF request.methiod == 'POST'
-
-        agrimodule_to_edit.name = form.name.data
-        agrimodule_to_edit.field_id = form.field_choices.data
-        db.session.commit()
-    
-        flash('You just edited your agrimodule: {}'.format(agrimodule_to_edit.name))
-        return redirect(url_for('user_farms'))
-    return render_template('user_edit_agrimodule.html', form=form, agrimodule_to_edit=agrimodule_to_edit)
-
 
 # '/user/farm/field/agrimodule/delete/<agrimodule_id>'
 ##################
