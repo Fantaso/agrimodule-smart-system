@@ -2,7 +2,7 @@ from flask_wtf import FlaskForm
 from flask_wtf.file import FileAllowed, FileField
 from wtforms import StringField, PasswordField, TextAreaField, Form, FormField, IntegerField, RadioField, SelectField, FloatField
 from wtforms.fields.html5 import DateField
-from wtforms.validators import DataRequired, Email, Length, NumberRange
+from wtforms.validators import DataRequired, Email, Length, NumberRange, Optional
 from flask_security.forms import RegisterForm, ConfirmRegisterForm
 from flask_uploads import IMAGES
 
@@ -94,6 +94,14 @@ class EditFarmForm(FlaskForm):
 
 
 # MANAGE SYSTEMS FORMS
+
+class NewAgrimoduleForm(FlaskForm):
+    name                = StringField('Agrimodule name', validators=[DataRequired(), Length(min=2, max=30, message='Give it a name for sanity MAX 30.')])
+    identifier          = StringField('Agrimodule code', validators=[DataRequired(), Length(min=2, max=30, message='Your agrimodule identifier is in the back of your agrimodule.')])
+    lat                 = FloatField('latitude location', validators=[DataRequired(), NumberRange(min=-90, max=90, message='write the lat coordinates')])
+    lon                 = FloatField('longitude location', validators=[DataRequired(), NumberRange(min=-180, max=180, message='write the lon coordinates')])
+    field_choices       = SelectField('Field to monitor:', validators=[Optional(strip_whitespace=True)], coerce = int)
+
 # '/user/farm/field/agrimodule/add-sensor'
 class AgrimoduleAddSensorForm(FlaskForm):
     agrimodule_choices  = SelectField(label='Agrimodule choices', validators=[DataRequired()], coerce = int)
@@ -106,8 +114,8 @@ class PreEditAgrimoduleForm:
         self.name = name
 
 class EditAgrimoduleForm(FlaskForm):
-    name                = StringField('Agrimodule name', validators=[DataRequired(), Length(min=2, max=20, message='Give it a name for sanity MAX 30.')])
-    field_choices       = SelectField(label='Field choices', validators=[DataRequired()], coerce = int)
+    name                = StringField('Agrimodule name', validators=[DataRequired(), Length(min=2, max=30, message='Give it a name for sanity MAX 30.')])
+    field_choices       = SelectField(label='Field to monitor:', validators=[Optional(strip_whitespace=True)], coerce = int)
 
 # '/user/farm/field/agripump/change-pump/'
 class PreEditAgripumpForm:
@@ -115,7 +123,7 @@ class PreEditAgripumpForm:
         self.pump_name = pump_name
 
 class EditAgripumpForm(FlaskForm):
-    pump_choices        = SelectField(label='Pump choices', validators=[DataRequired()], coerce = int)
+    pump_choices        = SelectField(label='Pump choices', validators=[Optional(strip_whitespace=True)], coerce = int)
 
 
 
