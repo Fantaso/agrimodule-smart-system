@@ -1994,7 +1994,6 @@ def user_add_sensor(agrimodule_id = 0):
     else:
         agrimodule = current_user.agrimodules.filter_by(id = agrimodule_id).first()
         form.agrimodule_choices.choices = [ (agrimodule.id, agrimodule.name) ] # AGRIMODULE
-        form.agrimodule_choices.choices.insert(0, ('0' ,'Choose:'))
 
     
     
@@ -2014,10 +2013,11 @@ def user_add_sensor(agrimodule_id = 0):
             agrisensor = Agrisensor(agrimodule_id = agrimodule_id, identifier = identifier)
             db.session.add(agrisensor)
 
+
         # DB COMMANDS
         db.session.commit()
 
-        flash('You just added a sensor: {} in your system: {}'.format('field_to_del.field_name', 'farm.farm_name'))
+        flash('You just added an {}: {} in your system: {}'.format(sensor_type, identifier, Agrimodule.query.filter_by(id = agrimodule_id).first().name))
         return redirect(url_for('user_farms'))
     return render_template('user_add_sensor.html', form=form)
 

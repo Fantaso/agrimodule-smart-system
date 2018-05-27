@@ -147,11 +147,11 @@ fh5co-active
 				        				</div>
 				        				<div class="col-md-2">
 				        					{% if field.agrimodule.name is not none: %}
-												<h4>
+												<i><h4>
 													
 														{{ field.agrimodule.name }}
 
-												</h4>
+												</h4></i>
 						                    {% endif %}
 						                </div>
 				        				<div class="col-md-4">
@@ -404,7 +404,7 @@ fh5co-active
 	        					<h4>{{ pump.pump_watts / 1000 }} kW</h4>
 	        				</div>
 	        				<div class="col-md-2">
-	        					<h4>{{ agripump_db.filter_by(pump_id = pump.id).first().identifier  }}</h4>
+	        					<i><h4>{{ agripump_db.filter_by(pump_id = pump.id).first().identifier  }}</h4></i>
 	        				</div>
 	        				<div class="col-md-3">
 								<a href="{{ url_for('user_edit_pump', pump_id=pump.id) }}" class="btn btn-default btn-sm">edit</a>
