@@ -1223,7 +1223,7 @@ def home():
         pump_db = Pump.query
 
 
-        return render_template('home.html', user=current_user, default_farm = default_farm, fields = fields, pump_db =pump_db)
+        return render_template('home.html', user=current_user, default_farm = default_farm, fields = fields, pump_db =pump_db, timenow=datetime.now())
 
 
 ##########################################################
