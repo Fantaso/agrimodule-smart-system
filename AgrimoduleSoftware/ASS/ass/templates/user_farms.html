@@ -331,7 +331,11 @@ fh5co-active
 			        					<h4>{{ pump_db.filter_by(id = agripump.pump_id).first().pump_name }} {{ pump_db.filter_by(id = agripump.pump_id).first().pump_brand }}</h4>
 			        				</div>
 			        				<div class="col-md-1">
-			        					<h4>{% if agripump.status: %} {{ 'ON' }} {% else %} {{ 'OFF' }} {% endif %} </h4>
+			        					{% if agripump.status == 1: %}
+											<h4 style="color: green;">ON</h4>
+										{% else %}
+											<h4 style="color: red;">OFF</h4>
+										{% endif %}
 					                </div>
 			        				<div class="col-md-4">
 			        					<a href="{{ url_for('user_edit_agripump', agripump_id = agripump.id) }}" class="btn btn-default btn-sm">edit</a>
