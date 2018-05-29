@@ -22,6 +22,18 @@
 		.centrado{text-align: center;}
 
 	</style>
+	<script type="text/javascript">
+        document.getElementById("nav-toggle").addEventListener ("click", toggleNav);
+        function toggleNav() {
+                var nav = document.getElementById("nav-menu");
+                var className = nav.getAttribute("class");
+                if(className == "nav-right nav-menu") {
+                    nav.className = "nav-right nav-menu is-active";
+                } else {
+                    nav.className = "nav-right nav-menu";
+                }
+        }
+    </script>
 </head>
 <body>
 	
@@ -31,338 +43,373 @@
 	<section class="section">
 
 
-		<div class="container bg_lgr">
-			<div class="columns is-tablet is-vcentered">
+		<div class="columns">
+			
+			<div class="column is-2">
+				<aside class="menu">
+				  <p class="menu-label">
+				    Quick access
+				  </p>
+				  <ul class="menu-list">
+				    <li><a>Farm Status</a></li>
+				    <li><a>Crop Status</a></li>
+				    <li><a>Crop Planning</a></li>
+				    <li><a>Crop Analyzer</a></li>
+				    <li><a>Health Analyzer</a></li>
+				  </ul>
+				  <p class="menu-label">
+				    Administration
+				  </p>
+				  <ul class="menu-list">
+				    <li><a class="is-active">Farm Settings</a>
+				      <ul>
+				      	<li><a>New Farm</a></li>
+				      	<li><a>New Crop</a></li>
+				      	<li><a>New Pump</a></li>
+				      	<li><a>New Agrimodule</a></li>
+				      	<ul>
+				      		<li>New Sensor</li>
+				      	</ul>
+				      </ul>
+				    </li>
+				    <li><a>Personal Settings</a>
+				    	<ul>
+				      	<li><a>New Farm</a></li>
+				      </ul>
+				    </li>
+				    
+				  </ul>
+				  <p class="menu-label">
+				    Extra
+				  </p>
+				  <ul class="menu-list">
+				    <li><a>Market Fair</a></li>
+				    <li><a>Logout</a></li>
+				    
+				  </ul>
+				</aside>
+			</div>
+
+			<div class="column">
+				<div class="container bg_lgr">
+					<div class="columns is-tablet is-vcentered is-centered">
 
 
-				<div class="bg_dgr column is-one-quarter">
-					<div class="columns is-vcentered">
+						<div class="bg_dgr column is-one-quarter">
+							<div class="columns is-vcentered">
 
-						<!-- ICON -->
-						<div class="column is-4">
-							<div class="columns">
-								<div class="column is-12 centrado">
-									<!-- Agripump SYSTEM NAME -->
-									<span class="icon is-large  bg_lgr">
-								    	<i class="fas fa-2x fa-cloud"></i>
-								    </span>
+								<!-- ICON -->
+								<div class="column is-4">
+									<div class="columns">
+										<div class="column is-12 centrado">
+											<!-- Agripump SYSTEM NAME -->
+											<span class="icon is-large  bg_lgr">
+										    	<i class="fas fa-2x fa-cloud"></i>
+										    </span>
+										</div>
+									</div>
 								</div>
+								<!-- ICON -->
+
+											
+								<!-- TEMP, HUM and PRESS -->
+								<div class="column is-4 centrado">
+									<div class="columns">
+										<div class="column is-12">
+											<p>14<sup>°</sup></p>
+											<p>68<sup>%</sup></p>
+										</div>
+									</div>
+								</div>
+								<!-- TEMP, HUM and PRESS -->
+
+								<!-- CITY, TIME LAT AND LON -->
+								<div class="lbg_r column is-4 centrado">
+									<div class="columns">
+										<div class="column is-12">
+											<h4>Berlin</h4>
+											<h3>22:54</h3>
+										</div>
+									</div>
+								</div>
+								<!-- CITY, TIME LAT AND LON -->
+								
 							</div>
 						</div>
-						<!-- ICON -->
+						
 
+
+						<div class="bg_dgr column is-one-fifth is-offset-1 has-text-centered is-outlined">
+							<div class="is-outlined">Farm name</div>
+						</div>
+
+						<!-- ALERTS -->
+						<div class="bg_dgr column is-one-quarter is-offset-1">
+							<!-- WATER -->
+							<div class="columns is-vcentered">
+
+								<!-- NOTIFICATION -->
+								<div class="column is-2 has-text-centered">
+									<div class="tags has-addons">
+									  	<span class="tag is-info">3</span>
+									  	<!-- <a class="tag">1</a> -->
+									</div>
+								</div>
+								<!-- ICON -->
+								<div class="column is-2 has-text-centered">
+									<span class="icon is-small">
+										<i class="fas fa fa-tint"></i>
+									</span>
+								</div>
+								<!-- BAR -->
+								<div class="column is-8 has-text-centered">
+									<progress class="progress is-info" value="25" max="100">15%</progress>
+								</div>
+							</div>
+
+							<!-- SUN -->
+							<div class="columns is-vcentered">
+
+								<!-- NOTIFICATION -->
+								<div class="column is-2 has-text-centered">
+									<div class="tags has-addons">
+									  	<span class="tag is-warning">4</span>
+									  	<!-- <a class="tag">1</a> -->
+									</div>
+								</div>
+								<!-- ICON -->
+								<div class="column is-2 has-text-centered">
+									<span class="icon is-small">
+										<i class="fas fa fa-sun"></i>
+									</span>
+								</div>
+								<!-- BAR -->
+								<div class="column is-8 has-text-centered">
+									<progress class="progress is-warning" value="85" max="110">15%</progress>
+								</div>
+							</div>
+
+							<!-- FERTILZER -->
+							<div class="columns is-vcentered">
+
+								<!-- NOTIFICATION -->
+								<div class="column is-2 has-text-centered">
+									<div class="tags has-addons">
+									  	<span class="tag">1</span>
+									</div>
+								</div>
+								<!-- ICON -->
+								<div class="column is-2 has-text-centered">
+									<span class="icon is-small">
+										<i class="fas fa fa-shopping-bag"></i>
+									</span>
+								</div>
+								<!-- BAR -->
+								<div class="column is-8 has-text-centered">
+									<progress class="progress" value="38" max="100">15%</progress>
+								</div>
+							</div>
+
+						</div>
+						<!-- ALERTS -->
+
+					</div>
+
+
+
+					<!-- FIELDS-->
+					<div class="columns is-tablet is-centered is-vcentered">
+						<!-- FIELD 1 -->
+					  	<div class="bg_r column is-one-third">
+					  		<!-- FIELD -->
+					  		<div class="columns is-centered is-vcentered">
+							
+								<!-- CROP -->
+								<div class="bg_gr column is-6">
 									
-						<!-- TEMP, HUM and PRESS -->
-						<div class="column is-4 centrado">
-							<div class="columns">
-								<div class="column is-12">
-									<p>14<sup>°</sup></p>
-									<p>68<sup>%</sup></p>
+									<div class="columns is-vcentered">
+										<div class="column is-12 has-text-centered">
+											<!-- Agripump SYSTEM NAME -->
+											<p>Tomato</p>
+											<!-- Agripump SYSTEM IMAGE -->
+											<figure class="image">
+												<img src="../static/bulma/tomato.png">
+											</figure>
+											<!-- BAR -->
+											<div class="column is-12 has-text-centered">
+												<progress class="progress is-primary" value="85" max="100">85%</progress>
+											</div>
+										</div>
+									</div>
+									
 								</div>
-							</div>
-						</div>
-						<!-- TEMP, HUM and PRESS -->
+								<!-- CROP -->
 
-						<!-- CITY, TIME LAT AND LON -->
-						<div class="lbg_r column is-4 centrado">
-							<div class="columns">
-								<div class="column is-12">
-									<h4>Berlin</h4>
-									<h3>22:54</h3>
+								<!-- SYSTEM -->
+								<div class="bg_b column is-6">
+
+								 	
+
+									<!-- AGRIMODULE SYSTEM -->
+									<div class="columns is-vcentered">
+										<!-- 1 Agrisensor OBJ -->
+										<div class="bg_dgr column is-half">
+											<div class="columns is-vcentered">
+												<div class="column is-12 has-text-centered">
+													<!-- Agrisensor SYSTEM IMAGE -->
+													<figure class="image">
+														<img src="../static/bulma/agrimodule-icon.png">
+													</figure>
+													<!-- Agrisensor SYSTEM NAME -->
+													<p>Carora System</p>
+												</div>
+											</div>
+										</div>
+									</div>
+									<!-- AGRIMODULE SYSTEM -->
+
+									<!-- AGRISENSORS -->
+									<div class="columns is-vcentered">
+										<!-- 1 Agrisensor OBJ -->
+										<div class="bg_dgr column is-one-third">
+											<div class="columns is-vcentered">
+												<div class="column is-12 has-text-centered">
+													<!-- Agrisensor SYSTEM IMAGE -->
+													<figure class="image">
+														<img src="../static/bulma/agrisensor-icon.png">
+													</figure>
+													<!-- Agrisensor SYSTEM NAME -->
+													<p>Agrisensor2000</p>
+												</div>
+											</div>
+										</div>
+										<!-- 2 Agrisensor OBJ -->
+										<div class="bg_dgr column is-one-third">
+											<div class="columns is-vcentered">
+												<div class="column is-12 has-text-centered">
+													<!-- Agrisensor SYSTEM IMAGE -->
+													<figure class="image">
+														<img src="../static/bulma/agrisensor-icon.png">
+													</figure>
+													<!-- Agrisensor SYSTEM NAME -->
+													<p>Agrisensor2001</p>
+												</div>
+											</div>
+										</div>
+										<!-- 3 Agrisensor OBJ -->
+										<div class="bg_dgr column is-one-third">
+											<div class="columns is-vcentered">
+												<div class="column is-12 has-text-centered">
+													<!-- Agrisensor SYSTEM IMAGE -->
+													<figure class="image">
+														<img src="../static/bulma/agrisensor-icon.png">
+													</figure>
+													<!-- Agrisensor SYSTEM NAME -->
+													<p>Agrisensor2002</p>
+												</div>
+											</div>
+										</div>
+									</div>
+									<!-- AGRISENSORS -->
+
+									<!-- AGRIPUMPS -->
+									<div class="columns is-vcentered">
+										<!-- 1 Agripump OBJ -->
+										<div class="bg_dgr column is-one-third">
+											<div class="columns is-vcentered">
+												<div class="column is-12 has-text-centered">
+													<!-- Agripump SYSTEM IMAGE -->
+													<figure class="image">
+														<img src="../static/bulma/agripump-icon.png">
+													</figure>
+													<!-- Agripump SYSTEM NAME -->
+													<p>Agripump2001</p>
+												</div>
+											</div>
+										</div>
+										<!-- 2 Agripump OBJ -->
+										<div class="bg_dgr column is-one-third">
+											<div class="columns is-vcentered">
+												<div class="column is-12 has-text-centered">
+													<!-- Agripump SYSTEM IMAGE -->
+													<figure class="image">
+														<img src="../static/bulma/agripump-icon.png">
+													</figure>
+													<!-- Agripump SYSTEM NAME -->
+													<p>Agripump2002</p>
+												</div>
+											</div>
+										</div>
+										<!-- 3 Agripump OBJ -->
+										<div class="bg_dgr column is-one-third">
+											<div class="columns is-vcentered">
+												<div class="column is-12 has-text-centered">
+													<!-- Agripump SYSTEM IMAGE -->
+													<figure class="image">
+														<img src="../static/bulma/agripump-icon.png">
+													</figure>
+													<!-- Agripump SYSTEM NAME -->
+													<p>Agripump2003</p>
+												</div>
+											</div>
+										</div>
+									</div>
+									<!-- AGRIPUMPS -->
 								</div>
-							</div>
-						</div>
-						<!-- CITY, TIME LAT AND LON -->
+								<!-- SYSTEM -->
+					  		</div>
+					  		<!-- FIELD -->
+					  	</div>
+					  	<!-- FIELD 1 -->
+
 						
 					</div>
-				</div>
-				
+					<!-- FIELDS -->
+			
 
 
-				<div class="bg_dgr column is-one-third is-offset-1 has-text-centered is-outlined">
-					<div class="is-outlined">Farm name</div>
-				</div>
-
-				<!-- ALERTS -->
-				<div class="bg_dgr column is-one-quarter is-offset-1">
-					<!-- WATER -->
-					<div class="columns is-vcentered">
-
-						<!-- NOTIFICATION -->
-						<div class="column is-2 has-text-centered">
-							<div class="tags has-addons">
-							  	<span class="tag is-info">3</span>
-							  	<!-- <a class="tag">1</a> -->
-							</div>
+					<!-- FOOTER -->
+					<div class="columns is-tablet is-centered">
+						<!-- MENU -->
+						<div class="bg_y column is-1 centrado">
+							<span class="icon is-large bg_lgr">
+						    	<i class="fas fa-2x fa-bars"></i>
+						  	</span>
 						</div>
-						<!-- ICON -->
-						<div class="column is-2 has-text-centered">
-							<span class="icon is-small">
-								<i class="fas fa fa-tint"></i>
-							</span>
+						<!-- FARMER -->
+						<div class="bg_y column is-1 is-offset-6 centrado">
+							<figure class="image is-48x48">
+								<img src="../static/bulma/farmer.png">
+							</figure>
 						</div>
-						<!-- BAR -->
-						<div class="column is-8 has-text-centered">
-							<progress class="progress is-info" value="25" max="100">15%</progress>
+						<!-- MANAGER -->
+						<div class="bg_y column is-1 centrado">
+							<span class="icon is-large bg_lgr">
+						    	<i class="fas fa-2x fa-user"></i>
+						  	</span>
 						</div>
-					</div>
-
-					<!-- SUN -->
-					<div class="columns is-vcentered">
-
-						<!-- NOTIFICATION -->
-						<div class="column is-2 has-text-centered">
-							<div class="tags has-addons">
-							  	<span class="tag is-warning">4</span>
-							  	<!-- <a class="tag">1</a> -->
-							</div>
+						<!-- MARKET -->
+						<div class="bg_y column is-1 centrado">
+							<span class="icon is-large bg_lgr">
+						    	<i class="fas fa-2x fa-shopping-cart"></i>
+						  	</span>
 						</div>
-						<!-- ICON -->
-						<div class="column is-2 has-text-centered">
-							<span class="icon is-small">
-								<i class="fas fa fa-sun"></i>
-							</span>
-						</div>
-						<!-- BAR -->
-						<div class="column is-8 has-text-centered">
-							<progress class="progress is-warning" value="85" max="110">15%</progress>
+						<!-- ALERTS -->
+						<div class="bg_y column is-1 centrado">
+							<span class="icon is-large  bg_lgr">
+						    	<i class="fas fa-2x fa-bell"></i>
+						    </span>
 						</div>
 					</div>
-
-					<!-- FERTILZER -->
-					<div class="columns is-vcentered">
-
-						<!-- NOTIFICATION -->
-						<div class="column is-2 has-text-centered">
-							<div class="tags has-addons">
-							  	<span class="tag">1</span>
-							</div>
-						</div>
-						<!-- ICON -->
-						<div class="column is-2 has-text-centered">
-							<span class="icon is-small">
-								<i class="fas fa fa-shopping-bag"></i>
-							</span>
-						</div>
-						<!-- BAR -->
-						<div class="column is-8 has-text-centered">
-							<progress class="progress" value="38" max="100">15%</progress>
-						</div>
-					</div>
+					<!-- FOOTER -->
 
 				</div>
-				<!-- ALERTS -->
-
 			</div>
 
-
-
-			<!-- FIELDS-->
-			<div class="columns is-tablet is-centered is-vcentered">
-				<!-- FIELD 1 -->
-			  	<div class="bg_r column is-one-third">
-			  		<!-- FIELD -->
-			  		<div class="columns is-centered is-vcentered">
-					
-						<!-- CROP -->
-						<div class="bg_gr column is-6">
-							
-							<div class="columns is-vcentered">
-								<div class="column is-12 has-text-centered">
-									<!-- Agripump SYSTEM NAME -->
-									<p>Crop1</p>
-									<!-- Agripump SYSTEM IMAGE -->
-									<figure class="image">
-										<img src="https://bulma.io/images/placeholders/128x128.png">
-									</figure>
-									<!-- BAR -->
-									<div class="column is-12 has-text-centered">
-										<progress class="progress is-primary" value="85" max="100">85%</progress>
-									</div>
-								</div>
-							</div>
-							
-						</div>
-						<!-- CROP -->
-
-						<!-- SYSTEM -->
-						<div class="bg_b column is-6">
-
-						 	<!-- AGRIMODULE SYSTEM -->
-							<div class="columns is-vcentered">
-								<!-- Agrimodule OBJ -->
-								<div class="column">
-									<div class="columns is-vcentered">
-										<div class="column is-12 has-text-centered">
-											<!-- Agrimodule SYSTEM IMAGE -->
-											<figure class="image">
-												<img src="../static/uploads/cloud.png">
-											</figure>
-											<!-- Agrisensor SYSTEM NAME -->
-											<p>name</p>
-										</div>
-									</div>
-								</div>
-							</div>
-							<!-- AGRIMODULE SYSTEM -->
-
-							<!-- AGRISENSORS -->
-							<div class="columns is-vcentered">
-								<!-- 1 Agrisensor OBJ -->
-								<div class="bg_dgr column is-one-third">
-									<div class="columns is-vcentered">
-										<div class="column is-12 has-text-centered">
-											<!-- Agrisensor SYSTEM IMAGE -->
-											<figure class="image">
-												<img src="../static/uploads/cloud.png">
-											</figure>
-											<!-- Agrisensor SYSTEM NAME -->
-											<p>ags1</p>
-										</div>
-									</div>
-								</div>
-								<!-- 2 Agrisensor OBJ -->
-								<div class="bg_dgr column is-one-third">
-									<div class="columns is-vcentered">
-										<div class="column is-12 has-text-centered">
-											<!-- Agrisensor SYSTEM IMAGE -->
-											<figure class="image">
-												<img src="../static/uploads/cloud.png">
-											</figure>
-											<!-- Agrisensor SYSTEM NAME -->
-											<p>ags2</p>
-										</div>
-									</div>
-								</div>
-								<!-- 3 Agrisensor OBJ -->
-								<div class="bg_dgr column is-one-third">
-									<div class="columns is-vcentered">
-										<div class="column is-12 has-text-centered">
-											<!-- Agrisensor SYSTEM IMAGE -->
-											<figure class="image">
-												<img src="../static/uploads/cloud.png">
-											</figure>
-											<!-- Agrisensor SYSTEM NAME -->
-											<p>ags3</p>
-										</div>
-									</div>
-								</div>
-							</div>
-							<!-- AGRISENSORS -->
-
-							<!-- AGRIPUMPS -->
-							<div class="columns is-vcentered">
-								<!-- 1 Agripump OBJ -->
-								<div class="bg_dgr column is-one-third">
-									<div class="columns is-vcentered">
-										<div class="column is-12 has-text-centered">
-											<!-- Agripump SYSTEM IMAGE -->
-											<figure class="image">
-												<img src="../static/uploads/cloud.png">
-											</figure>
-											<!-- Agripump SYSTEM NAME -->
-											<p>agp1</p>
-										</div>
-									</div>
-								</div>
-								<!-- 2 Agripump OBJ -->
-								<div class="bg_dgr column is-one-third">
-									<div class="columns is-vcentered">
-										<div class="column is-12 has-text-centered">
-											<!-- Agripump SYSTEM IMAGE -->
-											<figure class="image">
-												<img src="../static/uploads/cloud.png">
-											</figure>
-											<!-- Agripump SYSTEM NAME -->
-											<p>agp2</p>
-										</div>
-									</div>
-								</div>
-								<!-- 3 Agripump OBJ -->
-								<div class="bg_dgr column is-one-third">
-									<div class="columns is-vcentered">
-										<div class="column is-12 has-text-centered">
-											<!-- Agripump SYSTEM IMAGE -->
-											<figure class="image">
-												<img src="../static/uploads/cloud.png">
-											</figure>
-											<!-- Agripump SYSTEM NAME -->
-											<p>agp3</p>
-										</div>
-									</div>
-								</div>
-							</div>
-							<!-- AGRIPUMPS -->
-						</div>
-						<!-- SYSTEM -->
-			  		</div>
-			  		<!-- FIELD -->
-			  	</div>
-			  	<!-- FIELD 1 -->
-
-				
-			</div>
-			<!-- FIELDS -->
-	
-
-
-			<!-- FOOTER -->
-			<div class="columns is-tablet is-centered">
-				<!-- MENU -->
-				<div class="bg_y column is-1 centrado">
-					<span class="icon is-large bg_lgr">
-				    	<i class="fas fa-2x fa-bars"></i>
-				  	</span>
-				</div>
-				<!-- FARMER -->
-				<div class="bg_y column is-1 is-offset-6 centrado">
-					<span class="icon is-large bg_lgr">
-				    	<i class="fas fa-2x fa-user-circle"></i>
-				  	</span>
-				</div>
-				<!-- MANAGER -->
-				<div class="bg_y column is-1 centrado">
-					<span class="icon is-large bg_lgr">
-				    	<i class="fas fa-2x fa-user"></i>
-				  	</span>
-				</div>
-				<!-- MARKET -->
-				<div class="bg_y column is-1 centrado">
-					<span class="icon is-large bg_lgr">
-				    	<i class="fas fa-2x fa-shopping-cart"></i>
-				  	</span>
-				</div>
-				<!-- ALERTS -->
-				<div class="bg_y column is-1 centrado">
-					<span class="icon is-large  bg_lgr">
-				    	<i class="fas fa-2x fa-bell"></i>
-				    </span>
-				</div>
-			</div>
-			<!-- FOOTER -->
-
-		</div>
-
-		<div class="columns">
-			<div class="column is-12">
-
-
-
-	
-
-				
-
-
-
-
-				
-			</div>
-		</div>
 	</section>
 
 
 
-<a class="delete"></a>
 
 
 
@@ -371,6 +418,59 @@
 
 </body>
 </html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- <a class="delete"></a> -->
+
+
+
+
+
+
+<!-- FOOTER -->
+<!-- <div class="columns is-tablet is-centered">
+
+	<div class="bg_y column is-1 centrado">
+		<span class="icon is-large bg_lgr">
+	    	<i class="fas fa-2x fa-bars"></i>
+	  	</span>
+	</div>
+
+	<div class="bg_y column is-1 is-offset-6 centrado">
+		<span class="icon is-large bg_lgr">
+	    	<i class="fas fa-2x fa-user-circle"></i>
+	  	</span>
+	</div>
+
+	<div class="bg_y column is-1 centrado">
+		<span class="icon is-large bg_lgr">
+	    	<i class="fas fa-2x fa-user"></i>
+	  	</span>
+	</div>
+
+	<div class="bg_y column is-1 centrado">
+		<span class="icon is-large bg_lgr">
+	    	<i class="fas fa-2x fa-shopping-cart"></i>
+	  	</span>
+	</div>
+
+	<div class="bg_y column is-1 centrado">
+		<span class="icon is-large  bg_lgr">
+	    	<i class="fas fa-2x fa-bell"></i>
+	    </span>
+	</div>
+</div> -->
 
 
 
