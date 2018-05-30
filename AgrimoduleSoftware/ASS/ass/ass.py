@@ -737,14 +737,15 @@ def welcome():
         flash('welcome for the first time, ' + current_user.name + '!')
         print('welcome for the first time, ' + current_user.name + '!')
         set_sys_flag = True
-        return render_template('welcome.html', current_user=current_user, set_sys_flag=set_sys_flag)
+        return render_template('welcome.html', user=current_user, set_sys_flag=set_sys_flag)
     elif current_user.farms.count() == 0 or current_user.farms.first().fields.count() == 0:
         flash('Now set your farm, ' + current_user.name + '!')
         print('Now set your farm, ' + current_user.name + '!')
         set_sys_flag = False
-        return render_template('welcome.html', current_user=current_user, set_sys_flag=set_sys_flag)
+        return render_template('welcome.html', user=current_user, set_sys_flag=set_sys_flag)
     else:
-        return render_template('home.html', current_user=current_user)
+        default_farm = current_user.farms.filter_by(_default = 1).one()
+        return redirect(url_for('home', user=current_user, default_farm=default_farm))
     # if request.method == 'POST':
 
     # autenticar si el nombre de usuario q paso en el route es el mismo q esta autenticado
