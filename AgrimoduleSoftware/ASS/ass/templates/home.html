@@ -47,79 +47,7 @@ fh5co-active
     		<br>
     		<div class="container">
 
-    			<!-- FIRST ROW (weather, farm name and reosurce day container) -->
-    			<div class="row">
-    				<div class="col-md-3" style="">
-    					<a href="{{ url_for('user_weather') }}">
-	    					<div class="row" style="border: 2px solid black; border-radius: 5%; background-color: lightgray; padding: 10px;">
-								<div class="col-md-3">
-									<div>
-										<img src="{{ url_for('static', filename='uploads/cloud.png') }}" alt="weather icon">
-									</div>
-								</div>
-								<div class="col-md-4">
-									<h2>14<sup>°</sup></h2>
-									<h2>68<sup>%</sup></h2>
-								</div>
-								<div class="col-md-5">
-									<h2>Berlin</h2>
-									<h4>LAT: 26</h4>
-									<h4>LON: 25</h4>
-									<h2>22:54</h2>
-								</div>
-							</div>
-						</a>
-    				</div>
-
-    				<div class="col-md-1"></div>
-    				
-    				<div class="col-md-4 home-weather" style=" text-align: center; border: 2px solid black; border-radius: 5%; background-color: lightgray; padding: 10px;">
-    					<h2>{{ default_farm.farm_name }}'s Farm</h2>
-    				</div>
-    				
-    				<div class="col-md-1"></div>
-    				
-    				<div class="col-md-3"style="">
-    					<a href="{{ url_for('user_alerts') }}">
-    						<div class="row">
-    							<div class="col-md-4">
-    								<h6>Water</h6>
-								</div>
-								<div class="col-md-8">
-									<div class="progress">
-										<div class="progress-bar" role="progressbar" aria-valuenow="100" aria-valuemin="100" aria-valuemax="0" style="width:68%">
-										</div>
-									</div>
-								</div>
-							</div>
-							<div class="row">
-    							<div class="col-md-4">
-    								<h6>Sun</h6>
-								</div>
-								<div class="col-md-8">
-									<div class="progress">
-										<div class="progress-bar" role="progressbar" aria-valuenow="100" aria-valuemin="100" aria-valuemax="0" style="width:88%">
-										</div>
-									</div>
-								</div>
-							</div>
-							<div class="row">
-    							<div class="col-md-4">
-    								<h6>Fertilizer</h6>
-								</div>
-								<div class="col-md-8">
-									<div class="progress">
-										<div class="progress-bar" role="progressbar" aria-valuenow="100" aria-valuemin="100" aria-valuemax="0" style="width:75%">
-										</div>
-									</div>
-								</div>
-							</div>
-						</a>
-    				</div>
-
-    			</div>
-    			<hr>
-    			<!-- END FIRST ROW (weather, farm name and reosurce day container) -->
+  
 
 
 
@@ -297,7 +225,7 @@ fh5co-active
 						<!-- ALERTS -->
 						<div class="bg_dgr column is-one-quarter is-offset-1">
 							<!-- WATER -->
-							<div class="columns is-vcentered">
+							<div class="columns is-vcentered is-paddingless is-marginless">
 
 								<!-- NOTIFICATION -->
 								<div class="column is-2 has-text-centered">
@@ -307,13 +235,13 @@ fh5co-active
 									</div>
 								</div>
 								<!-- ICON -->
-								<div class="column is-2 has-text-centered">
+								<div class="column is-3 has-text-centered">
 									<span class="icon is-small has-text-info">
 										<i class="fas fa-2x fa-tint"></i>
 									</span>
 								</div>
 								<!-- BAR -->
-								<div class="column is-8 has-text-centered">
+								<div class="column is-7 has-text-centered">
 									<progress class="progress is-info" value="25" max="100">15%</progress>
 								</div>
 							</div>
@@ -329,13 +257,13 @@ fh5co-active
 									</div>
 								</div>
 								<!-- ICON -->
-								<div class="column is-2 has-text-centered">
+								<div class="column is-3 has-text-centered">
 									<span class="icon is-small has-text-warning">
 										<i class="fas fa-2x fa-sun"></i>
 									</span>
 								</div>
 								<!-- BAR -->
-								<div class="column is-8 has-text-centered">
+								<div class="column is-7 has-text-centered">
 									<progress class="progress is-warning" value="85" max="110">15%</progress>
 								</div>
 							</div>
@@ -350,13 +278,13 @@ fh5co-active
 									</div>
 								</div>
 								<!-- ICON -->
-								<div class="column is-2 has-text-centered">
+								<div class="column is-3 has-text-centered">
 									<span class="icon is-small">
 										<i class="fas fa-2x fa-shopping-bag"></i>
 									</span>
 								</div>
 								<!-- BAR -->
-								<div class="column is-8 has-text-centered">
+								<div class="column is-7 has-text-centered">
 									<progress class="progress" value="38" max="100">15%</progress>
 								</div>
 							</div>
@@ -415,7 +343,7 @@ fh5co-active
 												<div class="column is-2 has-text-centered">
 													<!-- Agrimodule SYSTEM IMAGE -->
 													<a href="{{ url_for('user_agrimodule') }}">
-														<figure class="image is-24x24">
+														<figure class="image is-48x48">
 															<img src="../static/bulma/agrimodule-icon.png">
 														</figure>
 													</a>
@@ -444,7 +372,7 @@ fh5co-active
 												<div class="column is-2 has-text-centered">
 													<!-- Agrisensor SYSTEM IMAGE -->
 													<a href="{{ url_for('user_agrimodule') }}">
-														<figure class="image is-24x24">
+														<figure class="image is-32x32">
 															<img src="../static/bulma/agrisensor-icon.png">
 														</figure>
 													</a>
@@ -474,7 +402,7 @@ fh5co-active
 												<div class="column is-2 has-text-centered">
 													<!-- Agripump SYSTEM IMAGE -->
 													<a href="{{ url_for('user_agripump') }}">
-														<figure class="image is-24x24">
+														<figure class="image is-32x32">
 															<img src="../static/bulma/agripump-icon.png">
 														</figure>
 													</a>
