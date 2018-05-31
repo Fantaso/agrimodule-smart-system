@@ -69,7 +69,24 @@
 		{% with messages = get_flashed_messages() %}
 			{% if messages %}
 				{% for message in messages %}
-					<div class="alert alert-warning" role="alert">{{ message }}</div>
+					<!-- Modal -->
+					  <div class="modal fade" id="myModal" role="dialog">
+					    <div class="modal-dialog modal-sm">
+					      <div class="modal-content">
+					        <div class="modal-header">
+					          <button type="button" class="close" data-dismiss="modal">&times;</button>
+					          <h4 class="modal-title">Important</h4>
+					        </div>
+					        <div class="modal-body">
+					          <p>{{ message }}</p>
+					        </div>
+					        <div class="modal-footer">
+					          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					        </div>
+					      </div>
+					    </div>
+					  </div>
+					</div>	
 				{% endfor %}
 			{% endif %}
 		{% endwith %}

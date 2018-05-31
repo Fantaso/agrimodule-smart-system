@@ -1418,7 +1418,7 @@ def user_farms():
 def user_farm_default(farm_id = None):
 
     if farm_id == None:
-        flash('This page does not exist')
+        flash('This page does not exist', _anchor = 'flash_msg')
         return redirect(url_for('user_farms'))
     
     # GET CURRENT DEFAULT FARM'S ID
