@@ -559,8 +559,16 @@ def before_request():
 #############################
 #############################
 
-@app.route('/', methods=('GET', 'POST'))
+@app.route('/', methods=['GET'])
 def index():
+    if not current_user.is_authenticated:
+        return redirect(url_for('security.login'))
+    return redirect(url_for('home'))
+    # return redirect(url_for('login'))
+
+
+@app.route('/indexweb', methods=('GET', 'POST'))
+def indexweb():
     form = EmailForm()
     if form.validate_on_submit():
         email = form.email.data
