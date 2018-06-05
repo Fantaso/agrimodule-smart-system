@@ -43,6 +43,7 @@ app = Flask(__name__)                               # creates the flask app
 photos =  UploadSet('photos', IMAGES)               # Flask-Uploads
 app.config['UPLOADED_PHOTOS_DEST'] = 'static/uploads'       # Flask-Uploads
 app.config.from_pyfile('cfg.cfg')                   # imports app configuration from cfg.cfg
+app.config.from_pyfile('cfg2.cfg')                   # imports app configuration from cfg.cfg
 
 configure_uploads(app, photos)
 
