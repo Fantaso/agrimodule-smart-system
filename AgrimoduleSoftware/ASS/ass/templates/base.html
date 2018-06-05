@@ -73,12 +73,12 @@
               <li>
                 <a href="javascript:void(0);" class="waves-effect waves-block waves-light profile-button" data-activates="profile-dropdown">
                   <span class="avatar-status avatar-online">
-                    {% if current_user.image == None %}
-                      <img src="{{ url_for('static', filename='images/logo.png') }}" alt="Solarvibes logo">
-                      {% else %}
-                      <img src="{{ current_user.image }}" alt="avatar">
-                    {% endif %}
-                    <i></i>
+          				{% if current_user.image == None %}
+          					<img src="{{ url_for('static', filename='images/favicon.png') }}" alt="Solarvibes logo" width="100%" height="auto">
+          					{% else %}
+          					<img src="{{ current_user.image }}" alt="avatar">
+          				{% endif %}
+                    <!-- <i></i> -->
                   </span>
                 </a>
               </li>
@@ -181,11 +181,11 @@
             </h1>
           </div>
           <ul id="slide-out" class="side-nav fixed leftside-navigation">
-            
+
 
             <li class="li-hover">
               <p class="ultra-small margin more-text" style="padding-left: 12px;">quick</p>
-            </li> 
+            </li>
              <li class="{% block user_home_active %}{% endblock %}">
               <a href="{{ url_for('home') }}">
                 <i class="material-icons svgreen-text">home</i>
@@ -255,13 +255,13 @@
 
           <!--start container-->
           <div class="container">
-            
+
 
             {% block content %}
 
             {% endblock %}
-            
-           
+
+
             <!-- Floating Action Button -->
             <div class="fixed-action-btn " style="bottom: 50px; right: 19px;">
               <a class="btn-floating btn-large svgreen gradient-shadow">
@@ -599,7 +599,7 @@
     <script type="text/javascript" src="{{ url_for('static', filename='js/plugins.js') }}"></script>
     <!--custom-script.js - Add your own theme custom JS-->
     <script type="text/javascript" src="{{ url_for('static', filename='js/custom-script.js') }}"></script>
-    
+
 
   </body>
 </html>
