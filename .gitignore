@@ -1,5 +1,7 @@
 ## I ADDED
 *.txt
+cfg2.cfg
+
 # software directory
 Software/
 .gitignore
@@ -7,7 +9,7 @@ Software/
 
 #DATABASE
 *.db
-
+X
 # SUBLIME
 *.sublime-workspace
 *.sublime-project
