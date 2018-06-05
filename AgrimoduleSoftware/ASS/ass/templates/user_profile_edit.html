@@ -10,22 +10,9 @@
         <!-- UI - X Starts -->
 
           <!-- Content Starts -->
-          <div id = "fh5co-main" style = "margin-top: 5%;">
-
-
+    <div style = "margin-top: 5%;">
           <!-- Head Starts -->
-          <div class="row" style="margin-bottom: 2%;">
-              
-
-          </div>
-
-
-<!-- 
-birthday = user.birthday,
-image = user.image,
- -->
-            <div class="row">
-              
+        <div  style="margin-bottom: 2%;"></div>
               <div class="col-sm-8 col-md-8 col-lg-8 col-lg-offset-2 acc-col">
                 <section>
                   <h3>Farmer Information</h3>
@@ -36,21 +23,25 @@ image = user.image,
                       <div class="col-sm-8 col-md-8 col-lg-8">
                           <h3 id="name-header">{{ form.name.data }} {{ form.last_name.data }}</h3>
                       </div>
-                      
+
                       <!-- Image -->
                       <div class="col-sm-8 col-md-8 col-lg-8">
                           <!-- User Image -->
-                          <img src="https://api.adorable.io/avatars/285/abott@adorable.png" alt="Profile Picture" class="img-responsive" width="100" height="100">
+                            {% if current_user.image == None %}
+            					<img src="{{ url_for('static', filename='images/favicon.png') }}" alt="Solarvibes logo" width="100%" height="auto">
+            					{% else %}
+            					<img src="{{ current_user.image }}"  alt="Profile Picture" class="img-responsive" width="100" height="100">
+            				{% endif %}
                       </div>
-                    
+
                       <div class="col-sm-8 col-md-8 col-lg-8">
                           {{ render_field_with_errors(form.image, class = "form-control") }}
                       </div>
-                      
+
                       <div class="row">
                          <div class="col-sm-12">
                             {{ render_field_with_errors(form.username, class = "form-control") }}
-                        </div>              
+                        </div>
                       </div>
                       <div class="row">
                          <div class="col-sm-6">
@@ -58,7 +49,7 @@ image = user.image,
                         </div>
                         <div class="col-sm-6">
                             {{ render_field_with_errors(form.last_name, class = "form-control") }}
-                        </div>               
+                        </div>
                       </div>
                       <div class="row">
                         <div class="col-sm-6">
@@ -66,7 +57,7 @@ image = user.image,
                         </div>
                         <div class="col-sm-6">
                             {{ render_field_with_errors(form.mobile, class = "form-control") }}
-                        </div>  
+                        </div>
                       </div>
 
                       <div class="row">
@@ -80,7 +71,7 @@ image = user.image,
                       <div class="row">
                          <div class="col-sm-12">
                             {{ render_field_with_errors(form.address, class = "form-control") }}
-                        </div>              
+                        </div>
                       </div>
                       <div class="row">
                         <div class="col-sm-4">
@@ -88,18 +79,18 @@ image = user.image,
                         </div>
                         <div class="col-sm-2">
                             {{ render_field_with_errors(form.zipcode, class = "form-control") }}
-                        </div> 
+                        </div>
 
                         <div class="col-sm-2">
                             {{ render_field_with_errors(form.state, class = "form-control") }}
-                        </div> 
+                        </div>
 
                         <div class="col-sm-4">
                             {{ render_field_with_errors(form.country, class = "form-control") }}
-                        </div> 
+                        </div>
                       </div>
 
-                
+
 
                       <div class="col-sm-12">
                         <div class="btn-div">
@@ -108,18 +99,18 @@ image = user.image,
                           </div>
                         </div>
                       </div>
-                  
+
                   </form>
 
                 </section>
 
-               
-              
+
+
               <section>
                 <h3>Login Information</h3>
-                
+
                 <form class="" role="form">
-                
+
                     <div class="row">
                       <div class="col-sm-12">
                         <label for="inputEmail3" class="control-label">Password:</label>
@@ -137,22 +128,22 @@ image = user.image,
                         <div class="btn-div">
                           <a href="https://creativethoughtz.com" class="btn btn-primary pull-right">Update</a>
                         </div>
-                      </div>           
+                      </div>
                     </div>
 
                 </form>
 
               </section>
-              
+
 
                <section>
-                 
+
                 <h3>Personal Information</h3>
-                  
+
                   <form class="ng-pristine ng-valid" role="form">
-                  
+
                       <div class="row">
-                        
+
                       <div class="col-sm-12">
                         <label for="inputPassword3" class="col-sm-12 control-label">About Me:</label>
                         <div class="">
@@ -180,14 +171,13 @@ image = user.image,
                 {% endif %}
               </div>
               <!-- col-8 -->
-            </div>
 
           </div>
           </div>
 
           <!-- Content Ends -->
         </div>
-        
+
         <!-- UI - X Ends -->
     </div>
 
