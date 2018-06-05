@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'base_not_auth.html' %}
 {% from "security/_macros.html" import render_field_with_errors, render_field %}
 
 {% block title %}
@@ -23,6 +23,7 @@ fh5co-active
 			  {{ render_field(login_user_form.next) }}
 			  {{ render_field(login_user_form.submit, class="btn btn-primary") }}
 			</form>
+			 <br> <br>
 			{% if security.recoverable %}
 				<li><a style="color:#16B6A5;" href="{{ url_for_security('forgot_password') }}">{{ _('Forgot password') }}</a><br/></li>
 			{% endif %}
