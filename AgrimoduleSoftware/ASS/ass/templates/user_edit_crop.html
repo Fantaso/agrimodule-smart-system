@@ -7,50 +7,27 @@
 
 
 {% block content %}
-<div id = "fh5co-main" class = "container" style = "margin-top: 5%;">
-	<div style="padding-left: 2%; text-align: left;">
+<div class = "container">
     <h1>Edit crop</h1>
-	<div>
-        <hr>
-        <br>
-        <ul>
-          <li><a href="{{ url_for('user_farms') }}" style="color:#16B6A5;">My Farms</a><br></li>
-        </ul>
-        <hr>
-          <div class="container">
-            <form method="POST" action="{{ url_for('user_edit_crop', field_id = field_id) }}">
-              {{ form.csrf_token }}
-              <div class="row">
-                <div class="col-md-12">
-                  <!-- Choose farm -->
-                  <div class="form-group">
-                    {{ render_field_with_errors(form.farm_choices, class="form-control") }}
-                  </div>
-                  <!--  -->
-                  <div class="form-group">
-                    {{ render_field_with_errors(form.field_cultivation_area, class="form-control") }}
-                  </div>
-                  <div class="form-group">
-                    {{ render_field_with_errors(form.field_cultivation_crop, class="form-control") }}
-                  </div>
-                  <div class="form-group">
-                    {{ render_field_with_errors(form.field_cultivation_start_date, class="form-control") }}
-                  </div>
-                  <div class="form-group">
-                    {{ render_field_with_errors(form.field_cultivation_state, class="form-control") }}
-                  </div>
-                  <div class="form-group">
-                    {{ render_field_with_errors(form.field_cultivation_type, class="form-control") }}
-                  </div>
-                  <div class="form-group">
-                    <input type="submit" class="btn btn-primary btn-md" value="Edit Field!">
-                  </div>
-                </div>
-              </div>
-            </form>
-          </div>
-	</div>
+	<form method="POST" action="{{ url_for('user_edit_crop', field_id = field_id) }}">
+		{{ form.csrf_token }}
+		<!-- Choose farm -->
+		{{ render_field_with_errors(form.farm_choices) }}
+		{{ render_field_with_errors(form.field_cultivation_area) }}
+
+		{{ render_field_with_errors(form.field_cultivation_crop) }}
+
+		{{ render_field_with_errors(form.field_cultivation_start_date, class="datepicker") }}
+
+		{{ render_field_with_errors(form.field_cultivation_state) }}
+		{{ render_field_with_errors(form.field_cultivation_type) }}
+
+		<input type="submit" class="waves-effect waves-light btn" value="Edit Field!">
+	</form>
+
+	<br><br>
+	<a href= "{{ url_for('user_farms') }}" class="waves-effect waves-light btn"><i class="fas fa-angle-left left"></i>Cancel</a>
+	<br><br>
 
 </div>
-
 {% endblock %}
