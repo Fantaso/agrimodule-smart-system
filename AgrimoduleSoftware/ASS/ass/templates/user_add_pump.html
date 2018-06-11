@@ -6,38 +6,22 @@
 {% endblock %}
 
 {% block content %}
-<div id = "fh5co-main" class = "container" style = "margin-top: 5%;">
-	<div style="padding-left: 2%; text-align: left;">
-    <h1>Add Pump</h1>
-	<div>
-  <div>
-    <hr>
+<div class = "container">
+
+	<h1>Add Pump</h1>
     <form method="POST" action="{{ url_for('user_add_pump') }}">
-        {{ form.csrf_token }}
-        <div class="form-group">
-          {{ render_field_with_errors(form.pump_name, class="form-control") }}
-        </div>
-        <div class="form-group">
-          {{ render_field_with_errors(form.pump_brand, class="form-control") }}
-        </div>
-        <div class="form-group">
-          {{ render_field_with_errors(form.pump_flow_rate, class="form-control") }}
-        </div>
-        <div class="form-group">
-          {{ render_field_with_errors(form.pump_head, class="form-control") }}
-        </div>
-        <div class="form-group">
-          {{ render_field_with_errors(form.pump_watts, class="form-control") }}
-        </div>
-        <div class="form-group">
-          <input type="submit" class="btn btn-primary btn-md" value="Add pump">
-        </div>
-      </form>
-      <a href="{{ url_for('user_farms') }}" class="btn btn-secondary btn-sm" style="color:black;">Back</a>
+		{{ form.csrf_token }}
+		{{ render_field_with_errors(form.pump_name, class="form-control") }}
+		{{ render_field_with_errors(form.pump_brand, class="form-control") }}
+		{{ render_field_with_errors(form.pump_flow_rate, class="form-control") }}
+		{{ render_field_with_errors(form.pump_head, class="form-control") }}
+		{{ render_field_with_errors(form.pump_watts, class="form-control") }}
+		<input type="submit" class="waves-effect waves-light btn" value="Add pump">
+	</form>
+
+	<br><br>
+  	<a href= "{{ url_for('user_farms') }}" class="waves-effect waves-light btn"><i class="fas fa-angle-left left"></i>Cancel</a>
+	<br><br>
+
   </div>
-
-  
-
-</div>
-
 {% endblock %}
