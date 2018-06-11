@@ -25,18 +25,24 @@ fh5co-active
 			</form>
 			<br><br>
 
-			<div class="collection">
+			<div class="collection black-text">
 				{% if security.recoverable %}
-					<a href="{{ url_for_security('forgot_password') }}" class="collection-item">{{ _('Forgot password') }}</a>
+					<a href="{{ url_for_security('forgot_password') }}" class="collection-item grey-text">{{ _('Forgot password') }}
+						<div class="secondary-content"><i class="fas fa-unlock-alt grey-text"></i></div>
+					</a>
 				{% endif %}
 				{% if security.confirmable %}
-					<a href="{{ url_for_security('send_confirmation') }}" class="collection-item">{{ _('Confirm account') }}</a>
+					<a href="{{ url_for_security('send_confirmation') }}" class="collection-item grey-text">{{ _('Confirm account') }}
+						<div class="secondary-content"><i class="far fa-check-circle grey-text"></i></div>
+					</a>
 				{% endif %}
 				{% if security.registerable %}
-					<a href="{{ url_for_security('register') }}{% if 'next' in request.args %}?next={{ request.args.next|urlencode }}{% endif %}" class="collection-item">{{ _('Register') }}</a>
+					<a href="{{ url_for_security('register') }}{% if 'next' in request.args %}?next={{ request.args.next|urlencode }}{% endif %}" class="collection-item grey-text">{{ _('Register') }}
+						<div class="secondary-content"><i class="fas fa-sign-in-alt grey-text"></i></div>
+					</a>
 				{% endif %}
-				<a href="#" class="collection-item">Login with Facebook
-					<div class="secondary-content"><i class="material-icons">face</i></div>
+				<a href="#" class="collection-item grey-text">Login with Facebook
+					<div class="secondary-content"><i class="fab fa-facebook-f grey-text"></i></div>
 				</a>
 
 			</div>
@@ -44,4 +50,6 @@ fh5co-active
 		</div>
 	</div>
 {% endblock %}
-{# <a href="#" class="collection-item">{% include "security/_menu.html" %}</a>#}
+
+
+{# <a href="#" class="collection-item">{% include "security/_menu.html" %}</a> #}
