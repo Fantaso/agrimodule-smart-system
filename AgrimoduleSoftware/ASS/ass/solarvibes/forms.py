@@ -6,17 +6,6 @@ from wtforms.validators import DataRequired, Email, Length, NumberRange, Optiona
 from flask_security.forms import RegisterForm, ConfirmRegisterForm
 from flask_uploads import IMAGES
 
-# WEBSITE FORMS
-# Templates
-class EmailForm(FlaskForm):
-	email 	= StringField('Email', validators=[DataRequired(), Length(min=5, max=30, message=None), Email()])
-
-class EmailAndTextForm(EmailForm):
-	msg     = TextAreaField('Message', validators=[DataRequired(), Length(min=-1, max=1000, message='Maximum characters: 1000')])
-
-class ContactUsForm(EmailAndTextForm):
-    name 	= StringField(label='Fullname', validators=[DataRequired(), Length(min=3, max=30, message=None)])
-    phone 	= StringField('Phone', validators=[DataRequired(), Length(min=7, max=30, message=None)])
 #Extended form for register flask-security
 class RegisterFormExt(RegisterForm, ConfirmRegisterForm):
     name        = StringField(label='Name', validators=[DataRequired(), Length(min=2, max=30, message='''Your name needs at least 2 characters.''')])
@@ -43,7 +32,7 @@ class CultivationCropForm(FlaskForm):
     cultivation_crop        = SelectField(label='Cultivation Crop', validators=[DataRequired()], choices=[('plum','Plum'),('romaine','Romaine'),('arugula','Arugula')], option_widget=None)
 
 class CultivationAreaForm(FlaskForm):
-    cultivation_area       = FloatField(label='Cultivation Area', validators=[DataRequired(), NumberRange(min=5, max=5000, message='Area between 5 and 5000 m2')]) 
+    cultivation_area       = FloatField(label='Cultivation Area', validators=[DataRequired(), NumberRange(min=5, max=5000, message='Area between 5 and 5000 m2')])
 
 class FarmForm(FlaskForm):
     farm_name                   = StringField('Farm name', validators=[DataRequired(), Length(min=2, max=30, message='''Your name needs at least 2 characters.''')])
@@ -199,7 +188,7 @@ class ContactUsForm:
     def __init__(self, name, email, phone, msg):
         self.name = name
         self.email = email
-        self.phone = phone 
+        self.phone = phone
         self.msg = msg
 class ContactUsForm(FlaskForm):
     name    = StringField(label='Fullname', validators=[DataRequired(), Length(min=3, max=30, message=None)])
@@ -209,9 +198,9 @@ class ContactUsForm(FlaskForm):
 
 # field enclosures - can
 class PhoneForm(Form):
-    country_code = IntegerField(label='Country Code:') 
-    area_code = IntegerField(label='Area Code:') 
-    number = IntegerField(label='Number:') 
+    country_code = IntegerField(label='Country Code:')
+    area_code = IntegerField(label='Area Code:')
+    number = IntegerField(label='Number:')
 
 class ContactUsFormEG(FlaskForm):
     name    = StringField(label='Fullname', validators=[DataRequired(), Length(min=3, max=30, message=None)])
