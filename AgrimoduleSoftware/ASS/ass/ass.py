@@ -30,7 +30,6 @@ from math import sqrt, floor
 # measurement API
 # route for post, get, delete, patch or put the Measurement
 # plot or shows sensor data
-# first change with a new workstation and about to pull
 
 ####
 #############################
@@ -43,7 +42,6 @@ app = Flask(__name__)                               # creates the flask app
 photos =  UploadSet('photos', IMAGES)               # Flask-Uploads
 app.config['UPLOADED_PHOTOS_DEST'] = 'static/uploads'       # Flask-Uploads
 app.config.from_pyfile('cfg.cfg')                   # imports app configuration from cfg.cfg
-app.config.from_pyfile('cfg2.cfg')                   # imports app configuration from cfg.cfg
 
 configure_uploads(app, photos)
 
