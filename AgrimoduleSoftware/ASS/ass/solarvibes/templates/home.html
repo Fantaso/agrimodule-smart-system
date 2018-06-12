@@ -1,0 +1,484 @@
+{% extends 'base.html' %}
+
+{% block title %}
+	{{ current_user.name }}
+{% endblock %}
+
+{% block user_home_active %}
+grey lighten-2
+{% endblock %}
+
+{% block content %}
+	<div id = "fh5co-main" class = "container" style = "margin-top: 5%;">
+		<div style="padding-left: 2%; text-align: left;">
+			<h1>Home</h1>
+			<hr>
+			<h1>Welcome back, {{ user.name }}!</h1>
+			<p>Your {{ default_farm.farm_name }}'s farm awaits for you!</p>
+			<div> 
+			    <hr>
+			    <p>Farmer links</p>
+			    <ul>
+					<li><a href="{{ url_for('user_crop_planning') }}" style="color:#16B6A5;">Crop planning</a><br></li>
+					<li><a href="{{ url_for('user_resources') }}" style="color:#16B6A5;">Resources</a><br></li>
+					<li><a href="{{ url_for('user_crop_analyzer') }}" style="color:#16B6A5;">Crop analyzer</a><br></li>
+					<li><a href="{{ url_for('user_health_analyzer') }}" style="color:#16B6A5;">Health analyzer</a><br></li>
+			    </ul>
+			</div>
+			
+			<div>
+                <hr>
+        		<p>General links</p>
+                <ul>
+					<li><a href="{{ url_for('user_agrimodule') }}" style="color:#16B6A5;">Agrimodule</a><br></li>
+					<li><a href="{{ url_for('user_agripump') }}" style="color:#16B6A5;">Agripump</a><br></li>
+					<li><a href="{{ url_for('user_crop_status') }}" style="color:#16B6A5;">Crop status</a><br></li>
+					<li><a href="{{ url_for('user_market') }}" style="color:#16B6A5;">Market</a><br></li>
+					<li><a href="{{ url_for('user_weather') }}" style="color:#16B6A5;">Weather</a><br></li>
+					<li><a href="{{ url_for('user_alerts') }}" style="color:#16B6A5;">Alerts</a><br></li>
+					<li><a href="{{ url_for('user_profile') }}" style="color:#16B6A5;">Profile</a><br></li>
+                </ul>
+        	</div>
+
+
+
+
+       		<!-- HOME -->
+    		<br>
+    		<div class="container">
+
+  
+
+
+
+    			
+    			<!-- SECOND ROW - FIELD DATA -->
+    			<div class="row">
+
+    				{% for field in fields %}
+    				
+	    				<!-- FIELD NUM n -->
+	    				<div class="col-md-4"  style="border: 2px solid black; border-radius: 5%; background-color: white; padding: 10px;">
+	    					<a href="{{ url_for('user_crop_status') }}">
+	    						<h2>{{ field.field_name }}</h2>
+	    					</a>
+	    					<hr>
+	    					<div class="row">
+    							{% for crop in field.crops %}
+			        				<div class="col-md-6">
+			        					<h4>{{ crop._name|capitalize }} {# {{ crop._variety|capitalize }} #}</h4>
+			        				</div>
+			        				<div class="col-md-2">
+			        					<h6>{{ (( (timenow - field.field_cultivation_start_date).days / (crop._dtm + crop._dtg) ) * 100)|round(1, 'floor') }} %</h6>
+			        				</div>
+			        				<div class="col-md-3">
+			        					<div class="progress">
+											<div class="progress-bar" role="progressbar" aria-valuenow="100" aria-valuemin="100" aria-valuemax="0" style="width:{{ (( (timenow - field.field_cultivation_start_date).days / (crop._dtm + crop._dtg) ) * 100)|round(1, 'floor') }}%">
+											</div>
+										</div>
+			        				</div>
+		        				{% endfor %}
+	    					</div>
+
+	    					<div class="row">
+	    						<div class="col-md-8">
+	    							<sup style="margin:0; padding: 0;">AgModule</sup>
+	    							<a href="{{ url_for('user_agrimodule') }}">
+			    						<h3>{{ field.agrimodule.name }}</h3>
+			    					</a>
+	    						</div>
+	    						<div class="col-md-3">
+	    							<sup>LAT: {{ field.agrimodule.lat }} LON: {{ field.agrimodule.lon }}</sup>
+	    						</div>
+	    					</div>
+			    					
+			   
+	    					
+	    					
+
+	    					{% for agrisensor in field.agrimodule.agrisensors %}
+	    						<div class="row">
+	    							<div class="col-md-12">
+	    								<sup style="margin:0; padding: 0;">AgSensor</sup>
+	    							</div>
+	    							<div class="col-md-8">
+	    								<a href="{{ url_for('user_agrimodule') }}">
+				    						<h3 style="text-align: center;">{{ agrisensor.identifier }}</h3>
+				    					</a>
+	    							</div>
+	    							<div class="col-md-3">
+	    								<sup>LAT: {{ agrisensor.lat }} LON: {{ agrisensor.lon }}</sup>
+	    							</div>
+	    						</div>
+							{% endfor %}
+							
+							{% for agripump in field.agrimodule.agripumps %}
+
+								<div class="row">
+									<div class="col-md-12">
+										<sup style="margin:0; padding: 0; color: blue;">AgPump</sup>
+	    							</div>
+	    							<div class="col-md-8">
+	    								<a href="{{ url_for('user_agripump') }}">
+				    						<h3 style="text-align: center;">{{ agripump.identifier }}</h3>
+				    					</a>
+		    							
+		    							<sup><h4 style="text-align: center;">
+			    							<sup>{{ pump_db.filter_by(id = agripump.pump_id).first().pump_name }}
+			    							<br>
+			    							{{ pump_db.filter_by(id = agripump.pump_id).first().pump_brand }}</sup>
+			    						</h4></sup>
+	    							</div>
+	    							<div class="col-md-3">
+	    								<sup>LAT: {{ agripump.lat }} LON: {{ agripump.lon }}</sup>
+	    								<br>
+										{% if agripump.status == 1: %}
+											<h4 style="color: green;">ON</h4>
+										{% else %}
+											<h4 style="color: red;">OFF</h4>
+										{% endif %}
+	    							</div>
+	    						</div>
+
+							{% endfor %}
+
+	    				</div>
+
+    				{% endfor %}
+
+    			</div>
+    			<!-- END SECOND ROW - FIELD DATA -->
+
+    			
+    			
+    			
+    			<!-- END EACH ASS -->
+    		</div>
+    		<hr>
+    		<!-- END HOME -->
+
+
+
+
+
+    		
+
+
+
+    	<section class="section">
+
+
+
+					<div class="columns is-mobile is-vcentered">
+
+
+						<div class="bg_dgr column is-one-quarter">
+							<div class="columns is-vcentered">
+
+								<!-- ICON -->
+								<div class="column is-4">
+									<div class="columns">
+										<div class="column is-12 centrado">
+											<!-- Agripump SYSTEM NAME -->
+											<span class="icon is-large has-text-info bg_lgr">
+										    	<i class="fas fa-5x fa-cloud"></i>
+										    </span>
+										</div>
+									</div>
+								</div>
+								<!-- ICON -->
+
+											
+								<!-- TEMP, HUM and PRESS -->
+								<div class="column is-4 centrado">
+									<div class="columns">
+										<div class="column is-12">
+											<p class="is-size-3">14<sup>°C</sup></p>
+											<p class="is-size-3">68<sup>%</sup></p>
+										</div>
+									</div>
+								</div>
+								<!-- TEMP, HUM and PRESS -->
+
+								<!-- CITY, TIME LAT AND LON -->
+								<div class="lbg_r column is-4 centrado">
+									<div class="columns">
+										<div class="column is-12">
+											<h4 class="is-size-4">Berlin</h4>
+											<h4 class="is-size-7">LAT: 26</h4>
+											<h4 class="is-size-7">LON: 25</h4>
+											<h3 class="is-size-4">22:54</h3>
+										</div>
+									</div>
+								</div>
+								<!-- CITY, TIME LAT AND LON -->
+								
+							</div>
+						</div>
+						
+
+
+						<div class="bg_dgr column is-one-third is-offset-1 has-text-centered is-outlined">
+							<div class="is-outlined title is-size-2"><h1>{{ default_farm.farm_name }}'s Farm</h1></div>
+						</div>
+
+						<!-- ALERTS -->
+						<div class="bg_dgr column is-one-quarter is-offset-1">
+							<!-- WATER -->
+							<div class="columns is-vcentered is-paddingless is-marginless">
+
+								<!-- NOTIFICATION -->
+								<div class="column is-2 has-text-centered">
+									<div class="tags has-addons">
+									  	<span class="tag is-info">3</span>
+									  	<!-- <a class="tag">1</a> -->
+									</div>
+								</div>
+								<!-- ICON -->
+								<div class="column is-3 has-text-centered">
+									<span class="icon is-small has-text-info">
+										<i class="fas fa-2x fa-tint"></i>
+									</span>
+								</div>
+								<!-- BAR -->
+								<div class="column is-7 has-text-centered">
+									<progress class="progress is-info" value="25" max="100">15%</progress>
+								</div>
+							</div>
+
+							<!-- SUN -->
+							<div class="columns is-vcentered">
+
+								<!-- NOTIFICATION -->
+								<div class="column is-2 has-text-centered">
+									<div class="tags has-addons">
+									  	<span class="tag is-warning">4</span>
+									  	<!-- <a class="tag">1</a> -->
+									</div>
+								</div>
+								<!-- ICON -->
+								<div class="column is-3 has-text-centered">
+									<span class="icon is-small has-text-warning">
+										<i class="fas fa-2x fa-sun"></i>
+									</span>
+								</div>
+								<!-- BAR -->
+								<div class="column is-7 has-text-centered">
+									<progress class="progress is-warning" value="85" max="110">15%</progress>
+								</div>
+							</div>
+
+							<!-- FERTILZER -->
+							<div class="columns is-vcentered">
+
+								<!-- NOTIFICATION -->
+								<div class="column is-2 has-text-centered">
+									<div class="tags has-addons">
+									  	<span class="tag">1</span>
+									</div>
+								</div>
+								<!-- ICON -->
+								<div class="column is-3 has-text-centered">
+									<span class="icon is-small">
+										<i class="fas fa-2x fa-shopping-bag"></i>
+									</span>
+								</div>
+								<!-- BAR -->
+								<div class="column is-7 has-text-centered">
+									<progress class="progress" value="38" max="100">15%</progress>
+								</div>
+							</div>
+
+						</div>
+						<!-- ALERTS -->
+
+					</div>
+
+					<br>
+					<br>
+
+					<!-- FIELDS-->
+					<div class="columns is-12 is-mobile is-centered is-vcentered">
+
+						{% for field in fields %}
+						<!-- FIELD 1 -->
+					  	<div class="bg_r column is-one-third">
+					  		<!-- FIELD -->
+					  		<div class="columns is-centered is-vcentered">
+							
+								<!-- CROP -->
+								<div class="bg_gr column is-4">
+									
+									<div class="columns is-vcentered">
+										{% for crop in field.crops %}
+										<div class="column is-12 has-text-centered">
+											<!-- NAME -->
+											<a href="{{ url_for('user_crop_status') }}">
+												<h4 class="is-size-5">{{ crop._name|capitalize }}</h4>
+											</a>
+											<!-- IMAGE -->
+											<figure class="image">
+												<img src="../static/bulma/tomato.png">
+											</figure>
+
+											<!-- BAR -->
+											<div class="column is-12 has-text-centered">
+												<progress class="progress is-primary" value="{{ (( (timenow - field.field_cultivation_start_date).days / (crop._dtm + crop._dtg) ) * 100)|round(1, 'floor') }}" max="100">17%</progress>
+											</div>
+										</div>
+										{% endfor %}
+									</div>
+									
+								</div>
+								<!-- CROP -->
+
+								<!-- SYSTEM -->
+								<div class="bg_b column is-8">
+
+									<!-- AGRIMODULE SYSTEM -->
+									<div class="columns is-vcentered is-centered">
+										<!-- 1 Agrimodule OBJ -->
+										<div class="bg_dgr column is-12">
+											<div class="columns is-vcentered">
+												<div class="column is-2 has-text-centered">
+													<!-- Agrimodule SYSTEM IMAGE -->
+													<a href="{{ url_for('user_agrimodule') }}">
+														<figure class="image is-48x48">
+															<img src="../static/bulma/agrimodule-icon.png">
+														</figure>
+													</a>
+													
+												</div>
+												<!-- Agrimodule  -->
+												<div class="column is-10 has-text-centered">
+													{#<sup>LAT: {{ field.agrimodule.lat }} LON: {{ field.agrimodule.lon }}</sup>#}
+													<!-- Agrimodule SYSTEM NAME -->
+													<h4 class="title is-size-6 has-text-weight-light">{{ field.agrimodule.name }}</h4>
+												</div>
+
+											</div>
+										</div>
+									</div>
+									<!-- AGRIMODULE SYSTEM -->
+
+									<!-- AGRISENSORS -->
+									
+									<div class="columns is-vcentered">
+										{% for agrisensor in field.agrimodule.agrisensors %}
+										<!-- 1 Agrisensor OBJ -->
+										<div class="bg_dgr column is-6">
+											
+											<div class="columns is-vcentered">
+												<div class="column is-2 has-text-centered">
+													<!-- Agrisensor SYSTEM IMAGE -->
+													<a href="{{ url_for('user_agrimodule') }}">
+														<figure class="image is-32x32">
+															<img src="../static/bulma/agrisensor-icon.png">
+														</figure>
+													</a>
+												</div>
+												<!-- Agrisensor  -->
+												<div class="column is-10 has-text-centered">
+													{#<sup>LAT: {{ agrisensor.lat }} LON: {{ agrisensor.lon }}</sup>#}
+													<!-- Agrisensor SYSTEM NAME -->
+													<h4 class="title is-size-7 has-text-weight-light">{{ agrisensor.identifier }}</h4>
+												</div>
+											</div>
+											
+										</div>
+										{% endfor %}
+									<!-- AGRISENSORS -->
+									</div>
+									
+
+									<!-- AGRIPUMPS -->
+									
+									<div class="columns is-vcentered">
+										{% for agripump in field.agrimodule.agripumps %}
+										<!-- 1 Agripump OBJ -->
+										<div class="bg_dgr column is-6">
+											
+											<div class="columns is-vcentered">
+												<div class="column is-2 has-text-centered">
+													<!-- Agripump SYSTEM IMAGE -->
+													<a href="{{ url_for('user_agripump') }}">
+														<figure class="image is-32x32">
+															<img src="../static/bulma/agripump-icon.png">
+														</figure>
+													</a>
+												</div>
+												<div class="column is-10 has-text-centered">
+													{#<sup>LAT: {{ agripump.lat }} LON: {{ agripump.lon }}</sup>#}
+													<!-- Agripump SYSTEM NAME -->
+													<h4 class="title is-size-7 has-text-weight-light">{{ agripump.identifier }}</h4>
+												</div>
+											</div>
+											
+										</div>
+										{% endfor %}
+									</div>
+									
+									<!-- AGRIPUMPS -->
+								</div>
+								<!-- SYSTEM -->
+					  		</div>
+					  		<!-- FIELD -->
+					  	</div>
+					  	<!-- FIELD 1 -->
+					  	{% endfor %}
+
+						
+					</div>
+					<!-- FIELDS -->
+			
+
+
+
+					<br>
+					<br>
+					<br>
+
+
+					<!-- FOOTER -->
+					<div class="columns is-mobile is-centered">
+						<!-- MENU -->
+						<div class="bg_y column is-1 centrado">
+							<span class="icon is-large bg_lgr">
+						    	<i class="fas fa-5x fa-bars"></i>
+						  	</span>
+						</div>
+						<!-- FARMER -->
+						<div class="bg_y column is-1 is-offset-7 centrado">
+							<figure class="image">
+								<img src="../static/bulma/farmer.png">
+							</figure>
+						</div>
+						<!-- MANAGER -->
+						<div class="bg_y column is-1 centrado">
+							<span class="icon is-large bg_lgr">
+						    	<i class="fas fa-5x fa-user"></i>
+						  	</span>
+						</div>
+						<!-- MARKET -->
+						<div class="bg_y column is-1 centrado">
+							<span class="icon is-large bg_lgr">
+						    	<i class="fas fa-5x fa-shopping-cart"></i>
+						  	</span>
+						</div>
+						<!-- ALERTS -->
+						<div class="bg_y column is-1 centrado">
+							<span class="icon is-large  bg_lgr">
+						    	<i class="fas fa-5x fa-bell"></i>
+						    </span>
+						</div>
+					</div>
+					<!-- FOOTER -->
+
+				</div>
+
+
+		</div>
+	</div>
+
+{% endblock %}
+

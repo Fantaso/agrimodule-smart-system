@@ -1,0 +1,439 @@
+{% extends 'base.html' %}
+
+{% block title %}
+	Manage Farms
+{% endblock %}
+
+{% block user_farms_active %}
+fh5co-active
+{% endblock %}
+
+{% block content %}
+	<!-- MAIN ONE -->
+	<div id = "fh5co-main" class = "container" style = "margin-top: 5%;">
+		<!-- MAIN TWO -->
+		<div style="padding-left: 2%; text-align: left;">
+			
+			<!-- HEADER -->
+			<h1>My Farms & My Agrimodule Systems</h1>
+			<hr>
+			<h1></h1>
+			<p></p>			
+			<!-- END HEADER -->
+
+			<!-- GENERAL LINKS -->
+			<div>
+        		<h4>Manage farms, fields & agrimodule systems</h4>
+                <ul>
+					<li><a href="{{ url_for('home') }}" style="color:#16B6A5;">Home</a></li>
+					<li><a href="{{ url_for('user_new_farm') }}" style="color:#16B6A5;">Add farm</a></li>
+					<li><a href="{{ url_for('user_add_pump') }}" style="color:#16B6A5;">Add pump</a></li>
+					<li><a href="{{ url_for('user_new_agrimodule') }}" style="color:#16B6A5;">Add Agrimodule</a></li>
+					<li><a href="{{ url_for('user_add_sensor') }}" style="color:#16B6A5;">Add AgriSensor/AgriPump</a></li>
+                </ul>
+        	</div>
+        	<hr>
+        	<!-- END GENERAL LINKS -->
+
+
+			<!-- BODY -->
+        	<div>
+
+        		
+
+
+
+
+
+
+        		<!-- LIST OF FARMS & FIELDS -->
+        		<br>
+        		<div class="container">
+
+        			<div class="row">
+        				<div class="col-md-9">
+        					<h2>My Farms
+        						<sup><a href="{{ url_for('user_new_farm') }}" style="color:gray; font-size: 80%;"><sup>New Farm</sup></a></sup>
+        					</h2>
+        				</div>
+        			</div>
+        				
+        			<!-- FARM TABLE TITLES -->
+        			<div class="row">
+        				<div class="col-md-1">
+        					<sup>Main</sup>
+        				</div>
+        				<div class="col-md-2">
+							<sup>Location</sup>
+        				</div>
+        				<div class="col-md-2">
+							<sup>Farm name</sup>
+        				</div>
+        				<div class="col-md-3">
+        					<sup>Farm area</sup>
+        				</div>
+        			</div>
+        			<!-- END FARM TABLE TITLES -->
+
+        			<!-- EACH FARM -->
+        			{% for farm in farms: %}
+	        			<!-- EACH FARM DATA -->
+	        			<hr>
+	        			<div class="row">
+	        				<div class="col-md-1">
+	        					{% if farm._default: %}
+	            					<input type="checkbox" onclick="return false;" checked>
+	            				{% else %}
+	            					<input type="checkbox" onclick="return false;">
+								{% endif %}
+								<a href="{{ url_for('user_farm_default', farm_id=farm.id) }}" style="color:green; font-size: 80%;">default</a>
+
+	        				</div>
+	        				<div class="col-md-2">
+	        					<h3>{{ farm.farm_location }}</h3>
+	        				</div>
+	        				<div class="col-md-2">
+	        					<h3>{{ farm.farm_name }}</h3>
+	        				</div>
+	        				<div class="col-md-3">
+	        					<h3>{{ farm.farm_area / 10000 }} m<sup>2</sup></h3>
+	        				</div>
+	        				<div class="col-md-4">
+	        					<a href="{{ url_for('user_new_crop', farm_id=farm.id) }}" class="btn btn-primary btn-sm">new crop</a>
+								<a href="{{ url_for('user_edit_farm', farm_id=farm.id) }}" class="btn btn-default btn-sm">edit</a>
+								<a href="{{ url_for('user_delete_farm', farm_id=farm.id) }}" class="btn btn-danger btn-sm">delete</a>
+	        				</div>
+	        			</div>
+	        			<br>
+	        			<!-- END EACH FARM DATA -->
+
+	        			<!-- FIELD TABLE TITLES -->
+	        			<div class="row">
+	        				<div class="col-md-offset-1 col-md-2">
+	        					<sup>Field area</sup>
+	        				</div>
+	        				<div class="col-md-1">
+								<sup>Type</sup>
+	        				</div>
+	        				<div class="col-md-1">
+								<sup>Crop</sup>
+	        				</div>
+	        				<div class="col-md-1">
+	        					<sup>Progress</sup>
+	        				</div>
+	        				<div class="col-md-2">
+	        					<sup>Agrimodule</sup>
+	        				</div>
+	        			</div>
+	        			<!-- END FIELD TABLE TITLES -->
+
+	        				<!-- EACH FIELD OF EACH FARM -->
+		        			{% for field in farm.fields.all(): %}
+		        				<div class="row">
+
+			        				<div class="col-md-offset-1 col-md-2">
+			        					<h4>{{ field.field_cultivation_area / 10000 }} m<sup>2</sup></h4>
+			        				</div>
+			        				<div class="col-md-1">
+			        					<h4>{{ field.field_cultivation_type|capitalize }}</h4>
+			        				</div>
+
+			        				{% for crop in field.crops.all() %}
+				        				<div class="col-md-1">
+				        					<h4>{{ crop._name|capitalize }} {# {{ crop._variety|capitalize }} #}</h4>
+				        				</div>
+				        				<div class="col-md-1">
+				        					<h4>{{ (( (timenow - field.field_cultivation_start_date).days / (crop._dtm + crop._dtg) ) * 100)|round(1, 'floor') }} %</h4>
+				        				</div>
+				        				<div class="col-md-2">
+				        					{% if field.agrimodule.name is not none: %}
+												<i><h4>
+													
+														{{ field.agrimodule.name }}
+
+												</h4></i>
+						                    {% endif %}
+						                </div>
+				        				<div class="col-md-4">
+				        					<a href="{{ url_for('user_edit_crop', field_id=field.id) }}" class="btn btn-default btn-sm">edit</a>
+											<a href="{{ url_for('user_delete_crop', field_id=field.id) }}" class="btn btn-danger btn-sm">delete</a>
+				        				</div>
+			        				{% endfor %}
+
+		        				</div>
+		        			{% endfor %}
+		        			<!-- END EACH FIELD OF EACH FARM -->
+        			
+        			{% endfor %}
+        			<!-- END EACH FARM -->
+        		</div>
+        		<hr>
+        		<!-- END LIST FARMS & FIELDS -->
+
+
+
+
+
+
+
+
+
+
+
+        		<!-- LIST OF ASS -->
+        		<br>
+        		<div class="container">
+        			<div class="row">
+        				<div class="col-md-9">
+        					<h2>My Agrimodule Systems    
+        						<sup><a href="{{ url_for('user_new_agrimodule') }}" style="color:gray; font-size: 80%;"><sup>New Agrimodule</sup></a></sup>
+        					</h2>
+        				</div>
+        			</div>
+
+        			
+        			<!-- ASS TABLE TITLES -->
+        			<div class="row">
+        				<div class="col-md-2">
+        					<sup>System Name</sup>
+        				</div>
+        				<div class="col-md-2">
+							<sup>Farm</sup>
+        				</div>
+        				<div class="col-md-2">
+							<sup>Field</sup>
+        				</div>
+        				<div class="col-md-2">
+        					<sup>Field Area</sup>
+        				</div>
+        			</div>
+        			<!-- END ASS TABLE TITLES -->
+
+        			<!-- EACH ASS -->
+        			{% for agrimodule in agrimodules: %}
+	        			<!-- EACH ASS DATA -->
+	        			<hr>
+	        			<div class="row">
+	        				<div class="col-md-2">
+	        					<h3>{{ agrimodule.name }}</h3>
+	        				</div>
+	        				<div class="col-md-2">
+	        					{% if field_db.filter_by(id = agrimodule.field_id).first().farm_id: %}
+	        						<h3>{{ farm_db.filter_by( id = field_db.filter_by(id = agrimodule.field_id).first().farm_id ).first().farm_name }}</h3>
+	        					{% else %}
+	        						<h3>Not in Use</h3>
+	        					{% endif %}
+	        				</div>
+	        				<div class="col-md-2">
+	        					<h3>{{ field_db.filter_by(id = agrimodule.field_id).first().field_name|capitalize }}</h3>
+	        				</div>
+	        				<div class="col-md-2">
+	        					{% if field_db.filter_by(id = agrimodule.field_id).first().field_cultivation_area: %}
+	        					<h3>{{ field_db.filter_by(id = agrimodule.field_id).first().field_cultivation_area / 10000 }} m<sup>2</sup></h3>
+	        					{% endif %}
+	        				</div>
+	        				<div class="col-md-4">
+	        					<a href="{{ url_for('user_add_sensor', agrimodule_id = agrimodule.id) }}" class="btn btn-primary btn-sm">add</a>
+								<a href="{{ url_for('user_edit_agrimodule', agrimodule_id = agrimodule.id) }}" class="btn btn-default btn-sm">edit</a>
+								<a href="{{ url_for('user_delete_agrimodule', agrimodule_id = agrimodule.id) }}" class="btn btn-danger btn-sm">delete</a>
+	        				</div>
+	        			</div>
+	        			<br>
+	        			<!-- END EACH ASS DATA -->
+
+	        			<!-- AGRIPUMP TABLE TITLES -->
+		        			<div class="row">
+		        				<div class="col-md-offset-1 col-md-2">
+		        					<sup>Type</sup>
+		        				</div>
+		        				<div class="col-md-2">
+									<sup>Identifier</sup>
+		        				</div>
+		        				<div class="col-md-2">
+		        					<sup>Lat & Lon</sup>
+		        				</div>
+		        				<div class="col-md-1">
+		        					<sup>Batt</sup>
+		        				</div>
+		        			</div>
+	        			<!-- END AGRIPUMP TABLE TITLES -->
+	        				<!-- THE AGRIMODULE ITSELF -->
+	        				<div class="row">
+
+		        				<div class="col-md-offset-1 col-md-2">
+		        					<h4>Agrimodule</h4>
+		        				</div>
+		        				<div class="col-md-2">
+		        					<h4>{{ agrimodule.identifier }}</h4>
+		        				</div>
+		        				<div class="col-md-2">
+		        					<h4>{{ agrimodule.lat }} {{ agrimodule.lon }}</h4>
+		        				</div>
+		        				<div class="col-md-1">
+		        					<h4>{{ agrimodule.batt_status }} %</h4>
+				                </div>
+
+	        				</div>
+		        			<!-- END THE AGRIMODULE ITSELF -->
+
+		        			<!-- EACH AGRISENSOR OF EACH ASS -->
+		        			{% for agrisensor in agrimodule.agrisensors.all(): %}
+		        				<div class="row">
+
+			        				<div class="col-md-offset-1 col-md-2">
+			        					<h4>Agrisensor</h4>
+			        				</div>
+			        				<div class="col-md-2">
+			        					<h4>{{ agrisensor.identifier }}</h4>
+			        				</div>
+			        				<div class="col-md-2">
+			        					<h4>{{ agrisensor.lat }} {{ agrisensor.lon }}</h4>
+			        				</div>
+			        				<div class="col-md-1">
+			        					<h4>{{ agrisensor.batt_status }} %</h4>
+					                </div>
+			        				<div class="col-md-4">
+										<a href="{{ url_for('user_delete_agrisensor', agrisensor_id = agrisensor.id) }}" class="btn btn-danger btn-sm">delete</a>
+			        				</div>
+
+		        				</div>
+		        			{% endfor %}
+		        			<!-- END EACH AGRISENSOR OF EACH ASS -->
+
+	        			<!-- AGRIPUMP TABLE TITLES -->
+	        			<div class="row">
+	        				<div class="col-md-offset-1 col-md-2">
+	        					<sup>Type</sup>
+	        				</div>
+	        				<div class="col-md-2">
+								<sup>Identifier</sup>
+	        				</div>
+	        				<div class="col-md-2">
+	        					<sup>Pump</sup>
+	        				</div>
+	        				<div class="col-md-1">
+	        					<sup>Status</sup>
+	        				</div>
+	        			</div>
+	        			<!-- END AGRIPUMP TABLE TITLES -->
+
+	        				<!-- EACH AGRIPUMP OF EACH ASS -->
+		        			{% for agripump in agrimodule.agripumps.all(): %}
+		        				<div class="row">
+
+			        				<div class="col-md-offset-1 col-md-2">
+			        					<h4>Agripump</h4>
+			        				</div>
+			        				<div class="col-md-2">
+			        					<h4>{{ agripump.identifier }}</h4>
+			        				</div>
+			        				<div class="col-md-2">
+			        					<h4>{{ pump_db.filter_by(id = agripump.pump_id).first().pump_name }} {{ pump_db.filter_by(id = agripump.pump_id).first().pump_brand }}</h4>
+			        				</div>
+			        				<div class="col-md-1">
+			        					{% if agripump.status == 1: %}
+											<h4 style="color: green;">ON</h4>
+										{% else %}
+											<h4 style="color: red;">OFF</h4>
+										{% endif %}
+					                </div>
+			        				<div class="col-md-4">
+			        					<a href="{{ url_for('user_edit_agripump', agripump_id = agripump.id) }}" class="btn btn-default btn-sm">edit</a>
+										<a href="{{ url_for('user_delete_agripump', agripump_id = agripump.id) }}" class="btn btn-danger btn-sm">delete</a>
+			        				</div>
+
+		        				</div>
+		        			{% endfor %}
+		        			<!-- END EACH AGRIPUMP OF EACH ASS -->
+        			
+        			{% endfor %}
+        			<!-- END EACH ASS -->
+        		</div>
+        		<hr>
+        		<!-- END LIST OF ASS -->
+
+
+
+
+
+
+
+
+        		<!-- LIST OF PUMPS -->
+        		<br>
+        		<div class="container">
+        			<div class="row">
+        				<div class="col-md-5">
+        					<h2>My Pumps 
+        						<sup><a href="{{ url_for('user_add_pump') }}" style="color:gray; font-size: 80%;"><sup>New Pump</sup></a></sup>
+        					</h2>
+        				</div>
+        			</div>
+        			
+        			<!-- PUMP TABLE TITLES -->
+        			<div class="row">
+        				<div class="col-md-2">
+        					<sup>Name</sup>
+        				</div>
+        				<div class="col-md-2">
+							<sup>Brand</sup>
+        				</div>
+        				<div class="col-md-2">
+							<sup>Flow Rate</sup>
+        				</div>
+        				<div class="col-md-1">
+        					<sup>Power</sup>
+        				</div>
+        				<div class="col-md-2">
+        					<sup>Agripump Identifier</sup>
+        				</div>
+        			</div>
+        			<!-- END PUMP TABLE TITLES -->
+
+        			<!-- EACH PUMP -->
+        			{% for pump in pumps: %}
+	        			<!-- EACH PUMP DATA -->
+	        			<hr>
+	        			<div class="row">
+	        				<div class="col-md-2">
+	        					<h4>{{ pump.pump_name }}</h4>
+	        				</div>
+	        				<div class="col-md-2">
+	        					<h4>{{ pump.pump_brand }}</h4>
+	        				</div>
+	        				<div class="col-md-2">
+	        					<h4>{{ pump.pump_flow_rate / (1000 * 60) }} lps</h4>
+	        				</div>
+	        				<div class="col-md-1">
+	        					<h4>{{ pump.pump_watts / 1000 }} kW</h4>
+	        				</div>
+	        				<div class="col-md-2">
+	        					<i><h4>{{ agripump_db.filter_by(pump_id = pump.id).first().identifier  }}</h4></i>
+	        				</div>
+	        				<div class="col-md-3">
+								<a href="{{ url_for('user_edit_pump', pump_id=pump.id) }}" class="btn btn-default btn-sm">edit</a>
+								<a href="{{ url_for('user_delete_pump', pump_id=pump.id) }}" class="btn btn-danger btn-sm">delete</a>
+	        				</div>
+	        			</div>
+	        			<br>
+	        			<!-- END EACH PUMP DATA -->
+        			{% endfor %}
+        			<!-- END EACH PUMP -->
+        		</div>
+        		<hr>
+        		<!-- END LIST PUMPS -->
+
+
+
+
+
+
+
+        	</div>
+        	<!-- END BODY -->
+        </div>
+        <!-- END MAIN TWO -->
+    </div>
+    <!-- END MAIN ONE -->
+
+{% endblock %}

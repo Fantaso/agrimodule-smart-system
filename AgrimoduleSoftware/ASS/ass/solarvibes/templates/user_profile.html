@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block title %}
+	Profile
+{% endblock %}
+
+{% block user_profile_active %}
+fh5co-active
+{% endblock %}
+
+{% block content %}
+<div id = "fh5co-main" class = "container" style = "margin-top: 5%;">
+	<div style="padding-left: 2%; text-align: left;">
+    <h1>Profile</h1>
+	<div>
+        <hr>
+        <p>General links</p>
+        <ul>
+          <li><a href="{{ url_for('home') }}" style="color:#16B6A5;">Home</a><br></li>
+          <li><a href="{{ url_for('user_weather') }}" style="color:#16B6A5;">Weather</a><br></li>
+        </ul>
+	</div>
+  <div>
+        <hr>
+        <p>Internal links</p>
+        <ul>
+          <li><a href="{{ url_for('user_profile_edit') }}" style="color:#16B6A5;">Edit profile</a><br></li>
+        </ul>
+  </div>
+
+</div>
+
+{% endblock %}
