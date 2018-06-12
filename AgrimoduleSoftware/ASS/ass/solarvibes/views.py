@@ -2,7 +2,6 @@ from flask import render_template, session, request, redirect, url_for, flash, j
 
 from solarvibes import app, db
 
-from solarvibes.forms import EmailForm, EmailAndTextForm, ContactUsForm # Wesite Forms and users
 from solarvibes.forms import RegisterFormExt, UserProfileForm, PreUserProfileForm # User Forms
 from solarvibes.forms import FarmForm, FieldForm # Welcome Forms
 from solarvibes.forms import FarmInfoForm, AddAgrisysForm, InstallAgrisysForm, AddPumpForm # Set-up System Forms
@@ -18,7 +17,7 @@ from flask_login import current_user
 
 from flask_security import login_required
 
-from solarvibes.models import NewsletterTable, AgrimoduleFBTable, PlatformFBTable, WorkWithUsTable, ContactUsTable, roles_users, Role, User, Farm, Field, DailyFieldInput, Crop, Pump, Agrimodule, Agrisensor, Measurement, Agripump
+from solarvibes.models import roles_users, Role, User, Farm, Field, DailyFieldInput, Crop, Pump, Agrimodule, Agrisensor, Measurement, Agripump
 
 
 
@@ -64,94 +63,7 @@ def before_request():
 #             return redirect(url_for('login'))
 
 
-#############################
-#############################
-# WEBSITE VIEWS
-#############################
-#############################
 
-@app.route('/', methods=['GET'])
-def index():
-    if not current_user.is_authenticated:
-        return redirect(url_for('security.login'))
-    return redirect(url_for('home'))
-    # return redirect(url_for('login'))
-
-
-@app.route('/indexweb', methods=('GET', 'POST'))
-def indexweb():
-    form = EmailForm()
-    if form.validate_on_submit():
-        email = form.email.data
-        agrimodulefb = NewsletterTable(email=email)
-        db.session.add(agrimodulefb)
-        db.session.commit()
-        form = None
-        flash('Thanks. We will maintain you update!')
-        return redirect(url_for('index'))
-    return render_template('index.html', form=form)
-
-
-@app.route('/agrimodule', methods=('GET', 'POST'))
-def agrimodule():
-    form = EmailAndTextForm()
-    if form.validate_on_submit():
-        email = form.email.data
-        msg = form.msg.data
-        agrimodulefb = AgrimoduleFBTable(email=email, msg=msg)
-        db.session.add(agrimodulefb)
-        db.session.commit()
-        form = None
-        flash('Thanks. We definitely give a lot og thought about it!')
-        return redirect(url_for('agrimodule'))
-    return render_template('agrimodule.html', form=form)
-
-
-@app.route('/platform', methods=('GET', 'POST'))
-def platform():
-    form = EmailAndTextForm()
-    if form.validate_on_submit():
-        email = form.email.data
-        msg = form.msg.data
-        platformfb = PlatformFBTable(email=email, msg=msg)
-        db.session.add(platformfb)
-        db.session.commit()
-        form = None
-        flash('Thanks. Your feedback is valuable to us!')
-        return redirect(url_for('platform'))
-    return render_template('platform.html', form=form)
-
-@app.route('/about', methods=('GET', 'POST'))
-def about():
-    form = EmailAndTextForm()
-    if form.validate_on_submit():
-        email = form.email.data
-        msg = form.msg.data
-        workwithusus = WorkWithUsTable(email=email, msg=msg)
-        db.session.add(workwithusus)
-        db.session.commit()
-        form = None
-        flash('Thanks. Our HR department will contact you!')
-        return redirect(url_for('about'))
-    return render_template('about.html', form=form)
-
-
-@app.route('/contact', methods=('GET', 'POST'))
-def contact():
-    # pre_contact = PreContactUsForm('Carlos','carlos@sv.de','+176-55858585','I would like to get a quotation for my farm 1 hectare located in Berlin')
-    form = ContactUsForm()
-    if form.validate_on_submit():
-        name = form.name.data
-        email = form.email.data
-        phone = form.phone.data
-        msg = form.msg.data
-        newsletter = ContactUsTable(name=name, email=email, phone=phone, msg=msg)
-        db.session.add(newsletter)
-        db.session.commit()
-        form = None
-        flash('Thanks. We will get back to your shortly!')
-        return redirect(url_for('contact'))
-    return render_template('contact.html', form=form)
 
 
 #############################
