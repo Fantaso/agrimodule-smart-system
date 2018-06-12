@@ -36,7 +36,7 @@ manager = Manager(app)
 manager.add_command('db', MigrateCommand)
 
 # HERE STARTS THE MODELS
-from solarvibes.models import NewsletterTable, AgrimoduleFBTable, PlatformFBTable, WorkWithUsTable, ContactUsTable, roles_users, Role, User, Farm, Field, DailyFieldInput, Crop, Pump, Agrimodule, Agrisensor, Measurement, Agripump
+from solarvibes.models import roles_users, Role, User, Farm, Field, DailyFieldInput, Crop, Pump, Agrimodule, Agrisensor, Measurement, Agripump
 # HERE ENDS THE MODELS
 
 #############################
@@ -50,4 +50,7 @@ security = Security(app, user_datastore, register_form=RegisterFormExt, confirm_
 
 # HERE STARTS THE ROUTES
 from solarvibes import views
+from solarvibes.site.views import site
+
+app.register_blueprint(site, url_prefix='/site')
 # HERE ENDS THE ROUTES
