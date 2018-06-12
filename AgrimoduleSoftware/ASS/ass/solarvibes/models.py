@@ -2,43 +2,6 @@ from solarvibes import db
 from sqlalchemy.sql import func
 from flask_security import UserMixin, RoleMixin
 
-#############################
-#############################
-# WEBSITE MODELS
-#############################
-#############################
-
-class NewsletterTable(db.Model):
-    __tablename__ = 'newslettertable'
-    id = db.Column(db.Integer, primary_key=True)
-    email = db.Column(db.String(30))
-
-class AgrimoduleFBTable(db.Model):
-    __tablename__ = 'agrimodulefbtable'
-    id = db.Column(db.Integer, primary_key=True)
-    email = db.Column(db.String(30))
-    msg = db.Column(db.Text(length=1000))
-
-class PlatformFBTable(db.Model):
-    __tablename__ = 'platformfbtable'
-    id = db.Column(db.Integer, primary_key=True)
-    email = db.Column(db.String(30))
-    msg = db.Column(db.Text(length=1000))
-
-class WorkWithUsTable(db.Model):
-    __tablename__ = 'workwithustable'
-    id = db.Column(db.Integer, primary_key=True)
-    email = db.Column(db.String(30))
-    msg = db.Column(db.Text(length=1000))
-
-class ContactUsTable(db.Model):
-    __tablename__ = 'contactustable'
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(30))
-    email = db.Column(db.String(30))
-    phone = db.Column(db.String(30))
-    msg = db.Column(db.Text(length=1000))
-
 
 #############################
 #############################
