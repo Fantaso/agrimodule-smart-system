@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+{% from "_renderfield.html" import render_field, render_field_with_errors %}
+
+{% block title %}
+	Farm Add Agrisys
+{% endblock %}
+
+{% block content %}
+<div class = "container">
+    <h4>Add_agrisys</h4>
+    <form method="POST" action="{{ url_for('welcome.add_agrisys') }}">
+        {{ form.csrf_token }}
+		{{ render_field_with_errors(form.agrimodule_name) }}
+		{{ render_field_with_errors(form.agrimodule_identifier) }}
+		<input type="submit" class="btn btn-primary btn-md" value="Add ASS">
+	</form>
+<a href="{{ url_for('welcome.welcome_set_sys') }}" class="btn btn-secondary btn-sm" style="color:black;">Back</a>
+</div>
+{% endblock %}
