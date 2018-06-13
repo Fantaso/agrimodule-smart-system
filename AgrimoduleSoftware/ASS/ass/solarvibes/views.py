@@ -2,7 +2,6 @@ from flask import render_template, session, request, redirect, url_for, flash, j
 
 from solarvibes import app, db
 
-from solarvibes.forms import RegisterFormExt, UserProfileForm, PreUserProfileForm # User Forms
 from solarvibes.forms import FarmForm, FieldForm # Welcome Forms
 from solarvibes.forms import FarmInfoForm, AddAgrisysForm, InstallAgrisysForm, AddPumpForm # Set-up System Forms
 from solarvibes.forms import NewCropForm, PreDateNewCropForm, PreNewCropForm, EditFarmForm, PreEditFarmForm # Manage Farms Forms
@@ -1846,73 +1845,3 @@ def user_resources():
 @login_required
 def user_market():
     return render_template('user_market.html')
-
-
-##########################################################
-##########################################################
-# USER SETTINGS VIEWS
-##########################################################
-##########################################################
-
-##################
-# USER PROFILE
-##################
-@app.route('/user/settings/profile', methods=('GET', 'POST'))
-@login_required
-def user_profile():
-    name = current_user.name
-    return render_template('user_profile.html', name=name)
-
-##################
-# USER PROFILE EDIT
-##################
-@app.route('/user/settings/profile/edit', methods=('GET', 'POST'))
-@login_required
-def user_profile_edit():
-    user = User.query.filter_by(email=current_user.email).first()
-    # Prepopulate form
-    myUser = PreUserProfileForm(username = user.username,
-                                name = user.name,
-                                last_name = user.last_name,
-                                address = user.address,
-                                zipcode = user.zipcode,
-                                city = user.city,
-                                state = user.state,
-                                country = user.country,
-                                email = user.email,
-                                email_rec = user.email_rec,
-                                birthday = user.birthday,
-                                image = user.image,
-                                mobile = user.mobile)
-    form = UserProfileForm(obj=myUser)
-    # if image is not uploaded it gets a TypeError
-    if form.validate_on_submit():   # IF request.methiod == 'POST'
-        user = User.query.filter_by(id=current_user.get_id()).first()
-        # FIELD OBJS  TO DB
-        try:
-            # IMAGE HANDLING
-            if not form.image.data == user.image:
-                image_filename = photos.save(form.image.data)
-                image_url = photos.url(image_filename)
-                user.image = image_url
-            # REST OF FORM HANDLING
-            user.username = form.username.data
-            user.name = form.name.data
-            user.last_name = form.last_name.data
-            user.address = form.address.data
-            user.zipcode = form.zipcode.data
-            user.city = form.city.data
-            user.state = form.state.data
-            user.country = form.country.data
-            user.email = form.email.data
-            user.email_rec = form.email_rec.data
-            user.birthday = form.birthday.data
-            user.mobile = form.mobile.data
-            db.session.commit()
-        except Exception as e:
-            flash(e)
-            print(e)
-            db.session.rollback()
-        flash('You updated sucessfully your profile')
-        return redirect(url_for('user_profile'))
-    return render_template('user_profile_edit.html', form=form)
