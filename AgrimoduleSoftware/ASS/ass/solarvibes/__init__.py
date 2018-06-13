@@ -52,7 +52,9 @@ security = Security(app, user_datastore, register_form=RegisterFormExt, confirm_
 from solarvibes import views
 from solarvibes.site.views import site
 from solarvibes.users.views import users
+from solarvibes.welcome.views import welcome
 
 app.register_blueprint(site, url_prefix='/site')
 app.register_blueprint(users, url_prefix='/users')
+app.register_blueprint(welcome, url_prefix='/welcome')
 # HERE ENDS THE ROUTES
