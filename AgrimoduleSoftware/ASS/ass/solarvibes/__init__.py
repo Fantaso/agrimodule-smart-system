@@ -51,6 +51,8 @@ security = Security(app, user_datastore, register_form=RegisterFormExt, confirm_
 # HERE STARTS THE ROUTES
 from solarvibes import views
 from solarvibes.site.views import site
+from solarvibes.users.views import users
 
 app.register_blueprint(site, url_prefix='/site')
+app.register_blueprint(users, url_prefix='/users')
 # HERE ENDS THE ROUTES
