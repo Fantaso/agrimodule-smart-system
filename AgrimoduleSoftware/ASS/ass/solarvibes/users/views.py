@@ -14,8 +14,7 @@ users = Blueprint(
 ##################
 # USER PROFILE
 ##################
-
-@users.route('/profile', methods=('GET', 'POST'))
+@users.route('/profile', methods=['GET', 'POST'])
 @login_required
 def profile():
     name = current_user.name
@@ -24,8 +23,7 @@ def profile():
 ##################
 # USER PROFILE EDIT
 ##################
-
-@users.route('/profile/edit', methods=('GET', 'POST'))
+@users.route('/profile/edit', methods=['GET', 'POST'])
 @login_required
 def profile_edit():
     user = User.query.filter_by(email=current_user.email).first()
