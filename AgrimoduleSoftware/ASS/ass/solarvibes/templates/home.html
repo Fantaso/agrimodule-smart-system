@@ -15,7 +15,7 @@ grey lighten-2
 			<hr>
 			<h1>Welcome back, {{ user.name }}!</h1>
 			<p>Your {{ default_farm.farm_name }}'s farm awaits for you!</p>
-			<div> 
+			<div>
 			    <hr>
 			    <p>Farmer links</p>
 			    <ul>
@@ -25,7 +25,7 @@ grey lighten-2
 					<li><a href="{{ url_for('user_health_analyzer') }}" style="color:#16B6A5;">Health analyzer</a><br></li>
 			    </ul>
 			</div>
-			
+
 			<div>
                 <hr>
         		<p>General links</p>
@@ -36,7 +36,7 @@ grey lighten-2
 					<li><a href="{{ url_for('user_market') }}" style="color:#16B6A5;">Market</a><br></li>
 					<li><a href="{{ url_for('user_weather') }}" style="color:#16B6A5;">Weather</a><br></li>
 					<li><a href="{{ url_for('user_alerts') }}" style="color:#16B6A5;">Alerts</a><br></li>
-					<li><a href="{{ url_for('user_profile') }}" style="color:#16B6A5;">Profile</a><br></li>
+					<li><a href="{{ url_for('users.profile') }}" style="color:#16B6A5;">Profile</a><br></li>
                 </ul>
         	</div>
 
@@ -47,16 +47,16 @@ grey lighten-2
     		<br>
     		<div class="container">
 
-  
 
 
 
-    			
+
+
     			<!-- SECOND ROW - FIELD DATA -->
     			<div class="row">
 
     				{% for field in fields %}
-    				
+
 	    				<!-- FIELD NUM n -->
 	    				<div class="col-md-4"  style="border: 2px solid black; border-radius: 5%; background-color: white; padding: 10px;">
 	    					<a href="{{ url_for('user_crop_status') }}">
@@ -91,10 +91,10 @@ grey lighten-2
 	    							<sup>LAT: {{ field.agrimodule.lat }} LON: {{ field.agrimodule.lon }}</sup>
 	    						</div>
 	    					</div>
-			    					
-			   
-	    					
-	    					
+
+
+
+
 
 	    					{% for agrisensor in field.agrimodule.agrisensors %}
 	    						<div class="row">
@@ -111,7 +111,7 @@ grey lighten-2
 	    							</div>
 	    						</div>
 							{% endfor %}
-							
+
 							{% for agripump in field.agrimodule.agripumps %}
 
 								<div class="row">
@@ -122,7 +122,7 @@ grey lighten-2
 	    								<a href="{{ url_for('user_agripump') }}">
 				    						<h3 style="text-align: center;">{{ agripump.identifier }}</h3>
 				    					</a>
-		    							
+
 		    							<sup><h4 style="text-align: center;">
 			    							<sup>{{ pump_db.filter_by(id = agripump.pump_id).first().pump_name }}
 			    							<br>
@@ -149,9 +149,9 @@ grey lighten-2
     			</div>
     			<!-- END SECOND ROW - FIELD DATA -->
 
-    			
-    			
-    			
+
+
+
     			<!-- END EACH ASS -->
     		</div>
     		<hr>
@@ -161,7 +161,7 @@ grey lighten-2
 
 
 
-    		
+
 
 
 
@@ -188,7 +188,7 @@ grey lighten-2
 								</div>
 								<!-- ICON -->
 
-											
+
 								<!-- TEMP, HUM and PRESS -->
 								<div class="column is-4 centrado">
 									<div class="columns">
@@ -212,10 +212,10 @@ grey lighten-2
 									</div>
 								</div>
 								<!-- CITY, TIME LAT AND LON -->
-								
+
 							</div>
 						</div>
-						
+
 
 
 						<div class="bg_dgr column is-one-third is-offset-1 has-text-centered is-outlined">
@@ -305,10 +305,10 @@ grey lighten-2
 					  	<div class="bg_r column is-one-third">
 					  		<!-- FIELD -->
 					  		<div class="columns is-centered is-vcentered">
-							
+
 								<!-- CROP -->
 								<div class="bg_gr column is-4">
-									
+
 									<div class="columns is-vcentered">
 										{% for crop in field.crops %}
 										<div class="column is-12 has-text-centered">
@@ -328,7 +328,7 @@ grey lighten-2
 										</div>
 										{% endfor %}
 									</div>
-									
+
 								</div>
 								<!-- CROP -->
 
@@ -347,7 +347,7 @@ grey lighten-2
 															<img src="../static/bulma/agrimodule-icon.png">
 														</figure>
 													</a>
-													
+
 												</div>
 												<!-- Agrimodule  -->
 												<div class="column is-10 has-text-centered">
@@ -362,12 +362,12 @@ grey lighten-2
 									<!-- AGRIMODULE SYSTEM -->
 
 									<!-- AGRISENSORS -->
-									
+
 									<div class="columns is-vcentered">
 										{% for agrisensor in field.agrimodule.agrisensors %}
 										<!-- 1 Agrisensor OBJ -->
 										<div class="bg_dgr column is-6">
-											
+
 											<div class="columns is-vcentered">
 												<div class="column is-2 has-text-centered">
 													<!-- Agrisensor SYSTEM IMAGE -->
@@ -384,20 +384,20 @@ grey lighten-2
 													<h4 class="title is-size-7 has-text-weight-light">{{ agrisensor.identifier }}</h4>
 												</div>
 											</div>
-											
+
 										</div>
 										{% endfor %}
 									<!-- AGRISENSORS -->
 									</div>
-									
+
 
 									<!-- AGRIPUMPS -->
-									
+
 									<div class="columns is-vcentered">
 										{% for agripump in field.agrimodule.agripumps %}
 										<!-- 1 Agripump OBJ -->
 										<div class="bg_dgr column is-6">
-											
+
 											<div class="columns is-vcentered">
 												<div class="column is-2 has-text-centered">
 													<!-- Agripump SYSTEM IMAGE -->
@@ -413,11 +413,11 @@ grey lighten-2
 													<h4 class="title is-size-7 has-text-weight-light">{{ agripump.identifier }}</h4>
 												</div>
 											</div>
-											
+
 										</div>
 										{% endfor %}
 									</div>
-									
+
 									<!-- AGRIPUMPS -->
 								</div>
 								<!-- SYSTEM -->
@@ -427,10 +427,10 @@ grey lighten-2
 					  	<!-- FIELD 1 -->
 					  	{% endfor %}
 
-						
+
 					</div>
 					<!-- FIELDS -->
-			
+
 
 
 
@@ -481,4 +481,3 @@ grey lighten-2
 	</div>
 
 {% endblock %}
-
