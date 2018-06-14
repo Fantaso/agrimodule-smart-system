@@ -22,23 +22,23 @@ welcome = Blueprint(
 # WELCOME
 ###################
 # TODO: this should be check somewhere else. before it calls this blurprint
-# @welcome.route('/', methods=['GET'])
-# @login_required
-# def welcome():
-#     if current_user.agrimodules.count() == 0:
-#         flash('welcome for the first time, ' + current_user.name + '!')
-#         print('welcome for the first time, ' + current_user.name + '!')
-#         set_sys_flag = True
-#         return render_template('welcome/welcome.html', user=current_user, set_sys_flag=set_sys_flag)
-#     elif current_user.farms.count() == 0 or current_user.farms.first().fields.count() == 0:
-#         flash('Now set your farm, ' + current_user.name + '!')
-#         print('Now set your farm, ' + current_user.name + '!')
-#         set_sys_flag = False
-#         return render_template('welcome/welcome.html', user=current_user, set_sys_flag=set_sys_flag)
-#     else:
-#         default_farm = current_user.farms.filter_by(_default = 1).one()
-#         return 'go to welcome blueprint and fix this return'
-        # return redirect(url_for('home.home', user=current_user, default_farm=default_farm))
+@welcome.route('/', methods=['GET'])
+@login_required
+def index():
+    if current_user.agrimodules.count() == 0:
+        flash('welcome for the first time, ' + current_user.name + '!')
+        print('welcome for the first time, ' + current_user.name + '!')
+        set_sys_flag = True
+        return render_template('welcome/welcome.html', user=current_user, set_sys_flag=set_sys_flag)
+    elif current_user.farms.count() == 0 or current_user.farms.first().fields.count() == 0:
+        flash('Now set your farm, ' + current_user.name + '!')
+        print('Now set your farm, ' + current_user.name + '!')
+        set_sys_flag = False
+        return render_template('welcome/welcome.html', user=current_user, set_sys_flag=set_sys_flag)
+    else:
+        default_farm = current_user.farms.filter_by(_default = 1).one()
+        # return 'go to welcome blueprint and fix this return'
+        return redirect(url_for('main.index', user=current_user, default_farm=default_farm))
 
 ###################
 # SET FARM
@@ -194,7 +194,7 @@ def welcome_set_field():
         #SUCESS AND REDIRECT TO DASHBOARD
         flash('You just created a {} in your {}'.format(field_name, farm.farm_name))
         del session['set_farm']     # ERASE SESSION OBJS
-        return redirect(url_for('welcome.welcome'))
+        return redirect(url_for('welcome.index'))
 
     return render_template('welcome/welcome_set_field.html', form=form)
 
