@@ -144,7 +144,7 @@
                   <i class="material-icons">account_circle</i> User Settings</a>
               </li>
               <li>
-                <a href="{{ url_for('user_farms') }}" class="grey-text text-darken-1">
+                <a href="{{ url_for('settings.index') }}" class="grey-text text-darken-1">
                   <i class="material-icons">settings</i> Farm Settings</a>
               </li>
               <li class="divider"></li>
@@ -183,7 +183,7 @@
               <p class="ultra-small margin more-text" style="padding-left: 12px;">quick</p>
             </li>
              <li class="{% block user_home_active %}{% endblock %}">
-              <a href="{{ url_for('home') }}">
+              <a href="{{ url_for('main.index') }}">
                 <i class="material-icons svgreen-text">home</i>
                 <span class="nav-text">Farm Status</span>
               </a>
@@ -200,8 +200,8 @@
                 <span class="nav-text">Crop Planning</span>
               </a>
             </li>
-            <li class="{% block user_farms_active %}{% endblock %}">
-              <a href="{{ url_for('user_new_crop') }}">
+            <li class="{% block settings_active %}{% endblock %}">
+              <a href="{{ url_for('farm_settings.new_crop') }}">
                 <i class="material-icons svgreen-text">add</i>
                 <span class="nav-text">New Crop</span>
               </a>
