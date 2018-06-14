@@ -9,7 +9,7 @@ Edit profile
 <div class="container">
     <h4>Farmer Information</h4>
     <!-- FIRST FORM -->
-    <form method="POST" action="{{ url_for('users.profile_edit') }}" enctype="multipart/form-data">
+    <form method="POST" action="{{ url_for('users.edit_profile') }}" enctype="multipart/form-data">
         {{ form.csrf_token }}
         <div>
             <h5>{{ form.name.data }} {{ form.last_name.data }}</h5>
@@ -92,7 +92,7 @@ Edit profile
     {% if current_user.is_authenticated: %}
     <br><br>
     <div class="collection black-text">
-        <a href="{{ url_for('home') }}" class="collection-item grey-text">Home
+        <a href="{{ url_for('main.index') }}" class="collection-item grey-text">Home
             <div class="secondary-content"><i class="material-icons svgreen-text">home</i></div>
         </a>
     </div>
