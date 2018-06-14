@@ -53,8 +53,18 @@ from solarvibes import views
 from solarvibes.site.views import site
 from solarvibes.users.views import users
 from solarvibes.welcome.views import welcome
+from solarvibes.main.views import main
+from solarvibes.settings.views import settings
+from solarvibes.farm_settings.views import farm_settings
+from solarvibes.agrimodule_settings.views import agrimodule_settings
+from solarvibes.pump_settings.views import pump_settings
 
 app.register_blueprint(site, url_prefix='/site')
 app.register_blueprint(users, url_prefix='/users')
 app.register_blueprint(welcome, url_prefix='/welcome')
+app.register_blueprint(main, url_prefix='/main')
+app.register_blueprint(settings, url_prefix='/settings')
+app.register_blueprint(farm_settings, url_prefix='/farm_settings')
+app.register_blueprint(agrimodule_settings, url_prefix='/agrimodule_settings')
+app.register_blueprint(pump_settings, url_prefix='/pump_settings')
 # HERE ENDS THE ROUTES
