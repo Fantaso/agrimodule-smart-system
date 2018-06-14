@@ -14,7 +14,7 @@ users = Blueprint(
 ##################
 # USER PROFILE
 ##################
-@users.route('/profile', methods=['GET', 'POST'])
+@users.route('/', methods=['GET', 'POST'])
 @login_required
 def profile():
     name = current_user.name
@@ -23,9 +23,9 @@ def profile():
 ##################
 # USER PROFILE EDIT
 ##################
-@users.route('/profile/edit', methods=['GET', 'POST'])
+@users.route('/edit-profile', methods=['GET', 'POST'])
 @login_required
-def profile_edit():
+def edit_profile():
     user = User.query.filter_by(email=current_user.email).first()
     # Prepopulate form
     myUser = PreUserProfileForm(username = user.username,
@@ -72,4 +72,4 @@ def profile_edit():
             db.session.rollback()
         flash('You updated sucessfully your profile')
         return redirect(url_for('users.profile'))
-    return render_template('users/profile_edit.html', form=form)
+    return render_template('users/edit_profile.html', form=form)
