@@ -1,11 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-  <!--================================================================================
-  Item Name: Materialize - Material Design Admin Template
-  Version: 4.0
-  Author: PIXINVENT
-  Author URL: https://themeforest.net/user/pixinvent/portfolio
-  ================================================================================ -->
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -146,7 +140,7 @@
             <!-- profile-dropdown -->
             <ul id="profile-dropdown" class="dropdown-content">
               <li>
-                <a href="{{ url_for('user_profile') }}" class="grey-text text-darken-1">
+                <a href="{{ url_for('users.profile') }}" class="grey-text text-darken-1">
                   <i class="material-icons">account_circle</i> User Settings</a>
               </li>
               <li>
@@ -173,10 +167,10 @@
         <aside id="left-sidebar-nav" class="nav-expanded nav-lock nav-collapsible">
           <div class="brand-sidebar">
             <h1 class="logo-wrapper">
-              <!-- <a href="{{ url_for('index') }}" class="brand-logo darken-1"> -->
+              <a href="{{ url_for('site.index') }}" class="brand-logo darken-1">
                 <img src="{{ url_for('static', filename='images/logo/solarvibes-logo.png') }}" alt="materialize logo">
                 <span class="logo-text hide-on-med-and-down">Solarvibes</span>
-              <!-- </a> -->
+              </a>
               <a href="#" class="navbar-toggler">
                 <i class="material-icons">radio_button_checked</i>
               </a>
