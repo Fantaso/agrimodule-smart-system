@@ -1,6 +1,20 @@
-from ass import db, Crop
+# Automatically add crops to the db through SQLAlchemy
+# in run.py directory
+# 				from utils.db.crop_db import * 
 
-crops = { 	
+def add_crops(crops):
+	print('Importing db and Crop')
+	from solarvibes import db
+	from solarvibes.models import Crop
+	print('Starting inserting crops to db')
+	for crop in crops:
+		crop_to_db = Crop(**crops[crop])
+		db.session.add(crop_to_db)
+	db.session.commit()
+	print('Crops added to db! Done!')
+
+
+crops = {
 			'plum':
 					{
 					'_name':'plum',
@@ -26,7 +40,7 @@ crops = {
 					'_air_temp_min':17,		'_air_temp_opt':25,			'_air_temp_max':28, 		# C
 					'_air_humi_min':60,		'_air_humi_opt':63,			'_air_humi_max':70,			# %RH
 					},
-			'romaine': 
+			'romaine':
 					{
 					'_name':'romaine',
 					'_variety':'lettuce',
@@ -75,7 +89,7 @@ crops = {
 					'_soil_nutrient_min':0,	'_soil_nutrient_opt':0,	'_soil_nutrient_max':0,
 					'_air_temp_min':10,		'_air_temp_opt':18,		'_air_temp_max':26,
 					'_air_humi_min':0,		'_air_humi_opt':0,		'_air_humi_max':0,
-					}, 
+					},
 			'radicchio':
 					{
 					'_name':'radicchio',
@@ -428,16 +442,7 @@ crops = {
 					},
 		}
 
-# Automatically add crops to the db through SQLAlchemy
-def add_crops(crops):
-	print('Starting inserting crops to db')
-	for crop in crops:
-		crop_to_db = Crop(**crops[crop])
-		db.session.add(crop_to_db)
-	db.session.commit()
-	print('Crops added to db! Done!')
-
 
 # TO ADD THESE CROP DATASETS RUN:
-if __name__ == '__main__':
-	add_crops(crops)
+# if __name__ == '__main__':
+# 	add_crops(crops)
