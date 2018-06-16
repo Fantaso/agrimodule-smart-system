@@ -13,7 +13,7 @@ WE WILL RELEASE FUTURE UPDATES SO IN ORDER TO NOT OVERWRITE YOUR CUSTOM SCRIPT I
 $(document).ready(function(){
     $('ul.tabs').tabs({
       swipeable : true,
-      responsiveThreshold : 1920 
+      responsiveThreshold : 1920
     });
 	// TAB Color
 	$(".tabs" ).css("background-color", themeColor);
@@ -26,6 +26,6 @@ $(document).ready(function(){
 
   });
 
- $(document).ready(function(){
+$(document).ready(function(){
     $('.tooltipped').tooltip();
-  });
+});
