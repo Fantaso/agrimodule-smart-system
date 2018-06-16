@@ -20,6 +20,7 @@ agrimodule_settings = Blueprint(
 @login_required
 def new_agrimodule():
 
+    # TODO: validate that can be installed in a field where there is already one
 
     def get_farm_name(id):
         return current_user.farms.filter_by(id = id).first().farm_name
@@ -44,6 +45,12 @@ def new_agrimodule():
 
     if form.validate_on_submit():
 
+        def val_choice(choice_id):
+            if choice_id == 0:
+                return None
+            else:
+                return choice_id
+
         # ADD AGRISYS OBJS
         name = form.name.data
         identifier = form.identifier.data
@@ -58,7 +65,7 @@ def new_agrimodule():
                                 identifier = identifier,
                                 lat = lat,
                                 lon = lon,
-                                field_id = field_choice)
+                                field_id = val_choice(field_choice))
         print(agrimodule.field_id)
 
         # DB COMMANDS
@@ -165,7 +172,6 @@ def add_sensor(agrimodule_id = 0):
     form = AgrimoduleAddSensorForm()
 
     if int(agrimodule_id) <= 0:
-
         agrimodule_choices = current_user.agrimodules.all()
         form.agrimodule_choices.choices = [ (agrimodule.id, agrimodule.name) for agrimodule in agrimodule_choices ] # AGRIMODULE
         form.agrimodule_choices.choices.insert(0, ('0' ,'Choose:'))
@@ -182,6 +188,7 @@ def add_sensor(agrimodule_id = 0):
         agrimodule_id = form.agrimodule_choices.data
         sensor_type = form.sensor_choices.data
         identifier = form.identifier.data
+
 
         if sensor_type == 'Agripump':
             agripump = Agripump(agrimodule_id = agrimodule_id, identifier = identifier)
@@ -210,7 +217,7 @@ def add_sensor(agrimodule_id = 0):
 @login_required
 def edit_agripump(agripump_id = 0):
 
-    # TODO: when disconnect and no pump assigned before, None type error. sqlalchemy nonetype 
+    # TODO: when disconnect and no pump assigned before, None type error. sqlalchemy nonetype
     # validate thats is an valid id # add later the query if id actually exist
     if int(agripump_id) <= 0:
         flash('This Agripump done not exist.')
@@ -276,7 +283,6 @@ def edit_agripump(agripump_id = 0):
             return redirect(url_for('settings.index'))
         except Exception as e:
             flash('Error: ' + str(e))
-            print('Error: ' + str(e))
             db.session.rollback()
             return redirect(url_for('settings.index'))
     return render_template('agrimodule_settings/edit_agripump.html', form=form, agripump_to_edit = agripump_to_edit)
