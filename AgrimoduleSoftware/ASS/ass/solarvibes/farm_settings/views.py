@@ -27,7 +27,7 @@ def default_farm(farm_id = None):
         return redirect(url_for('settings.index'))
 
     # GET CURRENT DEFAULT FARM'S ID
-    farm_default_old = current_user.farms.filter_by(_default = 1).one()
+    farm_default_old = current_user.farms.filter_by(_default = True).one()
     farm_default_old._default = False # ERASE THE DEFAULT LABEL
     # GET NEW DEFAULT FARM
     farm_default_new = current_user.farms.filter_by(id = farm_id).one()
