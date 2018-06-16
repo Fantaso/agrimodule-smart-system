@@ -9,9 +9,6 @@ from solarvibes.forms import RegisterFormExt
 from solarvibes.config import Config
 
 
-
-
-
 app = Flask(__name__)                               # creates the flask app
 photos =  UploadSet('photos', IMAGES)               # Flask-Uploads
 app.config['UPLOADED_PHOTOS_DEST'] = 'static/uploads'       # Flask-Uploads
