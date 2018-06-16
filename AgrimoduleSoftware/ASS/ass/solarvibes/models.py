@@ -22,20 +22,20 @@ class Role(db.Model, RoleMixin):
 class User(db.Model, UserMixin):
     __tablename__ = 'user'
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(15))
-    last_name = db.Column(db.String(15))
+    name = db.Column(db.String(50))
+    last_name = db.Column(db.String(50))
     email = db.Column(db.String(50), unique=True)
-    password = db.Column(db.String(50))
+    password = db.Column(db.String(200))
     birthday = db.Column(db.DateTime(timezone=True), nullable=True)
-    mobile = db.Column(db.String(12), unique=True)
-    username = db.Column(db.String(30), unique=True)
-    address = db.Column(db.String(30))
+    mobile = db.Column(db.String(50), unique=True)
+    username = db.Column(db.String(50), unique=True)
+    address = db.Column(db.String(50))
     zipcode = db.Column(db.Integer)
-    city = db.Column(db.String(30))
-    state = db.Column(db.String(30))
-    country = db.Column(db.String(30))
+    city = db.Column(db.String(50))
+    state = db.Column(db.String(50))
+    country = db.Column(db.String(50))
     email_rec = db.Column(db.String(50))
-    image = db.Column(db.String(100))
+    image = db.Column(db.String(200))
 
     last_login_at = db.Column(db.DateTime(timezone=True))
     current_login_at = db.Column(db.DateTime(timezone=True))
@@ -48,6 +48,7 @@ class User(db.Model, UserMixin):
     roles = db.relationship('Role', secondary=roles_users, backref=db.backref('users', lazy='dynamic'))
 
     default_farm_id = db.Column(db.Integer, unique=True)
+    completed_welcome = db.Column(db.Boolean)
 
     # RELATIONSHIP
     # USER[1]-FARM[M]
