@@ -49,5 +49,15 @@
     <script type="text/javascript" src="{{ url_for('static', filename='js/plugins.js') }}"></script>
     <!--custom-script.js - Add your own theme custom JS-->
     <script type="text/javascript" src="{{ url_for('static', filename='js/custom-script.js') }}"></script>
+    <script type="text/javascript">
+        $(document).ready(function(){
+            $('.datepicker_sv').datepicker({
+                selectMonths: true,
+                selectYears: 50,
+                CLoseOnSelect: true
+            });
+          });
+    </script>
+
   </body>
 </html>

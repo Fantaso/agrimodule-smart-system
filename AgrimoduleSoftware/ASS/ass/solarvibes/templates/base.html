@@ -188,8 +188,8 @@
                 <span class="nav-text">Farm Status</span>
               </a>
             </li>
-             <li class="{% block user_crop_status_active %}{% endblock %}">
-              <a href="{{ url_for('user_crop_status') }}">
+             <li class="{% block crop_status_active %}{% endblock %}">
+              <a href="{{ url_for('crop_status.show') }}">
                 <i class="material-icons svgreen-text">visibility</i>
                 <span class="nav-text">Crop Status</span>
               </a>
@@ -259,7 +259,7 @@
 
 
             <!-- Floating Action Button -->
-            <div class="fixed-action-btn " style="bottom: 50px; right: 19px;">
+            <!-- <div class="fixed-action-btn " style="bottom: 50px; right: 19px;">
               <a class="btn-floating btn-large svgreen gradient-shadow">
                 <i class="material-icons">add</i>
               </a>
@@ -285,7 +285,7 @@
                   </a>
                 </li>
               </ul>
-            </div>
+            </div> -->
             <!-- Floating Action Button -->
           </div>
           <!--end container-->
