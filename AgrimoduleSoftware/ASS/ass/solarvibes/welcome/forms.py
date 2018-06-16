@@ -3,6 +3,12 @@ from wtforms import StringField, FloatField, SelectField
 from wtforms.fields.html5 import DateField
 from wtforms.validators import DataRequired, Length, NumberRange
 
+class PreFarmForm:
+    def __init__(self, farm_name, farm_location, farm_area, farm_cultivation_process):
+        self.farm_name                   = farm_name
+        self.farm_location               = farm_location
+        self.farm_area                   = farm_area
+        self.farm_cultivation_process    = farm_cultivation_process
 
 class FarmForm(FlaskForm):
     farm_name                   = StringField('Farm name', validators=[DataRequired(), Length(min=2, max=30, message='''Your name needs at least 2 characters.''')])

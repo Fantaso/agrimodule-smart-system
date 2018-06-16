@@ -1,10 +1,11 @@
 from flask import Blueprint, render_template, redirect, url_for, flash, session
 from solarvibes import db
-from solarvibes.welcome.forms import FarmForm, FieldForm, AddAgrisysForm, InstallAgrisysForm, AddPumpForm
-from solarvibes.models import Crop, Farm, Field, Pump, Agrimodule, Agrisensor, Agripump
+from solarvibes.welcome.forms import PreFarmForm, FarmForm, FieldForm, AddAgrisysForm, InstallAgrisysForm, AddPumpForm
+from solarvibes.models import User, Crop, Farm, Field, Pump, Agrimodule, Agrisensor, Agripump
 from flask_login import current_user
 from flask_security import login_required
 from math import sqrt, floor
+from datetime import datetime, timedelta
 
 welcome = Blueprint(
     'welcome',
@@ -21,24 +22,25 @@ welcome = Blueprint(
 ###################
 # WELCOME
 ###################
-# TODO: this should be check somewhere else. before it calls this blurprint
 @welcome.route('/', methods=['GET'])
 @login_required
 def index():
+    # if user have not set up any agrimodule -> we send him to set agrimodule first
     if current_user.agrimodules.count() == 0:
         flash('welcome for the first time, ' + current_user.name + '!')
-        print('welcome for the first time, ' + current_user.name + '!')
         set_sys_flag = True
         return render_template('welcome/welcome.html', user=current_user, set_sys_flag=set_sys_flag)
+
+    # if user have not set up any farm yet -> we send him to set his farm only
     elif current_user.farms.count() == 0 or current_user.farms.first().fields.count() == 0:
         flash('Now set your farm, ' + current_user.name + '!')
-        print('Now set your farm, ' + current_user.name + '!')
         set_sys_flag = False
         return render_template('welcome/welcome.html', user=current_user, set_sys_flag=set_sys_flag)
+
+    # if neither the case send him to main. he must have set up a system and a farm
     else:
-        default_farm = current_user.farms.filter_by(_default = 1).one()
-        # return 'go to welcome blueprint and fix this return'
-        return redirect(url_for('main.index', user=current_user, default_farm=default_farm))
+        return redirect(url_for('main.index'))
+
 
 ###################
 # SET FARM
@@ -46,11 +48,26 @@ def index():
 @welcome.route('/set-farm', methods=['GET', 'POST'])
 @login_required
 def welcome_set_farm():
+
+    farm = current_user.farms.first()
+
+    def cm2_to_m2(cm2):
+        return cm2 / 10000
+
     if 'set_farm' not in session:
         session['set_farm'] = dict()
         session.modified = True
 
-    form = FarmForm()               # CREATE WTForm FORM
+    form = FarmForm()
+    # if user has complete farm, but didnot finish field. pass the current
+    if not current_user.farms.count() == None:
+        myFarm = PreFarmForm(farm_name = farm.farm_name,
+                            farm_location = farm.farm_location,
+                            farm_area = cm2_to_m2(farm.farm_area),
+                            farm_cultivation_process = farm.farm_cultivation_process,
+                            )
+        form = FarmForm(obj=myFarm)               # CREATE WTForm FORM
+
     if form.validate_on_submit():   # IF request.methiod == 'POST'
         def m2_to_cm2(m2):
             return m2 * 10000
@@ -69,16 +86,23 @@ def welcome_set_farm():
         print (form.farm_cultivation_process.data)
 
         # FARM OBJS  TO DB
-        farm = Farm(    user_id=user_id,
-                        farm_name=farm_name,
-                        farm_location=farm_location,
-                        farm_area=m2_to_cm2(farm_area),
-                        farm_cultivation_process=farm_cultivation_process,
-                        _default=False)
-        print(farm)
+        if not current_user.farms.count() == None:
+            farm.farm_name = form.farm_name.data
+            farm.farm_location = form.farm_location.data
+            farm.farm_area = form.farm_area.data
+            farm.farm_cultivation_process = form.farm_cultivation_process.data
+        else:
+            farm = Farm(    user_id=user_id,
+                            farm_name=farm_name,
+                            farm_location=farm_location,
+                            farm_area=m2_to_cm2(farm_area),
+                            farm_cultivation_process=farm_cultivation_process,
+                            _default=False)
+            # DB COMMANDS
+            db.session.add(farm)
 
+        print(farm)
         # DB COMMANDS
-        db.session.add(farm)
         db.session.commit()
 
         # OBJS SAVE ON SESSION
@@ -194,45 +218,9 @@ def welcome_set_field():
         #SUCESS AND REDIRECT TO DASHBOARD
         flash('You just created a {} in your {}'.format(field_name, farm.farm_name))
         del session['set_farm']     # ERASE SESSION OBJS
-        return redirect(url_for('welcome.index'))
+        return redirect(url_for('login_check.index'))
 
     return render_template('welcome/welcome_set_field.html', form=form)
-
-    # field_cultivation_area = db.Column(db.Float(precision=2))
-    # field_cultivation_start_date = db.Column(db.DateTime(timezone=True))
-    # field_cultivation_finish_date = db.Column(db.DateTime(timezone=True))
-    # field_current_yield = db.Column(db.Float(precision=2))
-    # field_projected_yield = db.Column(db.Float(precision=2))
-    # field_cultivation_state = db.Column(db.String(20))
-    # field_cultivation_type = db.Column(db.String(5))
-
-    # field_num_plants = db.Column(db.Integer)
-    # field_spacing_topology = db.Column(db.String(20))
-    # field_water_required_day = db.Column(db.Integer)
-
-
-# def user_crop_status():
-#     user = User.query.filter_by(id = current_user.get_id()).first()
-#     farm = user.farms.first()
-#     field = farm.fields.first()
-#     print (field)
-#     print (field.cultivation_area)
-#     print (field.cultivation_start_date)
-#     print (field.cultivation_finish_date)
-#     print (field._current_yield)
-#     crop = field.crops.first()
-#     print (crop)
-#     print (crop._variety)
-#     print (crop._name)
-#     num_of_plants = ( field.cultivation_area / crop._density )
-#     cycle_days = ( crop._dtm + crop._dtg )
-#     cycle_days_so_far = ( datetime.now() - field.cultivation_start_date ).days
-#     print (num_of_plants)
-#     print (cycle_days)
-#     print (cycle_days_so_far)
-#     calc_values = {'num_of_plants' : num_of_plants, 'cycle_days' : cycle_days, 'cycle_days_so_far' : cycle_days_so_far}
-#     print (calc_values)
-#     return render_template('welcome/user_crop_status.html', crop = crop, field = field, calc_values = calc_values)
 
 
 ##########################################################
@@ -245,66 +233,6 @@ def welcome_set_field():
 def welcome_set_sys():
     return render_template('welcome/welcome_set_sys.html')
 
-
-###################
-# SET FARM INFO
-###################
-# @welcome.route('/set-sys/farm-info', methods=['GET', 'POST'])
-# @login_required
-# def farm_info():
-
-#     if 'set_sys' not in session:
-#         session['set_sys'] = dict()
-#         session.modified = True
-
-#     form = FarmInfoForm()
-#     if form.validate_on_submit():
-#         # USER OBJS
-#         user_id = current_user.get_id()
-
-#         # FARM INFO OBJS
-#         farm_name = form.farm_name.data
-#         farm_location = form.farm_location.data
-#         farm_area = form.farm_area.data
-#         farm_cultivation_process = form.farm_cultivation_process.data
-#         print (form.farm_name.data)
-#         print (form.farm_location.data)
-#         print (form.farm_area.data)
-#         print (form.farm_cultivation_process.data)
-
-#         # OBJS TO DB
-#         farm = Farm(user_id=user_id,
-#                     farm_name=farm_name,
-#                     farm_location=farm_location,
-#                     farm_area=farm_area,
-#                     farm_cultivation_process=farm_cultivation_process)
-#         print(farm)
-
-#         # DB COMMANDS
-#         db.session.add(farm)
-#         db.session.commit()
-
-#         # ADD SESSION OBJS
-#         farm_id = farm.id
-#         print(farm_id)
-#         session['set_sys'].update({'user_id': user_id,
-#                                 'farm_id':farm_id,
-#                                 'farm_name':farm_name,
-#                                 'farm_location':farm_location,
-#                                 'farm_area':farm_area,
-#                                 'farm_cultivation_process':farm_cultivation_process})
-#         session.modified = True
-#         print (session['set_sys'])
-
-
-#         # FLASH AND REDIRECT
-#         flash('''You just created farm: {}
-#                     located: {}
-#                     with an area: {} m2
-#                     growing: {}ally'''.format(farm_name, farm_location, farm_area, farm_cultivation_process))
-#         return redirect(url_for('welcome.add_agrisys'))
-
-#     return render_template('welcome/farm_info.html', form=form)
 
 ###################
 # SET CONNECT ASS
@@ -437,6 +365,7 @@ def add_pump():
 
         # OBJS TO DB
         pump = Pump(user = user, pump_name = pump_name, pump_brand = pump_brand, pump_flow_rate = pump_flow_rate, pump_head = pump_head, pump_watts = pump_watts)
+        user.completed_welcome = True # sets flag for user to have completed the welcome phase
 
         # DB COMMANDS
         db.session.add(pump)
@@ -458,9 +387,9 @@ def add_pump():
         flash('''Your Pump brand: {}
                 Flow rate: {} lps
                 Head pressure: {} m
-                Wattage: {} kW'''.format(form.pump_brand, form.pump_flow_rate.data, form.pump_head.data, form.pump_watts.data))
+                Wattage: {} kW'''.format(form.pump_brand.data, form.pump_flow_rate.data, form.pump_head.data, form.pump_watts.data))
         del session['set_sys']
-        return redirect(url_for('welcome.welcome_set_farm'))
-        # TODO: after welcome is complete need to go home.index
+
+        return redirect(url_for('welcome.index'))
 
     return render_template('welcome/add_pump.html', form=form)
