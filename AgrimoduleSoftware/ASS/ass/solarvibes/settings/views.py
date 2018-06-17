@@ -2,7 +2,7 @@ from flask import Blueprint, render_template
 from solarvibes.models import Farm, Field, Pump, Agripump
 from flask_login import current_user
 from flask_security import login_required
-from datetime import datetime
+from datetime import datetime, timezone
 
 settings = Blueprint(
     'settings',
@@ -29,13 +29,13 @@ def index():
                 # print(field)
                 for crop in field.crops.all():
                     # print(crop)
-                    cycle_days_so_far = ( datetime.now() - field.field_cultivation_start_date ).days
+                    cycle_days_so_far = ( datetime.now(timezone.utc) - field.field_cultivation_start_date ).days
                     cycle_days = crop._dtm + crop._dtg
                     progress = (cycle_days_so_far / cycle_days) * 100
                     # print (cycle_days_so_far, cycle_days, progress)
 
     progress()
-    timenow = datetime.now()
+    timenow = datetime.now(timezone.utc)
 
     # USER AGRIMODULES
     user = current_user
