@@ -164,7 +164,7 @@ def edit_farm(farm_id = 0):
 @login_required
 def delete_farm(farm_id):
 
-    # TODO: can not delete default farm
+    # TODO: can not delete default farm or if can then erase the user tag 
     try:
         farm_to_del = Farm.query.filter_by(id = farm_id).first()
         fields_to_del_in_farm = farm_to_del.fields.all()
