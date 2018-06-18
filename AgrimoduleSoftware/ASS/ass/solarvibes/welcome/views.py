@@ -42,187 +42,6 @@ def index():
         return redirect(url_for('main.index'))
 
 
-###################
-# SET FARM
-###################
-@welcome.route('/set-farm', methods=['GET', 'POST'])
-@login_required
-def welcome_set_farm():
-
-    farm = current_user.farms.first()
-
-    def cm2_to_m2(cm2):
-        return cm2 / 10000
-
-    if 'set_farm' not in session:
-        session['set_farm'] = dict()
-        session.modified = True
-
-    form = FarmForm()
-    # if user has complete farm, but didnot finish field. pass the current
-    if not current_user.farms.count() == None:
-        myFarm = PreFarmForm(farm_name = farm.farm_name,
-                            farm_location = farm.farm_location,
-                            farm_area = cm2_to_m2(farm.farm_area),
-                            farm_cultivation_process = farm.farm_cultivation_process,
-                            )
-        form = FarmForm(obj=myFarm)               # CREATE WTForm FORM
-
-    if form.validate_on_submit():   # IF request.methiod == 'POST'
-        def m2_to_cm2(m2):
-            return m2 * 10000
-
-        # USER OBJS
-        user_id = current_user.get_id()
-
-        # FARM OBJS
-        farm_name = form.farm_name.data
-        farm_location = form.farm_location.data
-        farm_area = form.farm_area.data
-        farm_cultivation_process = form.farm_cultivation_process.data
-        print (form.farm_name.data)
-        print (form.farm_location.data)
-        print (form.farm_area.data)
-        print (form.farm_cultivation_process.data)
-
-        # FARM OBJS  TO DB
-        if not current_user.farms.count() == None:
-            farm.farm_name = form.farm_name.data
-            farm.farm_location = form.farm_location.data
-            farm.farm_area = form.farm_area.data
-            farm.farm_cultivation_process = form.farm_cultivation_process.data
-        else:
-            farm = Farm(    user_id=user_id,
-                            farm_name=farm_name,
-                            farm_location=farm_location,
-                            farm_area=m2_to_cm2(farm_area),
-                            farm_cultivation_process=farm_cultivation_process,
-                            _default=False)
-            # DB COMMANDS
-            db.session.add(farm)
-
-        print(farm)
-        # DB COMMANDS
-        db.session.commit()
-
-        # OBJS SAVE ON SESSION
-         # ADD SESSION OBJS
-        farm_id = farm.id
-        session['set_farm'].update({'user_id': user_id,
-                                'farm_id':farm_id,
-                                'farm_name':farm_name,
-                                'farm_location':farm_location,
-                                'farm_area':farm_area,
-                                'farm_cultivation_process':farm_cultivation_process})
-        session.modified = True
-        print (session['set_farm'])
-
-        # DEAFULT FARM
-        if current_user.farms.count() == 1: # if first time and first farm, set it as the default one
-            print('Farm default nummer {} was added and type {}'.format(farm_id, type(farm_id)))
-            current_user.default_farm_id = farm_id
-            farm._default = True
-            db.session.commit()
-
-
-        # SUCESS AND REDIRECT TO NEXT STEP
-        flash('''You just created farm: {}
-                    located: {}
-                    with an area: {} m2
-                    growing: {}ally'''.format(farm_name, farm_location, farm_area, farm_cultivation_process))
-        return redirect(url_for('welcome.welcome_set_field'))
-
-    return render_template('welcome/welcome_set_farm.html', form=form)
-
-
-###################
-# SET FIELD
-###################
-@welcome.route('/set-field', methods=['GET', 'POST'])
-@login_required
-def welcome_set_field():
-
-    crop_choices = Crop.query.all()
-
-
-    form = FieldForm()              # CREATE WTForm FORM
-    form.field_cultivation_crop.choices = [ (crop.id,  str.capitalize(crop._name)) for crop in crop_choices ]
-    form.field_cultivation_crop.choices.insert(0, ('0' ,'Choose:'))
-
-    if form.validate_on_submit():   # IF request.methiod == 'POST'
-        # USER OBJS
-        user = User.query.filter_by(id = session['set_farm']['user_id']).first()
-        farm = user.farms.filter_by(id = session['set_farm']['farm_id']).first()
-
-        # FIELD OBJS
-        print(form.field_cultivation_crop.data)
-        print(Crop.query.filter_by(id = form.field_cultivation_crop.data).first())
-
-        crop = Crop.query.filter_by(id = form.field_cultivation_crop.data).first()
-        field_name = form.field_name.data
-        field_cultivation_area = form.field_cultivation_area.data
-        field_cultivation_start_date = form.field_cultivation_start_date.data
-        field_cultivation_state = form.field_cultivation_state.data
-        field_cultivation_type = form.field_cultivation_type.data
-
-
-
-        def m2_to_cm2(m2):
-            return m2 * 10000
-
-        def num_plants():
-            area_in_cm2 = m2_to_cm2(field_cultivation_area) # cm2
-            distance_rows_and_columns = sqrt(area_in_cm2) # cm. since we receive an area instead of a shape, we assumed is perfect square
-            num_of_rows = (floor(distance_rows_and_columns / crop._space_x))/2 #
-            num_of_cols = (floor(distance_rows_and_columns / crop._space_y))/2 # since space of plant and space for walk is the same DIVIDE by 2
-            num_of_plants = num_of_rows * num_of_cols
-            return num_of_plants
-
-        # Calculated vars
-        field_cultivation_finish_date = field_cultivation_start_date + timedelta(crop._dtg + crop._dtm) # datetime
-        field_num_plants = num_plants() # number Integer
-        field_projected_yield = crop._yield * field_num_plants # gr
-        field_current_yield = 0
-        field_water_required_day = field_num_plants * crop._water
-
-        print('''finish date: {}
-                 num plants: {} #
-                 project yield: {} gr
-                 water per day {} ml'''.format(field_cultivation_finish_date, field_num_plants, field_projected_yield, field_water_required_day))
-
-
-        # FIELD OBJS TO DB
-        field = Field(  field_name=field_name,
-                        farm=farm,
-                        field_cultivation_area=m2_to_cm2(field_cultivation_area),
-                        field_cultivation_start_date=field_cultivation_start_date,
-                        field_cultivation_state=field_cultivation_state,
-                        field_cultivation_type=field_cultivation_type,
-                        field_cultivation_finish_date = field_cultivation_finish_date,
-                        field_current_yield = field_current_yield,
-                        field_num_plants = field_num_plants,
-                        field_water_required_day = field_water_required_day,
-                        field_projected_yield = field_projected_yield)
-        field.crops.append(crop)
-
-        # DB COMMANDS
-        db.session.add(field)
-        db.session.commit()
-
-        # DEAFULT AGRIMODULE SYSTEM
-        if current_user.farms.count() == 1 and current_user.farms.first().fields.count() == 1 and current_user.agrimodules.count() > 0: # if first time and first field, set it as the default one
-            print('Field default agrimodule system nummer {} was added and type {}'.format(field.id, type(field.id)))
-            field.agrimodule = Agrimodule.query.first()
-            db.session.commit()
-
-        #SUCESS AND REDIRECT TO DASHBOARD
-        flash('You just created a {} in your {}'.format(field_name, farm.farm_name))
-        del session['set_farm']     # ERASE SESSION OBJS
-        return redirect(url_for('login_check.index'))
-
-    return render_template('welcome/welcome_set_field.html', form=form)
-
-
 ##########################################################
 ##########################################################
 # SET SYS
@@ -365,7 +184,6 @@ def add_pump():
 
         # OBJS TO DB
         pump = Pump(user = user, pump_name = pump_name, pump_brand = pump_brand, pump_flow_rate = pump_flow_rate, pump_head = pump_head, pump_watts = pump_watts)
-        user.completed_welcome = True # sets flag for user to have completed the welcome phase
 
         # DB COMMANDS
         db.session.add(pump)
@@ -393,3 +211,185 @@ def add_pump():
         return redirect(url_for('welcome.index'))
 
     return render_template('welcome/add_pump.html', form=form)
+
+
+###################
+# SET FARM
+###################
+@welcome.route('/set-farm', methods=['GET', 'POST'])
+@login_required
+def welcome_set_farm():
+
+    def cm2_to_m2(cm2):
+        return cm2 / 10000
+
+    if 'set_farm' not in session:
+        session['set_farm'] = dict()
+        session.modified = True
+
+    form = FarmForm()
+    # if user has complete farm, but didnot finish field. pass the current
+    if not current_user.farms.count() == 0:
+        farm = current_user.farms.first()
+        myFarm = PreFarmForm(farm_name = farm.farm_name,
+                            farm_location = farm.farm_location,
+                            farm_area = cm2_to_m2(farm.farm_area),
+                            farm_cultivation_process = farm.farm_cultivation_process,
+                            )
+        form = FarmForm(obj=myFarm)               # CREATE WTForm FORM
+
+    if form.validate_on_submit():   # IF request.methiod == 'POST'
+        def m2_to_cm2(m2):
+            return m2 * 10000
+
+        # USER OBJS
+        user_id = current_user.get_id()
+
+        # FARM OBJS
+        farm_name = form.farm_name.data
+        farm_location = form.farm_location.data
+        farm_area = form.farm_area.data
+        farm_cultivation_process = form.farm_cultivation_process.data
+        print (form.farm_name.data)
+        print (form.farm_location.data)
+        print (form.farm_area.data)
+        print (form.farm_cultivation_process.data)
+
+        # FARM OBJS  TO DB
+        if not current_user.farms.count() == 0:
+            farm.farm_name = form.farm_name.data
+            farm.farm_location = form.farm_location.data
+            farm.farm_area = form.farm_area.data
+            farm.farm_cultivation_process = form.farm_cultivation_process.data
+        else:
+            farm = Farm(    user_id=user_id,
+                            farm_name=farm_name,
+                            farm_location=farm_location,
+                            farm_area=m2_to_cm2(farm_area),
+                            farm_cultivation_process=farm_cultivation_process,
+                            _default=False)
+            # DB COMMANDS
+            db.session.add(farm)
+
+        print(farm)
+        # DB COMMANDS
+        db.session.commit()
+
+        # OBJS SAVE ON SESSION
+         # ADD SESSION OBJS
+        farm_id = farm.id
+        session['set_farm'].update({'user_id': user_id,
+                                'farm_id':farm_id,
+                                'farm_name':farm_name,
+                                'farm_location':farm_location,
+                                'farm_area':farm_area,
+                                'farm_cultivation_process':farm_cultivation_process})
+        session.modified = True
+        print (session['set_farm'])
+
+        # DEAFULT FARM
+        if current_user.farms.count() == 1: # if first time and first farm, set it as the default one
+            print('Farm default nummer {} was added and type {}'.format(farm_id, type(farm_id)))
+            current_user.default_farm_id = farm_id
+            farm._default = True
+            db.session.commit()
+
+
+        # SUCESS AND REDIRECT TO NEXT STEP
+        flash('''You just created farm: {}
+                    located: {}
+                    with an area: {} m2
+                    growing: {}ally'''.format(farm_name, farm_location, farm_area, farm_cultivation_process))
+        return redirect(url_for('welcome.welcome_set_field'))
+
+    return render_template('welcome/welcome_set_farm.html', form=form)
+
+
+###################
+# SET FIELD
+###################
+@welcome.route('/set-field', methods=['GET', 'POST'])
+@login_required
+def welcome_set_field():
+
+    crop_choices = Crop.query.all()
+
+
+    form = FieldForm()              # CREATE WTForm FORM
+    form.field_cultivation_crop.choices = [ (crop.id,  str.capitalize(crop._name)) for crop in crop_choices ]
+    form.field_cultivation_crop.choices.insert(0, ('0' ,'Choose:'))
+
+    if form.validate_on_submit():   # IF request.methiod == 'POST'
+        # USER OBJS
+        user = User.query.filter_by(id = session['set_farm']['user_id']).first()
+        farm = user.farms.filter_by(id = session['set_farm']['farm_id']).first()
+
+        # FIELD OBJS
+        print(form.field_cultivation_crop.data)
+        print(Crop.query.filter_by(id = form.field_cultivation_crop.data).first())
+
+        crop = Crop.query.filter_by(id = form.field_cultivation_crop.data).first()
+        field_name = form.field_name.data
+        field_cultivation_area = form.field_cultivation_area.data
+        field_cultivation_start_date = form.field_cultivation_start_date.data
+        field_cultivation_state = form.field_cultivation_state.data
+        field_cultivation_type = form.field_cultivation_type.data
+
+
+
+        def m2_to_cm2(m2):
+            return m2 * 10000
+
+        def num_plants():
+            area_in_cm2 = m2_to_cm2(field_cultivation_area) # cm2
+            distance_rows_and_columns = sqrt(area_in_cm2) # cm. since we receive an area instead of a shape, we assumed is perfect square
+            num_of_rows = (floor(distance_rows_and_columns / crop._space_x))/2 #
+            num_of_cols = (floor(distance_rows_and_columns / crop._space_y))/2 # since space of plant and space for walk is the same DIVIDE by 2
+            num_of_plants = num_of_rows * num_of_cols
+            return num_of_plants
+
+        # Calculated vars
+        field_cultivation_finish_date = field_cultivation_start_date + timedelta(crop._dtg + crop._dtm) # datetime
+        field_num_plants = num_plants() # number Integer
+        field_projected_yield = crop._yield * field_num_plants # gr
+        field_current_yield = 0
+        field_water_required_day = field_num_plants * crop._water
+
+        print('''finish date: {}
+                 num plants: {} #
+                 project yield: {} gr
+                 water per day {} ml'''.format(field_cultivation_finish_date, field_num_plants, field_projected_yield, field_water_required_day))
+
+
+        # FIELD OBJS TO DB
+        field = Field(  field_name=field_name,
+                        farm=farm,
+                        field_cultivation_area=m2_to_cm2(field_cultivation_area),
+                        field_cultivation_start_date=field_cultivation_start_date,
+                        field_cultivation_state=field_cultivation_state,
+                        field_cultivation_type=field_cultivation_type,
+                        field_cultivation_finish_date = field_cultivation_finish_date,
+                        field_current_yield = field_current_yield,
+                        field_num_plants = field_num_plants,
+                        field_water_required_day = field_water_required_day,
+                        field_projected_yield = field_projected_yield)
+        field.crops.append(crop)
+
+        # DB COMMANDS
+        user.completed_welcome = True # sets flag for user to have completed the welcome phase
+        db.session.add(field)
+        db.session.commit()
+
+        # DEAFULT AGRIMODULE SYSTEM
+        if current_user.farms.count() == 1 and current_user.farms.first().fields.count() == 1 and current_user.agrimodules.count() > 0: # if first time and first field, set it as the default one
+            print('Field default agrimodule system nummer {} was added and type {}'.format(field.id, type(field.id)))
+            agrimodule = current_user.agrimodules.first()
+            agrimodule.field_id = field.id
+            db.session.commit()
+
+        #SUCESS AND REDIRECT TO DASHBOARD
+        flash('You just created a {} in your {}'.format(field_name, farm.farm_name))
+        del session['set_farm']     # ERASE SESSION OBJS
+        return redirect(url_for('login_check.index'))
+
+    return render_template('welcome/welcome_set_field.html', form=form)
