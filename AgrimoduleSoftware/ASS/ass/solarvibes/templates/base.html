@@ -7,7 +7,7 @@
     <meta name="msapplication-tap-highlight" content="no">
     <meta name="description" content="Materialize is a Material Design Admin Template,It's modern, responsive and based on Material Design by Google. ">
     <meta name="keywords" content="materialize, admin template, dashboard template, flat admin template, responsive admin template,">
-    <title>Solarvibes | {% block title %}{% endblock %}</title>
+    <title>Solarvibes | {% block title %}{% endblock title %}</title>
     <!-- Favicons-->
     <link rel="shortcut icon" href="{{ url_for('static', filename='images/favicon.png') }}">
     <!-- <link rel="icon" href="images/favicon/favicon-32x32.png" sizes="32x32"> -->
@@ -27,7 +27,8 @@
     <link href="{{ url_for('static', filename='vendors/flag-icon/css/flag-icon.min.css') }}" type="text/css" rel="stylesheet">
     <!-- FONT AWESOME -->
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
-    {% block links_head %} {% endblock %}
+    {% block links_in_head %} {% endblock links_in_head %}
+    {% block css_in_head %} {% endblock css_in_head %}
   </head>
   <body>
     <!-- Start Page Loading -->
@@ -44,28 +45,28 @@
       <div class="navbar-fixed">
         <nav class="navbar-color gradient-45deg-svgreen-svyellow gradient-shadow">
           <div class="nav-wrapper">
-            <!-- <div class="header-search-wrapper hide-on-med-and-down sideNav-lock">
+            <div class="header-search-wrapper hide-on-med-and-down sideNav-lock">
               <i class="material-icons">search</i>
               <input type="text" name="Search" class="header-search-input z-depth-2" placeholder="Explore Materialize" />
-            </div> -->
+            </div>
             <ul class="right hide-on-med-and-down">
-              <!-- <li>
+              <li>
                 <a href="javascript:void(0);" class="waves-effect waves-block waves-light translation-button" data-activates="translation-dropdown">
                   <span class="flag-icon flag-icon-gb"></span>
                 </a>
-              </li> -->
-             <!--  <li>
+              </li>
+              <li>
                 <a href="javascript:void(0);" class="waves-effect waves-block waves-light toggle-fullscreen">
                   <i class="material-icons">settings_overscan</i>
                 </a>
-              </li> -->
-              <!-- <li>
+              </li>
+              <li>
                 <a href="javascript:void(0);" class="waves-effect waves-block waves-light notification-button" data-activates="notifications-dropdown">
                   <i class="material-icons">notifications_none
                     <small class="notification-badge">5</small>
                   </i>
                 </a>
-              </li> -->
+              </li>
               <li>
                 <a href="javascript:void(0);" class="waves-effect waves-block waves-light profile-button" data-activates="profile-dropdown">
                   <span class="avatar-status avatar-online">
@@ -78,14 +79,14 @@
                   </span>
                 </a>
               </li>
-              <!-- <li>
+              <li>
                 <a href="#" data-activates="chat-out" class="waves-effect waves-block waves-light chat-collapse">
                   <i class="material-icons">format_indent_increase</i>
                 </a>
-              </li> -->
+              </li>
             </ul>
             <!-- translation-button -->
-           <!--  <ul id="translation-dropdown" class="dropdown-content">
+            <ul id="translation-dropdown" class="dropdown-content">
               <li>
                 <a href="#!" class="grey-text text-darken-1">
                   <i class="flag-icon flag-icon-gb"></i> English</a>
@@ -102,9 +103,9 @@
                 <a href="#!" class="grey-text text-darken-1">
                   <i class="flag-icon flag-icon-de"></i> German</a>
               </li>
-            </ul> -->
+            </ul>
             <!-- notifications-dropdown -->
-           <!--  <ul id="notifications-dropdown" class="dropdown-content">
+            <ul id="notifications-dropdown" class="dropdown-content">
               <li>
                 <h6>NOTIFICATIONS
                   <span class="new badge">5</span>
@@ -136,7 +137,7 @@
                   <span class="material-icons icon-bg-circle amber small">trending_up</span> Generate monthly report</a>
                 <time class="media-meta" datetime="2015-06-12T20:50:48+08:00">1 week ago</time>
               </li>
-            </ul> -->
+            </ul>
             <!-- profile-dropdown -->
             <ul id="profile-dropdown" class="dropdown-content">
               <li>
@@ -255,7 +256,7 @@
 
             {% block content %}
 
-            {% endblock %}
+            {% endblock content %}
 
 
             <!-- Floating Action Button -->
@@ -293,7 +294,7 @@
         <!-- END CONTENT -->
         <!-- //////////////////////////////////////////////////////////////////////////// -->
         <!-- START RIGHT SIDEBAR NAV-->
-        <!-- <aside id="right-sidebar-nav">
+        <aside id="right-sidebar-nav">
           <ul id="chat-out" class="side-nav rightside-navigation">
             <li class="li-hover">
               <div class="row">
@@ -559,7 +560,7 @@
               </div>
             </li>
           </ul>
-        </aside> -->
+        </aside>
         <!-- END RIGHT SIDEBAR NAV-->
       </div>
       <!-- END WRAPPER -->
@@ -589,12 +590,12 @@
     <!--scrollbar-->
     <script type="text/javascript" src="{{ url_for('static', filename='vendors/perfect-scrollbar/perfect-scrollbar.min.js') }}"></script>
 
-    {% block links_body %} {% endblock %}
-
     <!--plugins.js - Some Specific JS codes for Plugin Settings-->
     <script type="text/javascript" src="{{ url_for('static', filename='js/plugins.js') }}"></script>
     <!--custom-script.js - Add your own theme custom JS-->
     <script type="text/javascript" src="{{ url_for('static', filename='js/custom-script.js') }}"></script>
+
+    {% block links_body %} {% endblock links_body %}
 
 
   </body>
