@@ -16,7 +16,7 @@ class FieldForm(FlaskForm):
     field_name                    = StringField(label='Field name', validators=[DataRequired(), Length(min=2, max=30, message='''Your name needs at least 2 characters.''')])
     field_cultivation_area       = FloatField(label='Field Cultivation Area', validators=[DataRequired(), NumberRange(min=1, max=5000, message='Cultivation area should be maximum as big as your farm')],render_kw={"placeholder":"500.50"})
     field_cultivation_crop        = SelectField(label='Cultivation Crop', validators=[DataRequired()], coerce = int)
-    field_cultivation_start_date  = DateField(label='Cultivation Start Date', format='%Y-%m-%d', validators=[DataRequired()])
+    field_cultivation_start_date  = DateField(label='Cultivation Start Date', format='%d %B, %Y', validators=[DataRequired()])
     field_cultivation_state       = SelectField(label='Cultivation State', validators=[DataRequired()], choices=[('new','New'),('already growing','Already Growing')])
     field_cultivation_type        = SelectField(label='Cultivation Type', validators=[DataRequired()], choices=[('mono','Mono'), ('mix','Mix'), ('multi','Multi')])
 
@@ -35,7 +35,7 @@ class NewCropForm(FlaskForm):
     farm_choices                  = SelectField(label='Choose Farm', validators=[DataRequired()], coerce = int)
     field_cultivation_area        = FloatField(label='Field Cultivation Area', validators=[DataRequired()], render_kw={'placeholder':'Field area should not exceed the available land on your farm'})
     field_cultivation_crop        = SelectField(label='Cultivation Crop', validators=[DataRequired()], coerce = int)
-    field_cultivation_start_date  = DateField(label='Cultivation Start Date', format='%Y-%m-%d', validators=[DataRequired()])
+    field_cultivation_start_date  = DateField(label='Cultivation Start Date', format='%d %B, %Y', validators=[DataRequired()])
     field_cultivation_state       = SelectField(label='Cultivation State', validators=[DataRequired()], choices=[('new','New'),('already growing','Already Growing')])
     field_cultivation_type        = SelectField(label='Cultivation Type', validators=[DataRequired()], choices=[('mono','Mono'), ('mix','Mix'), ('multi','Multi')])
 
