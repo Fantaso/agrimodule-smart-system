@@ -18,17 +18,18 @@ agrimodule = Blueprint(
 @login_required
 def show_agrimodule(agrimodule_id = None):
 
-    if Agrimodule.query.filter_by(id=agrimodule_id).first() == None:
-        flash('That agrimodule do NOT exist')
-        return redirect(url_for(main.index))
-
     if agrimodule_id == None:
         flash('page not allowed')
+        return redirect(url_for(main.index))
+
+    if Agrimodule.query.filter_by(id=agrimodule_id).first() == None:
+        flash('That agrimodule do NOT exist')
         return redirect(url_for(main.index))
 
     user = current_user
     agrimodule = current_user.agrimodules.filter_by(id = agrimodule_id).first()
     farm = user.farms.first()
+    # TODO: here is for only 1 crop in the field. but when mix cultivation or multi. need to reflect more than 1 crop
     field = farm.fields.first()
     system_name = agrimodule.name
     crop = field.crops.first()
