@@ -4,72 +4,210 @@
 	Agripump
 {% endblock %}
 
-{% block agripump_active %}
-fh5co-active
-{% endblock %}
+{% block links_in_head %}
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.1/css/bulma.min.css">
+{% endblock links_in_head %}
+
+{% block css_in_head %}
+	<style type="text/css">
+		/* .bg_y{background-color: yellow;}
+		.bg_b{background-color: blue;}
+		.bg_gr{background-color: gray;}
+		.bg_r{background-color: red;}
+		.bg_g{background-color: green;}
+		.bg_dgr{background-color: darkgray;}
+		.bg_lgr{background-color: lightgray;} */
+		.centrado{text-align: center;}
+		.margin-top{margin-top: 10px;}
+
+	</style>
+{% endblock css_in_head %}
+
+{% block links_body %}
+{% endblock links_body %}
 
 {% block content %}
-<div id = "fh5co-main" class = "container" style = "margin-top: 5%;">
-	<div style="padding-left: 2%; text-align: left;">
-    <h1>Agripump</h1>
-	<div>
-        <hr>
-        <p>General links</p>
-        <ul>
-          <li><a href="{{ url_for('main.index') }}" style="color:#16B6A5;">Home</a></li>
-          <li><a href="{{ url_for('user_resources') }}" style="color:#16B6A5;">Resources</a></li>
-          <li><a href="{{ url_for('user_crop_planning') }}" style="color:#16B6A5;">Crop planning</a></li>
-        </ul>
+<nav class="container svgreen lighten-2 margin-top">
+	<div class="nav-wrapper">
+		<div class="col s12">
+			<a class="breadcrumb">{{ farm.farm_name }}</a>
+			<a class="breadcrumb">{{ field.field_name }}</a>
+			<a class="breadcrumb">{{ system_name }}</a>
+			<a class="breadcrumb">{{ sensortype }}</a>
+			<a class="breadcrumb">{{ agripump.identifier }}</a>
+		</div>
+	</div>
+</nav>
+
+<section class="section">
+	<div class="columns is-centered is-vcentered">
+		<div class="column is-4 has-text-centered">
+
+			<div class="columns is-centered is-vcentered">
+				<div class="column is-12 has-text-centered">
+					<p class="is-size-2">{{ pump.pump_name }}</p>
+				</div>
+			</div>
+			<hr>
+
+			<div class="columns is-centered is-vcentered has-text-centered">
+				<div class="column is-6">
+					<h3 class="is-size-5">Brand</h3>
+					<h3 class="is-size-5">Capacity</h3>
+					<h3 class="is-size-5">Power</h3>
+				</div>
+				<div class="column is-6">
+					<h3 class="is-size-5">{{ pump.pump_brand }}</h3>
+					<h3 class="is-size-5">{{ pump.pump_flow_rate }} lps</h3>
+					<h3 class="is-size-5">{{ pump.pump_watts }} kWh</h3>
+				</div>
+			</div>
+
+			<div class="">
+				<figure class="image">
+					<img src="../static/bulma/waterpump.png">
+				</figure>
+			</div>
+			<hr>
+
+			<div class="tags has-addons is-centered">
+				<span class="tag is-light is-large">Status</span>
+				 {% if agripump.status == true: %}
+					<a href="#"><span class="tag is-success is-large">ON</span></a>
+				{% else %}
+					<a href="#"><span class="tag is-dark is-large">OFF</span></a>
+				{% endif %}
+			</div>
+		</div>
+
+		<div class="column is-8">
+			<div class="columns is-centered is-vcentered">
+				<div class="column is-3 has-text-centered">
+					<span class="icon is-large has-text-info">
+						<i class="fas fa-5x fa-tint"></i>
+					</span>
+				</div>
+				<div class="column is-6 has-text-centered">
+					<h1 class="is-size-2">Consumption</h1>
+				</div>
+				<div class="column is-3 has-text-centered">
+					<span class="icon is-large has-text-success">
+						<i class="fas fa-5x fa-bolt"></i>
+					</span>
+				</div>
+			</div>
+			<hr>
+
+			<div class="columns has-text-centered">
+				<div class="column is-3">
+					<h1 class="is-size-4">
+						{% if agripump.status: %}
+							{{ pump.pump_flow_rate }}
+						{% else %}
+							{{ '0' }}
+						{% endif %} lps
+					</h1>
+				</div>
+				<div class="column is-6">
+					<h1 class="is-size-5">Current usage</h1>
+				</div>
+
+				<div class="column is-3">
+					<h1 class="is-size-4">
+						{% if agripump.status: %}
+							{{ pump.pump_watts }}
+						{% else %}
+							{{ '0' }}
+						{% endif %} kWh
+					</h1>
+				</div>
+			</div>
+
+
+			<div class="columns has-text-centered">
+				<div class="column is-3">
+					<h1 class="is-size-4">1,500 l</h1>
+				</div>
+				<div class="column is-6">
+					<h1 class="is-size-5">Used today</h1>
+				</div>
+
+				<div class="column is-3">
+					<h1 class="is-size-4">2.3 Wh</h1>
+				</div>
+			</div>
+
+			<div class="columns has-text-centered">
+				<div class="column is-3">
+					<h1 class="is-size-4">
+						{{ (field.field_water_required_day) / 1000 }} l
+					</h1>
+				</div>
+				<div class="column is-6">
+					<h1 class="is-size-5">Needed per day</h1>
+				</div>
+
+				<div class="column is-3">
+					<h1 class="is-size-4">
+						{{ (pump_consumption_kwh_per_day * 1000)|round(3, 'floor') }} Wh
+					</h1>
+				</div>
+			</div>
+
+
+
+   {{ (pump_consumption_kwh_per_day * (crop._dtm + crop._dtg))|round(3, 'floor') }}
+			<br>
+
+			<div class="columns is-centered is-vcentered">
+				<div class="column is-12 has-text-centered">
+					<h1 class="is-size-4">Cultivation cycle</h1>
+				</div>
+			</div>
+			<hr>
+
+			<div class="columns is-centered is-vcentered">
+				<div class="column is-6">
+					<progress class="progress is-info is-large" value="78" max="100">78%</progress>
+				</div>
+				<div class="column is-6" style="-webkit-transform: rotate(-180deg); transform: rotate(-180deg);">
+					<progress class="progress is-success is-large" value="78" max="100">78%</progress>
+				</div>
+			</div>
+
+			<div class="columns is-centered is-vcentered has-text-centered">
+				<div class="column is-3">
+					<h1 class="is-size-4">80,000 l</h1>
+				</div>
+				<div class="column is-3">
+					<h1 class="is-size-3">
+						{{ (field.field_water_required_day * (crop._dtg + crop._dtm)) / 1000 }} l
+					</h1>
+				</div>
+				<div class="column is-3">
+					<h1 class="is-size-3">
+						{{ ((pump_consumption_kwh_per_day * (crop._dtm + crop._dtg)) * 1000)|round(3, 'floor') }} Wh
+					</h1>
+				</div>
+				<div class="column is-3">
+					<h1 class="is-size-4">327,3 Wh</h1>
+				</div>
+			</div>
+
+			<div class="columns is-centered is-vcentered has-text-centered">
+				<div class="column is-3">
+					<h1 class="is-size-6">Used</h1>
+				</div>
+				<div class="column is-6">
+					<h1 class="is-size-6">Needed</h1>
+				</div>
+				<div class="column is-3">
+					<h1 class="is-size-6">Used</h1>
+				</div>
+			</div>
+
+		</div>
 	</div>
 
-  <div>
-        <hr>
-        <p>Pump information</p>
-        <ul>
-          <li>Brand:                <span style="color: black;"> {{ pump.pump_brand }}</span></li>
-          <li>Flow rate:            <span style="color: black;"> {{ pump.pump_flow_rate }} lps</span></li>
-          <li>Max height:           <span style="color: black;"> {{ pump.pump_head }} m</span></li>
-          <li>kW:                   <span style="color: black;"> {{ pump.pump_watts }} kW</span></li>
-        </ul>
-  </div>
-
-  <div>
-        <hr>
-        <p>Pump status</p>
-        <ul>
-          {% if agripump.status == 1: %}
-          <li>now: <span style="color: green;">ON</span></li>
-          {% else %}
-          <li>now: <span style="color: red;">OFF</span></li>
-          {% endif %}
-        </ul>
-  </div>
-
-  <div>
-        <hr>
-        <p>Water usage</p>
-        <ul>
-          <li>Current flow: <span style="color: black;"> {% if agripump.status: %}     {{ pump.pump_flow_rate }}     {% else %}    {{ 0 }}     {% endif %}   lps</span></li>
-          <li><i>Today:                6,000 l</i></li>
-          <li>Per cultivation cycle</li>
-          <li><i>Used:                 80,000 l</i></li>
-          <li>Needed: <span style="color: black;">              {{ (field.field_water_required_day * (crop._dtg + crop._dtm)) / 1000 }} l</span></li>
-        </ul>
-  </div>
-
-  <div>
-        <hr>
-        <p>Energy usage</p>
-        <ul>
-          <li>Current consumption: <span style="color: black;"> {% if agripump.status: %}     {{ pump.pump_watts }}     {% else %}    {{ 0 }}     {% endif %} kWh</span></li>
-          <li><i>Today used:                3,000 KWh</i></li>
-          <li>Today needed: <span style="color: black;">               {{ pump_consumption_kwh_per_day|round(3, 'floor') }} KWh </span> </li>
-          <li>Per cultivation cycle</li>
-          <li><i>Used:                 15,000 kWh</i></li>
-          <li>Needed: <span style="color: black;">              {{ (pump_consumption_kwh_per_day * (crop._dtm + crop._dtg))|round(3, 'floor') }} kWh</span></li>
-        </ul>
-  </div>
-
-</div>
-
+</section>
 {% endblock %}

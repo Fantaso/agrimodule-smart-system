@@ -1,5 +1,5 @@
-from flask import Blueprint, render_template, redirect, url_for
-from solarvibes.models import User, Agripump
+from flask import Blueprint, render_template, redirect, url_for, flash
+from solarvibes.models import User, Agripump, Agrimodule
 from flask_login import current_user
 from flask_security import login_required
 
@@ -14,14 +14,26 @@ agripump = Blueprint(
 # USER AGRIPUMP
 ##################
 @agripump.route('/', methods=['GET'])
+@agripump.route('/<agripump_id>', methods=['GET'])
 @login_required
-def show():
+def show(agripump_id = None):
 
-    user = User.query.filter_by(id = current_user.get_id()).first()
+    # Validation
+    if Agripump.query.filter_by(id=agripump_id).first() == None:
+        flash('That agripump do NOT exist')
+        return redirect(url_for('main.index'))
+
+    if agripump_id == None:
+        flash('page not allowed')
+        return redirect(url_for('main.index'))
+
+    # objects query
+    user = current_user
     farm = user.farms.first()
     field = farm.fields.first()
     crop = field.crops.first()
-    agripump = Agripump.query.first()
+    agripump = Agripump.query.filter_by(id = agripump_id).first()
+    agrimodule = Agrimodule.query.filter_by(id = agripump.agrimodule_id).first()
     pump = user.pumps.filter_by(id = agripump.pump_id).first()
     print(user)
     print(farm)
@@ -47,32 +59,42 @@ def show():
     pump_Wmin_consumption = w_to_wm(pump.pump_watts)
     pump_minutes_on = field.field_water_required_day / pump.pump_flow_rate
     pump_Wmin_conmsumption_on = pump_Wmin_consumption * pump_minutes_on
-
     pump_consumption_kwh_per_day = wm_to_kwh(pump_Wmin_conmsumption_on)
+    # pump_consumption = {'' : , '' : , '' : , '' : , '' : , '' : , }
+
+    return render_template('agripump/show.html',
+                            pump = pump_info,
+                            agripump = agripump,
+                            farm = farm,
+                            field = field,
+                            crop = crop,
+                            pump_consumption_kwh_per_day=pump_consumption_kwh_per_day,
+                            sensortype = 'Agripump',
+                            system_name = agrimodule.name)
 
 
-    # AGRIPUMP
-    # TIME USAGE
-    # start_hour_per_day = db.Column(db.Integer)
-    # qty_hour_per_day = db.Column(db.Integer)
-
-    # time_per_hour = db.Column(db.Float)
-    # time_per_day = db.Column(db.Float)
-    # time_per_cycle = db.Column(db.Float)
-    # WATER USAGE
-    # water_per_hour = db.Column(db.Integer)
-    # water_per_day = db.Column(db.Integer)
-    # water_per_cycle = db.Column(db.Integer)
-    # ENERGY USAGE
-    # energy_per_hour = db.Column(db.Integer)
-    # energy_per_day = db.Column(db.Integer)
-    # energy_per_cycle = db.Column(db.Integer)
-
-    # PUMP
-    # brand = db.Column(db.String(25))
-    # flow_rate = db.Column(db.Float(precision=2), nullable=False)
-    # height_max = db.Column(db.Float(presicion=2), nullable=False)
-    # wh = db.Column(db.Float(precision=2), nullable=False)
 
 
-    return render_template('agripump/show.html', pump = pump_info, agripump = agripump, field = field, crop = crop, pump_consumption_kwh_per_day=pump_consumption_kwh_per_day)
+
+# AGRIPUMP
+# TIME USAGE
+# start_hour_per_day = db.Column(db.Integer)
+# qty_hour_per_day = db.Column(db.Integer)
+
+# time_per_hour = db.Column(db.Float)
+# time_per_day = db.Column(db.Float)
+# time_per_cycle = db.Column(db.Float)
+# WATER USAGE
+# water_per_hour = db.Column(db.Integer)
+# water_per_day = db.Column(db.Integer)
+# water_per_cycle = db.Column(db.Integer)
+# ENERGY USAGE
+# energy_per_hour = db.Column(db.Integer)
+# energy_per_day = db.Column(db.Integer)
+# energy_per_cycle = db.Column(db.Integer)
+
+# PUMP
+# brand = db.Column(db.String(25))
+# flow_rate = db.Column(db.Float(precision=2), nullable=False)
+# height_max = db.Column(db.Float(presicion=2), nullable=False)
+# wh = db.Column(db.Float(precision=2), nullable=False)
