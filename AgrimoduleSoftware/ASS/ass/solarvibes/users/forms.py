@@ -34,6 +34,6 @@ class UserProfileForm(FlaskForm):
     country     = StringField('Country',            validators=[Length(min=2, max=30, message='Minimum: 2 characters.')])
     email       = StringField('Email',              validators=[Length(min=5, max=30, message=None), Email()])
     email_rec   = StringField('Recovery Email',     validators=[Length(min=5, max=30, message=None), Email()])
-    birthday    = DateField('Birthday',             format='%Y-%m-%d')
+    birthday    = DateField('Birthday',             format='%d %B, %Y')
     image       = FileField(                        validators=[FileAllowed(IMAGES, 'Only images allowed.')])
     mobile      = StringField('Mobile',             validators=[Length(min=7, max=30, message=None)])
