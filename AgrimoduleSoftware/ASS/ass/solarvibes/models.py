@@ -170,6 +170,9 @@ class DailyFieldInput(db.Model):
     avg_wind = db.Column(db.Float)
     avg_wind_direction = db.Column(db.Float)
 
+    def __repr__(self):
+        return '<dailyfieldinput {}>'.format(self.id)
+
 class Crop(db.Model):
     '''The crop database reference from farmers or Users.model that can be be cultivated in the Field.Model'''
     __tablename__ = 'crop'
