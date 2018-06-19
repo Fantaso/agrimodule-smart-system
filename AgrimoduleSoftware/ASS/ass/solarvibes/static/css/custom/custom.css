@@ -79,6 +79,22 @@ WE WILL RELEASE FUTURE UPDATES SO IN ORDER TO NOT OVERWRITE YOUR STYLES IT'S BET
     -ms-transform: rotate(270deg);
     transform: rotate(270deg);
 }
+.progress-height{height: 12px !important;}
+.outter-color{background-color: rgba(255, 255, 0, 0.3) !important;}
+.inner-color{background-color: rgba(255, 255, 0, 0.5) !important;}
+.bg_y{background-color: yellow;}
+.bg_b{background-color: blue;}
+.bg_gr{background-color: gray;}
+.bg_r{background-color: red;}
+.bg_g{background-color: green;}
+.bg_dgr{background-color: darkgray;}
+.bg_lgr{background-color: lightgray;}
+.centrado{text-align: center;}
+.padding{padding: 10px !important;}
+.margin{margin: 10px !important;}
+.margin-tp{margin: 10px 0 10px 0 !important;}
+.padding-tp{padding: 10px 0 10px 0 !important;}
+.vl {border-left: 2px solid  #16b6a5; height: 400px;}
 /*////////////////////////////////////*/
 /* settings*/
 /*///////////////////////////////////*/

@@ -17,6 +17,7 @@
     <meta name="msapplication-TileColor" content="#00bcd4">
     <meta name="msapplication-TileImage" content="images/favicon/mstile-144x144.png">
     <!-- For Windows Phone -->
+    {% block links_in_head %} {% endblock links_in_head %}
     <!-- CORE CSS-->
     <link href="{{ url_for('static', filename='css/themes/collapsible-menu/materialize.css') }}" type="text/css" rel="stylesheet">
     <link href="{{ url_for('static', filename='css/themes/collapsible-menu/style.css') }}" type="text/css" rel="stylesheet">
@@ -29,7 +30,7 @@
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
 
     {% block css_in_head %} {% endblock css_in_head %}
-    {% block links_in_head %} {% endblock links_in_head %}
+
 
   </head>
   <body>
