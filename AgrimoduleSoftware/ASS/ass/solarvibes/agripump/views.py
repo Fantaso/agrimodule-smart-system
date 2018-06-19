@@ -19,12 +19,12 @@ agripump = Blueprint(
 def show(agripump_id = None):
 
     # Validation
-    if Agripump.query.filter_by(id=agripump_id).first() == None:
-        flash('That agripump do NOT exist')
-        return redirect(url_for('main.index'))
-
     if agripump_id == None:
         flash('page not allowed')
+        return redirect(url_for('main.index'))
+
+    if Agripump.query.filter_by(id=agripump_id).first() == None:
+        flash('That agripump do NOT exist')
         return redirect(url_for('main.index'))
 
     # objects query
