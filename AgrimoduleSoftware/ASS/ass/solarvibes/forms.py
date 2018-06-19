@@ -12,7 +12,7 @@ from flask_uploads import IMAGES
 class RegisterFormExt(RegisterForm, ConfirmRegisterForm):
     name        = StringField(label='Name', validators=[DataRequired(), Length(min=2, max=30, message='''Your name needs at least 2 characters.''')])
     last_name   = StringField(label='Last name', validators=[DataRequired(), Length(min=2, max=30, message='''Your last name needs at least 2 characters.''')])
-    birthday   = DateField(label='Birthday', format='%Y-%m-%d')
+    birthday   = DateField(label='Birthday', format='%d %B, %Y')
     mobile   = StringField('Mobile', validators=[DataRequired(), Length(min=7, max=30, message=None)])
 
 
@@ -27,7 +27,7 @@ class CultivationStateForm(FlaskForm):
     cultivation_state       = SelectField(label='Cultivation State', validators=[DataRequired()], choices=[('new','New'),('Already Growing','Already Growing')])
 
 class CultivationStartDateForm(FlaskForm):
-    cultivation_start_date  = DateField(label='Cultivation Start Date', format='%Y-%m-%d', validators=[DataRequired()])
+    cultivation_start_date  = DateField(label='Cultivation Start Date', format='%d %B, %Y', validators=[DataRequired()])
 
 class CultivationCropForm(FlaskForm):
     cultivation_crop        = SelectField(label='Cultivation Crop', validators=[DataRequired()], choices=[('plum','Plum'),('romaine','Romaine'),('arugula','Arugula')], option_widget=None)
@@ -80,6 +80,6 @@ class ContactUsFormExtended(ContactUsFormEG):
     country = StringField(label='Country', validators=[DataRequired()])
 
 class ContactUsFormExtendedOne(ContactUsFormEG):
-    start_date = DateField(label='Start Date', format='%Y-%m-%d')
+    start_date = DateField(label='Start Date', format='%d %B, %Y')
 # SNIPETS
 # default='Carlos' # an atribute that can be pass inside the Field() of FlaskForm
