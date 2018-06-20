@@ -57,10 +57,12 @@ from solarvibes.settings.views import settings
 from solarvibes.farm_settings.views import farm_settings
 from solarvibes.agrimodule_settings.views import agrimodule_settings
 from solarvibes.pump_settings.views import pump_settings
-from solarvibes.agrimodule.views import agrimodule
-from solarvibes.agripump.views import agripump
+from solarvibes.agrimodule.views import agrimodule_bp
+from solarvibes.agripump.views import agripump_bp
 from solarvibes.crop_status.views import crop_status
 from solarvibes.login_check.views import login_check
+from solarvibes.admin.views import admin_bp
+from solarvibes.agrimodule_api.views import agrimodule_api
 
 app.register_blueprint(site, url_prefix='/site')
 app.register_blueprint(users, url_prefix='/users')
@@ -70,10 +72,12 @@ app.register_blueprint(settings, url_prefix='/settings')
 app.register_blueprint(farm_settings, url_prefix='/farm-settings')
 app.register_blueprint(agrimodule_settings, url_prefix='/agrimodule-settings')
 app.register_blueprint(pump_settings, url_prefix='/pump-settings')
-app.register_blueprint(agrimodule, url_prefix='/agrimodule')
-app.register_blueprint(agripump, url_prefix='/agripump')
+app.register_blueprint(agrimodule_bp, url_prefix='/agrimodule')
+app.register_blueprint(agripump_bp, url_prefix='/agripump')
 app.register_blueprint(crop_status, url_prefix='/crop-status')
 app.register_blueprint(login_check, url_prefix='/login-check')
+app.register_blueprint(admin_bp, url_prefix='/admin')
+app.register_blueprint(agrimodule_api, url_prefix='/agrimodule_api')
 #############################
 # End Import Views
 #############################
