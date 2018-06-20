@@ -76,8 +76,6 @@ def show_all():
     default_farm = current_user.farms.filter_by(_default = True).one()
     fields = default_farm.fields.all()
 
-    agrimodule_db = Agrimodule.query
-
     # TODO: here is for only 1 crop in the field. but when mix cultivation or multi. need to reflect more than 1 crop
     # crop = field.crops.first()
 
