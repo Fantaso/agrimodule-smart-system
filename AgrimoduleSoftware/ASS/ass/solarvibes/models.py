@@ -9,62 +9,6 @@ from flask_security import UserMixin, RoleMixin
 #############################
 #############################
 
-roles_users = db.Table('roles_users',
-        db.Column('user_id', db.Integer(), db.ForeignKey('user.id')),
-        db.Column('role_id', db.Integer(), db.ForeignKey('role.id')))
-
-class Role(db.Model, RoleMixin):
-    __tablename__ = 'role'
-    id = db.Column(db.Integer(), primary_key=True)
-    name = db.Column(db.String(80), unique=True)
-    description = db.Column(db.String(255))
-
-class User(db.Model, UserMixin):
-    __tablename__ = 'user'
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(50))
-    last_name = db.Column(db.String(50))
-    email = db.Column(db.String(50), unique=True)
-    password = db.Column(db.String(200))
-    birthday = db.Column(db.DateTime(timezone=True), nullable=True)
-    mobile = db.Column(db.String(50), unique=True)
-    username = db.Column(db.String(50), unique=True)
-    address = db.Column(db.String(50))
-    zipcode = db.Column(db.Integer)
-    city = db.Column(db.String(50))
-    state = db.Column(db.String(50))
-    country = db.Column(db.String(50))
-    email_rec = db.Column(db.String(50))
-    image = db.Column(db.String(200))
-
-    last_login_at = db.Column(db.DateTime(timezone=True))
-    current_login_at = db.Column(db.DateTime(timezone=True))
-    last_login_ip = db.Column(db.String(100))
-    current_login_ip = db.Column(db.String(100))
-    login_count = db.Column(db.Integer)
-
-    active = db.Column(db.Boolean(), nullable=True)
-    confirmed_at = db.Column(db.DateTime(timezone=True), nullable=True)
-    roles = db.relationship('Role', secondary=roles_users, backref=db.backref('users', lazy='dynamic'))
-
-    default_farm_id = db.Column(db.Integer, unique=True)
-    completed_welcome = db.Column(db.Boolean)
-
-    # RELATIONSHIP
-    # USER[1]-FARM[M]
-    farms = db.relationship('Farm', backref='user', lazy='dynamic')
-    # USER[1]-AGRIMODULE[M]
-    agrimodules = db.relationship('Agrimodule', backref='user', lazy='dynamic')
-    # USER[1]-PUMP[M]
-    pumps = db.relationship('Pump', backref='user', lazy='dynamic')
-
-    _time_created = db.Column(db.DateTime(timezone=True), server_default=func.now())
-    _time_updated = db.Column(db.DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
-
-
-
-    def __repr__(self):
-        return '<user {}>'.format(self.email)
 
 
 #############################
@@ -172,6 +116,10 @@ class DailyFieldInput(db.Model):
 
     def __repr__(self):
         return '<dailyfieldinput {}>'.format(self.id)
+class CropImage(db.Model):
+    _tablename_ = 'cropimages'
+    id = db.Column(db.Integer, primary_key=True)
+    path = db.Column(db.String(200), unique=True)
 
 class Crop(db.Model):
     '''The crop database reference from farmers or Users.model that can be be cultivated in the Field.Model'''
@@ -185,6 +133,7 @@ class Crop(db.Model):
     _space_y = db.Column(db.Float(precision=2))
     _space_z = db.Column(db.Float(precision=2))
     _density = db.Column(db.Float(precision=2))
+    image = db.Column(db.String(200), unique=True)
     # FRUITS EACH PLANT
     _fruit_quantity = db.Column(db.Integer)
     _fruit_size = db.Column(db.Float(precision=2))
@@ -224,8 +173,8 @@ class Crop(db.Model):
     # WATER
     _water_needed = db.Column(db.Integer) # not reuired is already declared some lines before _water
 
-    _time_created = db.Column(db.DateTime(timezone=True), server_default=func.now())
-    _time_updated = db.Column(db.DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
+    time_created = db.Column(db.DateTime(timezone=True), server_default=func.now())
+    time_updated = db.Column(db.DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
 
     def __repr__(self):
         return '<crop {}>'.format(self._name)
@@ -415,3 +364,60 @@ class Agripump(db.Model):
 
     def __repr__(self):
         return '<agripump {}>'.format(self.identifier)
+
+roles_users = db.Table('roles_users',
+        db.Column('user_id', db.Integer(), db.ForeignKey('user.id')),
+        db.Column('role_id', db.Integer(), db.ForeignKey('role.id')))
+
+class Role(db.Model, RoleMixin):
+    __tablename__ = 'role'
+    id = db.Column(db.Integer(), primary_key=True)
+    name = db.Column(db.String(80), unique=True)
+    description = db.Column(db.String(255))
+
+class User(db.Model, UserMixin):
+    __tablename__ = 'user'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(50))
+    last_name = db.Column(db.String(50))
+    email = db.Column(db.String(50), unique=True)
+    password = db.Column(db.String(200))
+    birthday = db.Column(db.DateTime(timezone=True), nullable=True)
+    mobile = db.Column(db.String(50), unique=True)
+    username = db.Column(db.String(50), unique=True)
+    address = db.Column(db.String(50))
+    zipcode = db.Column(db.Integer)
+    city = db.Column(db.String(50))
+    state = db.Column(db.String(50))
+    country = db.Column(db.String(50))
+    email_rec = db.Column(db.String(50))
+    image = db.Column(db.String(200))
+
+    last_login_at = db.Column(db.DateTime(timezone=True))
+    current_login_at = db.Column(db.DateTime(timezone=True))
+    last_login_ip = db.Column(db.String(100))
+    current_login_ip = db.Column(db.String(100))
+    login_count = db.Column(db.Integer)
+
+    active = db.Column(db.Boolean(), nullable=True)
+    confirmed_at = db.Column(db.DateTime(timezone=True), nullable=True)
+    roles = db.relationship('Role', secondary=roles_users, backref=db.backref('users', lazy='dynamic'))
+
+    default_farm_id = db.Column(db.Integer, unique=True)
+    completed_welcome = db.Column(db.Boolean)
+
+    # RELATIONSHIP
+    # USER[1]-FARM[M]
+    farms = db.relationship('Farm', backref='user', lazy='dynamic')
+    # USER[1]-AGRIMODULE[M]
+    agrimodules = db.relationship('Agrimodule', backref='user', lazy='dynamic')
+    # USER[1]-PUMP[M]
+    pumps = db.relationship('Pump', backref='user', lazy='dynamic')
+
+    _time_created = db.Column(db.DateTime(timezone=True), server_default=func.now())
+    _time_updated = db.Column(db.DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
+
+
+
+    def __repr__(self):
+        return '<user {}>'.format(self.email)
