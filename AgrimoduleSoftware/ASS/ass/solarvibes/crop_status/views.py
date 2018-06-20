@@ -36,7 +36,7 @@ def show(field_id = None):
 
     # db objects
     user = current_user
-    field = Field. query.filter_by(id = field_id).first()
+    field = Field.query.filter_by(id = field_id).first()
     agrimodule = Agrimodule.query.filter_by(field_id = field.id).first()
     farm = Farm.query.filter_by(id = field.farm_id).first()
     # TODO: here is for only 1 crop in the field. but when mix cultivation or multi. need to reflect more than 1 crop
@@ -57,3 +57,37 @@ def show(field_id = None):
                                 time_bar_percentage = time_bar_percentage,
                                 yield_bar_percentage = yield_bar_percentage,
                                 system_name = agrimodule.name)
+
+
+##################
+# USER CROP STATUS
+##################
+@crop_status.route('/show-all', methods=['GET'])
+@login_required
+def show_all():
+
+    def cm2_to_m2(cm2):
+            return cm2 / 10000
+
+    def m2_to_cm2(m2):
+            return m2 * 10000
+
+    # db objects
+    default_farm = current_user.farms.filter_by(_default = True).one()
+    fields = default_farm.fields.all()
+
+    agrimodule_db = Agrimodule.query
+
+    # TODO: here is for only 1 crop in the field. but when mix cultivation or multi. need to reflect more than 1 crop
+    # crop = field.crops.first()
+
+    today = datetime.now(timezone.utc)
+    # cycle_days_so_far = ( today - field.field_cultivation_start_date ).days
+
+
+    # time_bar_percentage = (cycle_days_so_far * 100) / (crop._dtm + crop._dtg)
+    # yield_bar_percentage = (field.field_current_yield * 100) / (field.field_projected_yield)
+
+    return render_template('crop_status/show_all.html',
+                                fields = fields,
+                                today = today)
