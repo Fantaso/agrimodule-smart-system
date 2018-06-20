@@ -3,8 +3,8 @@ from solarvibes.models import User, Agrimodule, Measurement, Agrisensor
 from flask_login import current_user
 from flask_security import login_required
 
-agrimodule = Blueprint(
-    'agrimodule',
+agrimodule_bp = Blueprint(
+    'agrimodule_bp',
     __name__,
     template_folder="templates"
 )
@@ -13,8 +13,8 @@ agrimodule = Blueprint(
 ##################
 # USER SHOW AGRIMODULE
 ##################
-@agrimodule.route('/', methods=['GET'])
-@agrimodule.route('/<agrimodule_id>', methods=['GET'])
+@agrimodule_bp.route('/', methods=['GET'])
+@agrimodule_bp.route('/<agrimodule_id>', methods=['GET'])
 @login_required
 def show_agrimodule(agrimodule_id = None):
 
@@ -40,8 +40,8 @@ def show_agrimodule(agrimodule_id = None):
 ##################
 # USER SHOW AGRISENSOR
 ##################
-@agrimodule.route('/<agrimodule_id>/agrisensor', methods=['GET'])
-@agrimodule.route('/<agrimodule_id>/agrisensor/<agrisensor_id>', methods=['GET'])
+@agrimodule_bp.route('/<agrimodule_id>/agrisensor', methods=['GET'])
+@agrimodule_bp.route('/<agrimodule_id>/agrisensor/<agrisensor_id>', methods=['GET'])
 @login_required
 def show_agrisensor(agrimodule_id = None, agrisensor_id = None):
 
