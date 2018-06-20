@@ -3,8 +3,8 @@ from solarvibes.models import User, Agripump, Agrimodule
 from flask_login import current_user
 from flask_security import login_required
 
-agripump = Blueprint(
-    'agripump',
+agripump_bp = Blueprint(
+    'agripump_bp',
     __name__,
     template_folder="templates"
 )
@@ -13,8 +13,8 @@ agripump = Blueprint(
 ##################
 # USER AGRIPUMP
 ##################
-@agripump.route('/', methods=['GET'])
-@agripump.route('/<agripump_id>', methods=['GET'])
+@agripump_bp.route('/', methods=['GET'])
+@agripump_bp.route('/<agripump_id>', methods=['GET'])
 @login_required
 def show(agripump_id = None):
 

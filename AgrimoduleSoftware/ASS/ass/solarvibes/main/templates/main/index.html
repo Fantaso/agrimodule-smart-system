@@ -165,7 +165,7 @@ grey lighten-2
 									<h5 class="hoverable"><span class="black-text">Field:<br></span>{{ crop._name|capitalize }}</h5>
 								</a>
 								<!-- IMAGE -->
-								<img  class="responsive-img" src="../static/bulma/tomato.png">
+								<img  class="responsive-img" src="{{ crop.image }}">
 								<!-- BAR -->
 								<p class="is-size-5">
 									{{ (( (timenow - field.field_cultivation_start_date).days / (crop._dtm + crop._dtg) ) * 100)|round(1, 'floor') }}%
@@ -189,7 +189,7 @@ grey lighten-2
 								<div class="row valign-wrapper">
 									<div class="col s2 center-align">
 										<!-- Agrimodule SYSTEM IMAGE -->
-										<a href="{{ url_for('agrimodule.show_agrimodule', agrimodule_id = field.agrimodule.id) }}">
+										<a href="{{ url_for('agrimodule_bp.show_agrimodule', agrimodule_id = field.agrimodule.id) }}">
 											<img  class="responsive-img hoverable" src="../static/bulma/agrimodule-icon.png">
 										</a>
 
@@ -216,7 +216,7 @@ grey lighten-2
 								<div class="row valign-wrapper">
 									<div class="col s2 center-align">
 										<!-- Agrisensor SYSTEM IMAGE -->
-										<a href="{{ url_for('agrimodule.show_agrisensor', agrimodule_id = agrisensor.agrimodule_id, agrisensor_id = agrisensor.id) }}">
+										<a href="{{ url_for('agrimodule_bp.show_agrisensor', agrimodule_id = agrisensor.agrimodule_id, agrisensor_id = agrisensor.id) }}">
 											<img  class="responsive-img hoverable" src="../static/bulma/agrisensor-icon.png">
 										</a>
 									</div>
@@ -244,7 +244,7 @@ grey lighten-2
 								<div class="row valign-wrapper">
 									<div class="col s2 center-align">
 										<!-- Agripump SYSTEM IMAGE -->
-										<a href="{{ url_for('agripump.show', agripump_id = agripump.id) }}">
+										<a href="{{ url_for('agripump_bp.show', agripump_id = agripump.id) }}">
 											<img  class="responsive-img hoverable" src="../static/bulma/agripump-icon.png">
 										</a>
 									</div>
@@ -440,8 +440,8 @@ grey lighten-2
 </ul>
 <p>General links</p>
 <ul>
-	<li><a href="{{ url_for('agrimodule.show_agrimodule') }}" style="color:#16B6A5;">Agrimodule</a><br></li>
-	<li><a href="{{ url_for('agripump.show') }}" style="color:#16B6A5;">Agripump</a><br></li>
+	<li><a href="{{ url_for('agrimodule_bp.show_agrimodule') }}" style="color:#16B6A5;">Agrimodule</a><br></li>
+	<li><a href="{{ url_for('agripump_bp.show') }}" style="color:#16B6A5;">Agripump</a><br></li>
 	<li><a href="{{ url_for('crop_status.show') }}" style="color:#16B6A5;">Crop status</a><br></li>
 	<li><a href="{{ url_for('user_market') }}" style="color:#16B6A5;">Market</a><br></li>
 	<li><a href="{{ url_for('user_weather') }}" style="color:#16B6A5;">Weather</a><br></li>
