@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, redirect, url_for, flash
-from solarvibes.models import User, Agripump, Agrimodule
+from solarvibes.models import User, Agripump, Agrimodule, Field
 from flask_login import current_user
 from flask_security import login_required
 
@@ -29,11 +29,13 @@ def show(agripump_id = None):
 
     # objects query
     user = current_user
-    farm = user.farms.first()
-    field = farm.fields.first()
-    crop = field.crops.first()
     agripump = Agripump.query.filter_by(id = agripump_id).first()
     agrimodule = Agrimodule.query.filter_by(id = agripump.agrimodule_id).first()
+    field = Field.query.filter_by(id = agrimodule.field_id).first()
+    farm = user.farms.filter_by(id = field.farm_id).first()
+    crop = field.crops.first()
+
+
     pump = user.pumps.filter_by(id = agripump.pump_id).first()
     print(user)
     print(farm)

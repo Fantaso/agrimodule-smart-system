@@ -5,6 +5,10 @@
 	Farm Add Agrisys
 {% endblock %}
 
+{% block add_agrisys_active %}
+	active
+{% endblock %}
+
 {% block content %}
 <div class = "container">
     <h4>Add_agrisys</h4>
@@ -12,8 +16,9 @@
         {{ form.csrf_token }}
 		{{ render_field_with_errors(form.agrimodule_name) }}
 		{{ render_field_with_errors(form.agrimodule_identifier) }}
-		<input type="submit" class="btn btn-primary btn-md" value="Add ASS">
+		<input type="submit" class="hoverable waves-effect waves-light btn" value="Add agrimodule!">
 	</form>
-<a href="{{ url_for('welcome.welcome_set_sys') }}" class="btn btn-secondary btn-sm" style="color:black;">Back</a>
+	<br>
+	<a href="{{ url_for('welcome.index') }}" class="amber darken-1 waves-effect waves-light btn btn-small"><i class="material-icons left">arrow_back</i>Back</a>
 </div>
 {% endblock %}

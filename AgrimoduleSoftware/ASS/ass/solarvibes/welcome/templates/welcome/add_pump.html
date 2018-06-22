@@ -5,9 +5,13 @@
 	Farm Add Pump
 {% endblock %}
 
+{% block add_pump_active %}
+	active
+{% endblock %}
+
 {% block content %}
 <div class = "container">
-    <h4>add_pump</h4>
+    <h4>Add Pump</h4>
 	<form method="POST" action="{{ url_for('welcome.add_pump') }}">
 		{{ form.csrf_token }}
 		{{ render_field_with_errors(form.pump_name) }}
@@ -15,8 +19,9 @@
 		{{ render_field_with_errors(form.pump_flow_rate) }}
 		{{ render_field_with_errors(form.pump_head) }}
 		{{ render_field_with_errors(form.pump_watts) }}
-		<input type="submit" class="btn btn-primary btn-md" value="Add pump">
+		<input type="submit" class="hoverable waves-effect waves-light btn" value="Add pump!">
 	</form>
-	<a href="{{ url_for('welcome.install_agrisys') }}" class="btn btn-secondary btn-sm" style="color:black;">Back</a>
+	<br>
+	<a href="{{ url_for('welcome.install_agrisys') }}" class="amber darken-1 waves-effect waves-light btn btn-small"><i class="material-icons left">arrow_back</i>Back</a>
 </div>
 {% endblock %}

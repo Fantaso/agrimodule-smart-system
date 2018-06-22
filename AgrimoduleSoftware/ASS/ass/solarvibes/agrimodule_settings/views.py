@@ -2,6 +2,7 @@ from flask import Blueprint, render_template, redirect, url_for, flash, session
 from solarvibes import db
 from solarvibes.agrimodule_settings.forms import NewAgrimoduleForm, AgrimoduleAddSensorForm, PreEditAgrimoduleForm, EditAgrimoduleForm, PreEditAgripumpForm, EditAgripumpForm
 from solarvibes.models import Crop, Farm, Field, Pump, Agrimodule, Agrisensor, Agripump
+from solarvibes.models import AgrimoduleList, AgripumpList, AgrisensorList
 from flask_login import current_user
 from flask_security import login_required
 
@@ -19,6 +20,27 @@ agrimodule_settings = Blueprint(
 @agrimodule_settings.route('/new-agrimodule', methods=['GET', 'POST'])
 @login_required
 def new_agrimodule():
+
+    # if agrimodule is register in solarvibes db
+    def is_registered_in_solarvibes(identifier):
+        agrimodule_reg = AgrimoduleList.query.filter_by(identifier = identifier).first()
+        if not agrimodule_reg:
+            return False
+        return True
+
+    # if a farmer has already registered this to him
+    def is_registered_by_diff_user(identifier):
+        agrimodule_reg = AgrimoduleList.query.filter_by(identifier = identifier).first()
+        if agrimodule_reg.has_user_registered and current_user.id != agrimodule_reg.user_id:
+            return True
+        return False
+
+    def is_already_registered_by_user(identifier):
+        agrimodule_reg = AgrimoduleList.query.filter_by(identifier = identifier).first()
+        agrimodule = Agrimodule.query.filter_by(identifier= identifier).first()
+        if agrimodule_reg.has_user_registered and current_user.id == agrimodule.user_id:
+            return True
+        return False
 
     # TODO: validate that can be installed in a field where there is already one
 
@@ -45,6 +67,19 @@ def new_agrimodule():
 
     if form.validate_on_submit():
 
+        if not is_registered_in_solarvibes(form.identifier.data):
+            flash('agrimodule not registered in Solarvibes! Contact Solarvibes support')
+            return redirect(url_for('settings.index'))
+
+        if is_registered_by_diff_user(form.identifier.data):
+            flash('agrimodule is registered to another farmer! Contact Solarvibes support')
+            return redirect(url_for('settings.index'))
+
+        if is_already_registered_by_user(form.identifier.data):
+            flash('agrimodule is already monitoring in your farms')
+            return redirect(url_for('settings.index'))
+
+
         def val_choice(choice_id):
             if choice_id == 0:
                 return None
@@ -54,19 +89,25 @@ def new_agrimodule():
         # ADD AGRISYS OBJS
         name = form.name.data
         identifier = form.identifier.data
-        lat = form.lat.data
-        lon = form.lon.data
         field_choice = form.field_choices.data
-        print(name, identifier, lat, lon, field_choice)
+        # print(name, identifier, lat, lon, field_choice)
 
         # OBJS TO DB
         agrimodule = Agrimodule(user = current_user,
                                 name = name,
                                 identifier = identifier,
-                                lat = lat,
-                                lon = lon,
+                                lat = 0,
+                                lon = 0,
+                                batt_status = 0,
                                 field_id = val_choice(field_choice))
         print(agrimodule.field_id)
+
+
+
+        # update the registration form of agrimodule bundle
+        agrimodule_reg = AgrimoduleList.query.filter_by(identifier = identifier).first()
+        agrimodule_reg.has_user_registered = True
+        agrimodule_reg.user_id = current_user.id
 
         # DB COMMANDS
         db.session.add(agrimodule)
@@ -75,6 +116,7 @@ def new_agrimodule():
 
         # FLASH AND REDIRECT
         flash('You just added a new agrimodule: {}'.format(name))
+        flash('Your agrimodule has been registered with identifier: "{}"'.format(identifier))
         return redirect(url_for('settings.index'))
     return render_template('agrimodule_settings/new_agrimodule.html', form=form)
 
@@ -168,6 +210,42 @@ def edit_agrimodule(agrimodule_id = 0):
 @agrimodule_settings.route('/add-sensor/<agrimodule_id>', methods=['GET', 'POST'])
 @login_required
 def add_sensor(agrimodule_id = 0):
+    # if agrimodule is register in solarvibes db
+    def is_registered_in_solarvibes_agripump(identifier):
+        agripump_reg = AgripumpList.query.filter_by(identifier = identifier).first()
+        if not agripump_reg:
+            return False
+        return True
+    # if a farmer has already registered this to him
+    def is_registered_by_diff_user_agripump(identifier):
+        agripump_reg = AgripumpList.query.filter_by(identifier = identifier).first()
+        if agripump_reg.has_user_registered and current_user.id != agripump_reg.user_id:
+            return True
+        return False
+    # TODO: this is just if user registered it. but if user deleted and wants to added again - check if the users agripump current list is there.
+    def is_already_registered_by_user_agripump(identifier):
+        agripump_reg = AgripumpList.query.filter_by(identifier = identifier).first()
+        if agripump_reg.has_user_registered and current_user.id == agripump_reg.user_id:
+            return True
+        return False
+
+    # if agrimodule is register in solarvibes db
+    def is_registered_in_solarvibes_agrisensor(identifier):
+        agrisensor_reg = AgrisensorList.query.filter_by(identifier = identifier).first()
+        if not agrisensor_reg:
+            return False
+        return True
+    # if a farmer has already registered this to him
+    def is_registered_by_diff_user_agrisensor(identifier):
+        agrisensor_reg = AgrisensorList.query.filter_by(identifier = identifier).first()
+        if agrisensor_reg.has_user_registered and current_user.id != agrisensor_reg.user_id:
+            return True
+        return False
+    def is_already_registered_by_user_agrisensor(identifier):
+        agrisensor_reg = AgrisensorList.query.filter_by(identifier = identifier).first()
+        if agrisensor_reg.has_user_registered and current_user.id == agrisensor_reg.user_id:
+            return True
+        return False
 
     form = AgrimoduleAddSensorForm()
 
@@ -191,12 +269,44 @@ def add_sensor(agrimodule_id = 0):
 
 
         if sensor_type == 'Agripump':
-            agripump = Agripump(agrimodule_id = agrimodule_id, identifier = identifier)
+            if not is_registered_in_solarvibes_agripump(form.identifier.data):
+                flash('agripump not registered in Solarvibes! Contact Solarvibes support')
+                return redirect(url_for('settings.index'))
+            if is_registered_by_diff_user_agripump(form.identifier.data):
+                flash('agripump is registered to another farmer! Contact Solarvibes support')
+                return redirect(url_for('settings.index'))
+            if is_already_registered_by_user_agripump(form.identifier.data):
+                flash('agripump is already monitoring in your farms')
+                return redirect(url_for('settings.index'))
+
+            agripump = Agripump(agrimodule_id = agrimodule_id, identifier = identifier, status = False, lat = 0, lon = 0)
             db.session.add(agripump)
 
+            # update the registration form of agrimodule bundle
+            agripump_reg = AgripumpList.query.filter_by(identifier = identifier).first()
+            agripump_reg.has_user_registered = True
+            agripump_reg.user_id = current_user.id
+
+
         if sensor_type == 'Agrisensor':
-            agrisensor = Agrisensor(agrimodule_id = agrimodule_id, identifier = identifier)
+            if not is_registered_in_solarvibes_agrisensor(form.identifier.data):
+                flash('agrisensor not registered in Solarvibes! Contact Solarvibes support')
+                return redirect(url_for('settings.index'))
+            if is_registered_by_diff_user_agrisensor(form.identifier.data):
+                flash('agrisensor is registered to another farmer! Contact Solarvibes support')
+                return redirect(url_for('settings.index'))
+            if is_already_registered_by_user_agrisensor(form.identifier.data):
+                flash('agrisensor is already monitoring in your farms')
+                return redirect(url_for('settings.index'))
+
+            agrisensor = Agrisensor(agrimodule_id = agrimodule_id, identifier = identifier, batt_status = 0, lat = 0, lon = 0)
             db.session.add(agrisensor)
+
+            # update the registration form of agrimodule bundle
+            agrisensor_reg = AgrisensorList.query.filter_by(identifier = identifier).first()
+            agrisensor_reg.has_user_registered = True
+            agrisensor_reg.user_id = current_user.id
+
 
 
         # DB COMMANDS

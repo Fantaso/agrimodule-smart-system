@@ -201,6 +201,51 @@ class Pump(db.Model):
     def __repr__(self):
         return '<pump {}>'.format(self.pump_brand)
 
+class AgrimoduleList(db.Model):
+    __tablename__ = 'agrimodulelist'
+    id = db.Column(db.Integer, primary_key=True)
+    identifier = db.Column(db.String(100), unique = True, nullable = False)
+    type = db.Column(db.String(10), nullable = False) # agrimodule, agrisensor, agripump
+
+    has_user_registered = db.Column(db.Boolean)
+    user_id = db.Column(db.Integer)
+    has_agrimodule_registered = db.Column(db.Boolean)
+
+class AgrisensorList(db.Model):
+    __tablename__ = 'agrisensorlist'
+    id = db.Column(db.Integer, primary_key=True)
+    identifier = db.Column(db.String(100), unique = True, nullable = False)
+    type = db.Column(db.String(10), nullable = False) # agrimodule, agrisensor, agripump
+
+    has_user_registered = db.Column(db.Boolean)
+    user_id = db.Column(db.Integer)
+    has_agrimodule_registered = db.Column(db.Boolean)
+
+class AgripumpList(db.Model):
+    __tablename__ = 'agripumplist'
+    id = db.Column(db.Integer, primary_key=True)
+    identifier = db.Column(db.String(100), unique = True, nullable = False)
+    type = db.Column(db.String(10), nullable = False) # agrimodule, agrisensor, agripump
+
+    has_user_registered = db.Column(db.Boolean)
+    user_id = db.Column(db.Integer)
+    has_agrimodule_registered = db.Column(db.Boolean)
+
+class WelcomeLog(db.Model):
+    __tablename__ = 'welcome'
+    id = db.Column(db.Integer, primary_key=True)
+    add_agrisys = db.Column(db.Boolean)
+    install_agrisys = db.Column(db.Boolean)
+    add_pump = db.Column(db.Boolean)
+    add_farm = db.Column(db.Boolean)
+    add_field = db.Column(db.Boolean)
+    # WELCOME[1]-USER[1]
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+
+    def __repr__(self):
+        return '<welcomelog {}>'.format(self.id)
+
+
 class Agrimodule(db.Model):
     """Each agrimodule smart system is unique and has am agrimodule an agripump and maybe agresiensor and other agripumps depending on the complaexity of the farm
     and can be added to any user any farm with a unique identuifier which can connect the data being sent to server to an specific User.Model/Field.Model
@@ -208,7 +253,7 @@ class Agrimodule(db.Model):
     __tablename__ = 'agrimodules'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(20))
-    identifier = db.Column(db.String(50), unique=True, nullable=False)
+    identifier = db.Column(db.String(100), unique=True, nullable=False)
     lat = db.Column(db.Float(precision=8))
     lon = db.Column(db.Float(precision=8))
     batt_status = db.Column(db.Integer)
@@ -413,6 +458,9 @@ class User(db.Model, UserMixin):
     agrimodules = db.relationship('Agrimodule', backref='user', lazy='dynamic')
     # USER[1]-PUMP[M]
     pumps = db.relationship('Pump', backref='user', lazy='dynamic')
+    # USER[1]-WELCOME[1]
+    welcome = db.relationship('WelcomeLog', uselist=False, backref='user')
+
 
     _time_created = db.Column(db.DateTime(timezone=True), server_default=func.now())
     _time_updated = db.Column(db.DateTime(timezone=True), server_default=func.now(), onupdate=func.now())

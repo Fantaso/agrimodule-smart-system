@@ -181,8 +181,7 @@
             </h1>
           </div>
           <ul id="slide-out" class="side-nav fixed leftside-navigation">
-
-
+            {% if current_user.completed_welcome: %}
             <li class="li-hover">
               <p class="ultra-small margin more-text" style="padding-left: 12px;">quick</p>
             </li>
@@ -228,6 +227,68 @@
                 <span class="nav-text">Market</span>
               </a>
             </li>
+            {% else %}
+                <li class="li-hover">
+                  <p class="ultra-small margin more-text" style="padding-left: 12px;">Welcome</p>
+                </li>
+                 <li class="{% block index_active %}{% endblock %}">
+                  <a href="{{ url_for('welcome.index') }}">
+                    <i class="material-icons grey-text">home</i>
+                    <span class="nav-text">Welcome</span>
+                  </a>
+                </li>
+                 <li class="{% block add_agrisys_active %}{% endblock %}">
+                  <a href="{{ url_for('welcome.add_agrisys') }}">
+                      {% if current_user.welcome.add_agrisys: %}
+                          <i class="material-icons svgreen-text">check_circle</i>
+                      {% else %}
+                          <i class="material-icons svgreen-text">panorama_fish_eye</i>
+                      {% endif %}
+                    <span class="nav-text">Add Agrimodule</span>
+                  </a>
+                </li>
+                <li class="{% block install_agrisys_active %}{% endblock %}">
+                  <a href="{{ url_for('welcome.install_agrisys') }}">
+                    {% if current_user.welcome.install_agrisys: %}
+                        <i class="material-icons svgreen-text">check_circle</i>
+                    {% else %}
+                        <i class="material-icons svgreen-text">panorama_fish_eye</i>
+                    {% endif %}
+                    <span class="nav-text">Install Agrimodule</span>
+                  </a>
+                </li>
+                <li class="{% block add_pump_active %}{% endblock %}">
+                  <a href="{{ url_for('welcome.add_pump') }}">
+                      {% if current_user.welcome.add_pump: %}
+                          <i class="material-icons svgreen-text">check_circle</i>
+                      {% else %}
+                          <i class="material-icons svgreen-text">panorama_fish_eye</i>
+                      {% endif %}
+                    <span class="nav-text">Add Pump</span>
+                  </a>
+                </li>
+                <li class="{% block add_farm_active %}{% endblock %}">
+                  <a href="{{ url_for('welcome.add_farm') }}">
+                      {% if current_user.welcome.add_farm: %}
+                          <i class="material-icons svgreen-text">check_circle</i>
+                      {% else %}
+                          <i class="material-icons svgreen-text">panorama_fish_eye</i>
+                      {% endif %}
+                    <span class="nav-text">Add Farm</span>
+                  </a>
+                </li>
+                <li class="{% block add_crop_active %}{% endblock %}">
+                  <a href="{{ url_for('welcome.add_crop') }}">
+                      {% if current_user.welcome.add_crop: %}
+                          <i class="material-icons svgreen-text">check_circle</i>
+                      {% else %}
+                          <i class="material-icons svgreen-text">panorama_fish_eye</i>
+                      {% endif %}
+                    <span class="nav-text">Add Crop</span>
+                  </a>
+                </li>
+            {% endif %}
+
           </ul>
 
 

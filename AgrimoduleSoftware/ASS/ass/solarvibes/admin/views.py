@@ -4,7 +4,7 @@ from solarvibes.models import User, Role, roles_users
 from solarvibes.models import Farm, Field, crops_field, Crop
 from solarvibes.models import DailyFieldInput
 from solarvibes.models import Agrimodule, Agripump, Agrisensor, Pump, Measurement
-
+from solarvibes.models import AgrimoduleList, AgrisensorList, AgripumpList, WelcomeLog
 from solarvibes import app, db
 
 from flask_admin import Admin
@@ -57,6 +57,10 @@ admin.add_view(PkView(Agripump, db.session))
 admin.add_view(PkView(Agrisensor, db.session))
 admin.add_view(PkView(Pump, db.session))
 admin.add_view(PkView(Measurement, db.session))
+admin.add_view(PkView(AgrimoduleList, db.session))
+admin.add_view(PkView(AgrisensorList, db.session))
+admin.add_view(PkView(AgripumpList, db.session))
+admin.add_view(PkView(WelcomeLog, db.session))
 
 def get_path():
     return join(dirname(__file__)[:-5], 'static/images/crops')

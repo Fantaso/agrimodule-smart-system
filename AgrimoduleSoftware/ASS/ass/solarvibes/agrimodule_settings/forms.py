@@ -6,8 +6,8 @@ from wtforms.validators import DataRequired, Length, NumberRange, Optional
 class NewAgrimoduleForm(FlaskForm):
     name                = StringField('Agrimodule name', validators=[DataRequired(), Length(min=2, max=30, message='Give it a name for sanity MAX 30.')])
     identifier          = StringField('Agrimodule code', validators=[DataRequired(), Length(min=2, max=30, message='Your agrimodule identifier is in the back of your agrimodule.')])
-    lat                 = FloatField('latitude location', validators=[DataRequired(), NumberRange(min=-90, max=90, message='write the lat coordinates')])
-    lon                 = FloatField('longitude location', validators=[DataRequired(), NumberRange(min=-180, max=180, message='write the lon coordinates')])
+    # lat                 = FloatField('latitude location', validators=[DataRequired(), NumberRange(min=-90, max=90, message='write the lat coordinates')])
+    # lon                 = FloatField('longitude location', validators=[DataRequired(), NumberRange(min=-180, max=180, message='write the lon coordinates')])
     field_choices       = SelectField('Field to monitor:', validators=[Optional(strip_whitespace=True)], coerce = int)
 
 # '/user/farm/field/agrimodule/add-sensor'

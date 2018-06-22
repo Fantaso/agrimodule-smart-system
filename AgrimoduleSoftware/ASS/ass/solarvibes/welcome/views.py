@@ -1,7 +1,9 @@
 from flask import Blueprint, render_template, redirect, url_for, flash, session
 from solarvibes import db
-from solarvibes.welcome.forms import PreFarmForm, FarmForm, FieldForm, AddAgrisysForm, InstallAgrisysForm, AddPumpForm
+from solarvibes.welcome.forms import PreAddFarmForm, AddFarmForm, AddCropForm, PreAddCropForm, AddAgrisysForm, PreAddAgrisysForm, InstallAgrisysForm, PreInstallAgrisysForm, AddPumpForm, PreAddPumpForm
 from solarvibes.models import User, Crop, Farm, Field, Pump, Agrimodule, Agrisensor, Agripump
+from solarvibes.models import AgrimoduleList, AgrisensorList, AgripumpList
+from solarvibes.models import WelcomeLog
 from flask_login import current_user
 from flask_security import login_required
 from math import sqrt, floor
@@ -25,46 +27,57 @@ welcome = Blueprint(
 @welcome.route('/', methods=['GET'])
 @login_required
 def index():
+    if 'welcome' not in session:
+        session['welcome'] = dict()
+        session.modified = True
+
+    # if user hasnot yet a welcome_log, then created
+    if not current_user.welcome:
+        welcome_log = WelcomeLog(   user = current_user,
+                                    add_agrisys = False,
+                                    install_agrisys = False,
+                                    add_pump = False,
+                                    add_farm = False,
+                                    add_field = False)
+        db.session.add(welcome_log)
+        db.session.commit()
+
     # if user have not set up any agrimodule -> we send him to set agrimodule first
-    if current_user.agrimodules.count() == 0:
+    if not current_user.welcome.add_agrisys or not current_user.welcome.install_agrisys or not current_user.welcome.add_pump:
         flash('welcome for the first time, ' + current_user.name + '!')
         set_sys_flag = True
         return render_template('welcome/welcome.html', user=current_user, set_sys_flag=set_sys_flag)
 
     # if user have not set up any farm yet -> we send him to set his farm only
-    elif current_user.farms.count() == 0 or current_user.farms.first().fields.count() == 0:
+    if not current_user.welcome.add_farm or current_user.welcome.add_crop:
         flash('Now set your farm, ' + current_user.name + '!')
         set_sys_flag = False
         return render_template('welcome/welcome.html', user=current_user, set_sys_flag=set_sys_flag)
 
     # if neither the case send him to main. he must have set up a system and a farm
     else:
+        flash('you already have install agrimodule and add it to your farm, ' + current_user.name + '!')
         return redirect(url_for('main.index'))
-
-
-##########################################################
-##########################################################
-# SET SYS
-##########################################################
-##########################################################
-@welcome.route('/set-sys', methods=['GET'])
-@login_required
-def welcome_set_sys():
-    return render_template('welcome/welcome_set_sys.html')
 
 
 ###################
 # SET CONNECT ASS
 ###################
-@welcome.route('/set-sys/add-agrisys', methods=['GET', 'POST'])
+@welcome.route('/add-agrisys', methods=['GET', 'POST'])
 @login_required
 def add_agrisys():
 
-    if 'set_sys' not in session:
-        session['set_sys'] = dict()
+    if 'welcome' not in session:
+        session['welcome'] = dict()
         session.modified = True
 
     form = AddAgrisysForm()
+    # if user has complete farm, but didnot finish field. pass the current
+    if current_user.welcome.add_agrisys:
+        agrimodule = current_user.agrimodules.first()
+        myAgrimodule = PreAddAgrisysForm(agrimodule_name = agrimodule.name, agrimodule_identifier = agrimodule.identifier)
+        form = AddAgrisysForm(obj=myAgrimodule)               # CREATE WTForm FORM
+
     if form.validate_on_submit():
         # USER OBJS
         user = current_user
@@ -73,23 +86,113 @@ def add_agrisys():
         agrimodule_name = form.agrimodule_name.data
         agrimodule_identifier = form.agrimodule_identifier.data
 
+        # if agrimodule is register in solarvibes db
+        def is_registered_in_solarvibes(identifier):
+            agrimodule_reg = AgrimoduleList.query.filter_by(identifier = identifier).first()
+            if not agrimodule_reg:
+                return False
+            return True
 
-        # OBJS TO DB
-        agrimodule = Agrimodule(name = agrimodule_name, identifier = agrimodule_identifier, user = user)
+        # if a farmer has already registered this to him
+        def is_registered_by_diff_user(identifier):
+            agrimodule_reg = AgrimoduleList.query.filter_by(identifier = identifier).first()
+            if agrimodule_reg.has_user_registered and current_user.id != agrimodule_reg.user_id:
+                return True
+            return False
 
+        # if end with tripple zero ("0") belongs to the bundle
+        def is_agrimodule_bundle(identifier):
+            if identifier[-3:] == '000':
+                return True
+            return False
 
-        # DB COMMANDS
-        db.session.add(agrimodule)
-        db.session.commit()
+        def get_bundle_identifiers(identifier):
+            agrimodule_identifier = identifier
+            agrisensor_identifier = 'agrisensor' + identifier[-4:]
+            agripump_identifier = 'agripump' + identifier[-4:]
+            return agrimodule_identifier, agrisensor_identifier, agripump_identifier
 
-        # ADD SESSION OBJS
-        session['set_sys'].update({'agrimodule_identifier':agrimodule_identifier, 'agrimodule_id':agrimodule.id})
-        session.modified = True
+        if not is_registered_in_solarvibes(agrimodule_identifier):
+            flash('agrimodule not registered in Solarvibes! Contact Solarvibes support')
+            return redirect(url_for('welcome.add_agrisys', form = form))
 
+        if is_registered_by_diff_user(agrimodule_identifier):
+            flash('agrimodule is registered to another farmer! Contact Solarvibes support')
+            return redirect(url_for('welcome.add_agrisys', form = form))
 
-        # FLASH AND REDIRECT
-        flash('Your agrimodule identifier is: {}'.format(agrimodule_identifier))
-        return redirect(url_for('welcome.install_agrisys'))
+        try:
+            if is_agrimodule_bundle(agrimodule_identifier):
+
+                agrimodule_identifier, agrisensor_identifier, agripump_identifier = get_bundle_identifiers(agrimodule_identifier)
+
+                if current_user.welcome.add_agrisys:
+                    # OBJS TO DB
+                    agrimodule = current_user.agrimodules.first()
+                    agrimodule.name = agrimodule_name
+                    agrimodule.identifier = agrimodule_identifier
+                    agrisensor = agrimodule.agrisensors.first()
+                    agrisensor.identifier = agrisensor_identifier
+                    agripump = agrimodule.agripumps.first()
+                    agripump.identifier = agripump_identifier
+
+                    # FLASH
+                    flash('Your agrimodule bundle has been re-registered with identifier: "{}"'.format(agrimodule_identifier))
+                else:
+                    # OBJS TO DB
+                    agrimodule = Agrimodule(name = agrimodule_name, identifier = agrimodule_identifier, user = user, batt_status = 0, lat = 0, lon = 0)
+                    agrisensor = Agrisensor(identifier = agrisensor_identifier, agrimodule = agrimodule, batt_status = 0, lat = 0, lon = 0)
+                    agripump = Agripump(identifier = agripump_identifier, agrimodule = agrimodule, status = False, lat = 0, lon = 0)
+                    # DB COMMANDS
+                    db.session.add_all([agrimodule, agrisensor, agripump])
+                    # FLASH
+                    flash('Your agrimodule bundle has been registered with identifier: "{}"'.format(agrimodule_identifier))
+
+                # update the registration form of agrimodule bundle
+                agrimodule_reg = AgrimoduleList.query.filter_by(identifier = agrimodule_identifier).first()
+                agrisensor_reg = AgrisensorList.query.filter_by(identifier = agrisensor_identifier).first()
+                agripump_reg = AgripumpList.query.filter_by(identifier = agripump_identifier).first()
+                agrimodule_reg.has_user_registered = True
+                agrimodule_reg.user_id = user.id
+                agrisensor_reg.has_user_registered = True
+                agrisensor_reg.user_id = user.id
+                agripump_reg.has_user_registered = True
+                agripump_reg.user_id = user.id
+            else:
+                if current_user.welcome.add_agrisys:
+                    # OBJS TO DB
+                    agrimodule = current_user.agrimodules.first()
+                    agrimodule.name = agrimodule_name
+                    agrimodule.identifier = agrimodule_identifier
+                    # FLASH
+                    flash('Your agrimodule has been re-registered with identifier: "{}"'.format(agrimodule_identifier))
+                else:
+                    # OBJS TO DB
+                    agrimodule = Agrimodule(name = agrimodule_name, identifier = agrimodule_identifier, user = user)
+                    # DB COMMANDS
+                    db.session.add(agrimodule)
+                    # FLASH
+                    flash('Your agrimodule has been registered with identifier: "{}"'.format(agrimodule_identifier))
+
+                # update the registration form of agrimodule bundle
+                agrimodule_reg = AgrimoduleList.query.filter_by(identifier = agrimodule_identifier).first()
+                agrimodule_reg.has_user_registered = True
+                agrimodule_reg.user_id = user.id
+
+            # set welcome flag to True
+            user.welcome.add_agrisys = True
+            # DB COMMANDS
+            db.session.commit()
+            # ADD SESSION OBJS
+            session['welcome'].update({'agrimodule_identifier':agrimodule_identifier, 'agrimodule_id':agrimodule.id})
+            session.modified = True
+
+            # REDIRECT
+            return redirect(url_for('welcome.install_agrisys'))
+        except Exception as e:
+            db.session.rollback()
+            flash('Error: ' + str(e))
+            flash('an error has occour. Try again later!'.format(agrimodule_identifier))
+            return redirect(url_for('welcome.add_agrisys', form = form))
     return render_template('welcome/add_agrisys.html', form=form)
 
 
@@ -97,108 +200,140 @@ def add_agrisys():
 ###################
 # SET INSTALL ASS
 ###################
-@welcome.route('/set-sys/install-agrisys', methods=['GET', 'POST'])
+@welcome.route('/install-agrisys', methods=['GET', 'POST'])
 @login_required
 def install_agrisys():
-    form = InstallAgrisysForm()
-    if form.validate_on_submit():
-        # USER OBJS
-        user = current_user
 
-        # INSTALL AGRISYS OBJS
-        agm_lat = form.agm_lat.data
-        agm_lon = form.agm_lon.data
-        ags_lat = form.ags_lat.data
-        ags_lon = form.ags_lon.data
-        agp_lat = form.agp_lat.data
-        agp_lon = form.agp_lon.data
-        print (form.agm_lat)
-        print (form.agm_lon)
-        print (form.ags_lat)
-        print (form.ags_lon)
-        print (form.agp_lat)
-        print (form.agp_lon)
-
-        # OBJS TO DB
-        agrimodule_id = session['set_sys']['agrimodule_id']
-        agrisensor  = Agrisensor(agrimodule_id = agrimodule_id, lat = ags_lat, lon = ags_lon)
-        agripump    =   Agripump(agrimodule_id = agrimodule_id, lat = agp_lat, lon = agp_lon)
-        agrimodule = Agrimodule.query.filter_by(id = agrimodule_id).first()
-        agrimodule.lat = agm_lat
-        agrimodule.lon = agm_lon
-        print(agrimodule_id)
-        print(agrisensor)
-        print(agripump)
-
-        # DB COMMANDS
-        db.session.add(agrisensor)
-        db.session.add(agripump)
-        db.session.commit()
-
-        # ADD SESSION OBJS
-        session['set_sys'].update({'agrimodule_id':agrimodule.id, 'agrisensor_id':agrisensor.id, 'agripump_id':agripump.id, 'agm_lat':agm_lat, 'agm_lon':agm_lon, 'ags_lat':ags_lat, 'ags_lon':ags_lon, 'agp_lat':agp_lat, 'agp_lon':agp_lon})
-        session.modified = True
-        print (session['set_sys'])
-
-
-
-        # FLASH AND REDIRECT
-        flash('''Your Agrimodule location is: LAT: {} LON: {}
-                Your Agrisensor location is: LAT: {} LON: {}
-                Your Agripump location is: LAT: {} LON: {}'''.format(agm_lat, agm_lon, ags_lat, ags_lon, agp_lat, agp_lon))
-        return redirect(url_for('welcome.add_pump'))
-    return render_template('welcome/install_agrisys.html', form=form)
+    # def is_agrimodule_bundle(identifier):
+    #     if identifier[-3:] == '000':
+    #         return True
+    #     return False
+    #
+    # def get_bundle_identifiers(identifier):
+    #     agrimodule_identifier = identifier
+    #     agrisensor_identifier = 'agrisensor' + identifier[-4:]
+    #     agripump_identifier = 'agripump' + identifier[-4:]
+    #     return agrimodule_identifier, agrisensor_identifier, agripump_identifier
+    #
+    # form = InstallAgrisysForm()
+    # if form.validate_on_submit():
+    #     # USER OBJS
+    #     user = current_user
+    #
+    #     # INSTALL AGRISYS OBJS
+    #     agm_lat = form.agm_lat.data
+    #     agm_lon = form.agm_lon.data
+    #     ags_lat = form.ags_lat.data
+    #     ags_lon = form.ags_lon.data
+    #     agp_lat = form.agp_lat.data
+    #     agp_lon = form.agp_lon.data
+    #     print (form.agm_lat)
+    #     print (form.agm_lon)
+    #     print (form.ags_lat)
+    #     print (form.ags_lon)
+    #     print (form.agp_lat)
+    #     print (form.agp_lon)
+    #
+    #     # OBJS TO DB
+    #     agrimodule_id = session['set_sys']['agrimodule_id']
+    #     agrisensor  = Agrisensor(agrimodule_id = agrimodule_id, lat = ags_lat, lon = ags_lon)
+    #     agripump    =   Agripump(agrimodule_id = agrimodule_id, lat = agp_lat, lon = agp_lon)
+    #     agrimodule = Agrimodule.query.filter_by(id = agrimodule_id).first()
+    #     agrimodule.lat = agm_lat
+    #     agrimodule.lon = agm_lon
+    #     print(agrimodule_id)
+    #     print(agrisensor)
+    #     print(agripump)
+    #
+    #     # DB COMMANDS
+    #     db.session.add(agrisensor)
+    #     db.session.add(agripump)
+    #     db.session.commit()
+    #
+    #     # ADD SESSION OBJS
+    #     session['set_sys'].update({'agrimodule_id':agrimodule.id, 'agrisensor_id':agrisensor.id, 'agripump_id':agripump.id, 'agm_lat':agm_lat, 'agm_lon':agm_lon, 'ags_lat':ags_lat, 'ags_lon':ags_lon, 'agp_lat':agp_lat, 'agp_lon':agp_lon})
+    #     session.modified = True
+    #     print (session['set_sys'])
+    #
+    #
+    #
+    #     # FLASH AND REDIRECT
+    #     flash('''Your Agrimodule location is: LAT: {} LON: {}
+    #             Your Agrisensor location is: LAT: {} LON: {}
+    #             Your Agripump location is: LAT: {} LON: {}'''.format(agm_lat, agm_lon, ags_lat, ags_lon, agp_lat, agp_lon))
+        # return redirect(url_for('welcome.add_pump'))
+    current_user.welcome.install_agrisys = True
+    db.session.commit()
+    return render_template('welcome/install_agrisys.html')
 
 ###################
 # SET ADD PUMP
 ###################
-@welcome.route('/set-sys/add-pump', methods=['GET', 'POST'])
+@welcome.route('/add-pump', methods=['GET', 'POST'])
 @login_required
 def add_pump():
+    if 'welcome' not in session:
+        session['welcome'] = dict()
+        session.modified = True
+    # from form to db
+    def lps_to_mlpm(lps):
+        return lps * (1000 * 60)
+    def m_to_cm(m):
+        return m * 100
+    def kw_to_w(kw):
+        return kw * 1000
+    # from db to form
+    def mlpm_to_lps(mlpm):
+        return mlpm / (1000 * 60)
+    def cm_to_m(cm):
+        return cm / 100
+    def w_to_kw(w):
+        return w / 1000
 
     form = AddPumpForm()
+    # if user has complete farm, but didnot finish field. pass the current
+    if current_user.welcome.add_pump:
+        pump = current_user.pumps.first()
+        myPump = PreAddPumpForm(pump_name = pump.pump_name, pump_brand = pump.pump_brand, pump_flow_rate = mlpm_to_lps(pump.pump_flow_rate), pump_head = cm_to_m(pump.pump_head), pump_watts = w_to_kw(pump.pump_watts))
+        form = AddPumpForm(obj=myPump)               # CREATE WTForm FORM
+
     if form.validate_on_submit():
         # USER OBJS
         user = current_user
-        agrimodule = user.agrimodules.filter_by(id = session['set_sys']['agrimodule_id']).first()
-        print(agrimodule)
-        agripump = agrimodule.agripumps.filter_by(id = session['set_sys']['agripump_id']).first()
-        print(agripump)
+        agrimodule = user.agrimodules.first()
+        agripump = agrimodule.agripumps.first()
 
-        def lps_to_mlpm(lps):
-            return lps * (1000 * 60)
-        def m_to_cm(m):
-            return m * 100
-        def kw_to_w(kw):
-            return kw * 1000
-        # ADD PUMP OBJS
-        pump_name = form.pump_name.data
-        pump_brand = form.pump_brand.data
-        pump_flow_rate = lps_to_mlpm(form.pump_flow_rate.data)
-        pump_head = m_to_cm(form.pump_head.data)
-        pump_watts = kw_to_w(form.pump_watts.data)
-        print(pump_brand)
-        print(pump_flow_rate)
-        print(pump_head)
-        print(pump_watts)
-
-        # OBJS TO DB
-        pump = Pump(user = user, pump_name = pump_name, pump_brand = pump_brand, pump_flow_rate = pump_flow_rate, pump_head = pump_head, pump_watts = pump_watts)
+        if current_user.welcome.add_pump:
+            pump.pump_name = form.pump_name.data
+            pump.pump_brand = form.pump_brand.data
+            pump.pump_flow_rate = lps_to_mlpm(form.pump_flow_rate.data)
+            pump.pump_head = m_to_cm(form.pump_head.data)
+            pump.pump_watts = kw_to_w(form.pump_watts.data)
+            flash('Your pump has been re-registered: "{}"'.format(pump.pump_name))
+        else:
+            # ADD PUMP OBJS
+            pump_name = form.pump_name.data
+            pump_brand = form.pump_brand.data
+            pump_flow_rate = lps_to_mlpm(form.pump_flow_rate.data)
+            pump_head = m_to_cm(form.pump_head.data)
+            pump_watts = kw_to_w(form.pump_watts.data)
+            # OBJS TO DB
+            pump = Pump(user = user, pump_name = pump_name, pump_brand = pump_brand, pump_flow_rate = pump_flow_rate, pump_head = pump_head, pump_watts = pump_watts)
+            db.session.add(pump)
+            flash('Your pump has been registered: "{}"'.format(pump.pump_name))
 
         # DB COMMANDS
-        db.session.add(pump)
         db.session.commit()
 
         # ADD PUMP TO AGRIPUMP
         agripump.pump_id = pump.id
-        print(agripump.pump_id)
+        current_user.welcome.add_pump = True
         db.session.commit()
 
 
         # OBJS SAVE ON SESSION
-        session['set_sys'].update({'pump_id':pump.id, 'pump_brand':form.pump_brand.data, 'pump_flow_rate':form.pump_flow_rate.data, 'pump_head':form.pump_head.data, 'pump_watts':form.pump_watts.data})
+        session['welcome'].update({'pump_id':pump.id, 'pump_brand':form.pump_brand.data, 'pump_flow_rate':form.pump_flow_rate.data, 'pump_head':form.pump_head.data, 'pump_watts':form.pump_watts.data})
         session.modified = True
-        print (session['set_sys'])
 
 
         # FLASH AND REDIRECT
@@ -206,8 +341,6 @@ def add_pump():
                 Flow rate: {} lps
                 Head pressure: {} m
                 Wattage: {} kW'''.format(form.pump_brand.data, form.pump_flow_rate.data, form.pump_head.data, form.pump_watts.data))
-        del session['set_sys']
-
         return redirect(url_for('welcome.index'))
 
     return render_template('welcome/add_pump.html', form=form)
@@ -216,32 +349,31 @@ def add_pump():
 ###################
 # SET FARM
 ###################
-@welcome.route('/set-farm', methods=['GET', 'POST'])
+@welcome.route('/add-farm', methods=['GET', 'POST'])
 @login_required
-def welcome_set_farm():
+def add_farm():
 
     def cm2_to_m2(cm2):
         return cm2 / 10000
+    def m2_to_cm2(m2):
+        return m2 * 10000
 
-    if 'set_farm' not in session:
-        session['set_farm'] = dict()
+    if 'welcome' not in session:
+        session['welcome'] = dict()
         session.modified = True
 
-    form = FarmForm()
+    form = AddFarmForm()
     # if user has complete farm, but didnot finish field. pass the current
-    if not current_user.farms.count() == 0:
+    if current_user.welcome.add_farm:
         farm = current_user.farms.first()
-        myFarm = PreFarmForm(farm_name = farm.farm_name,
+        myFarm = PreAddFarmForm(farm_name = farm.farm_name,
                             farm_location = farm.farm_location,
                             farm_area = cm2_to_m2(farm.farm_area),
                             farm_cultivation_process = farm.farm_cultivation_process,
                             )
-        form = FarmForm(obj=myFarm)               # CREATE WTForm FORM
+        form = AddFarmForm(obj=myFarm)               # CREATE WTForm FORM
 
     if form.validate_on_submit():   # IF request.methiod == 'POST'
-        def m2_to_cm2(m2):
-            return m2 * 10000
-
         # USER OBJS
         user_id = current_user.get_id()
 
@@ -250,17 +382,18 @@ def welcome_set_farm():
         farm_location = form.farm_location.data
         farm_area = form.farm_area.data
         farm_cultivation_process = form.farm_cultivation_process.data
-        print (form.farm_name.data)
-        print (form.farm_location.data)
-        print (form.farm_area.data)
-        print (form.farm_cultivation_process.data)
 
         # FARM OBJS  TO DB
-        if not current_user.farms.count() == 0:
+        if current_user.welcome.add_farm:
             farm.farm_name = form.farm_name.data
             farm.farm_location = form.farm_location.data
-            farm.farm_area = form.farm_area.data
+            farm.farm_area = m2_to_cm2(form.farm_area.data)
             farm.farm_cultivation_process = form.farm_cultivation_process.data
+            farm._default = False
+            flash('''You just re-created farm: {}
+                        located: {}
+                        with an area: {} m2
+                        growing: {}ally'''.format(farm_name, farm_location, farm_area, farm_cultivation_process))
         else:
             farm = Farm(    user_id=user_id,
                             farm_name=farm_name,
@@ -270,22 +403,24 @@ def welcome_set_farm():
                             _default=False)
             # DB COMMANDS
             db.session.add(farm)
+            flash('''You just created farm: {}
+                        located: {}
+                        with an area: {} m2
+                        growing: {}ally'''.format(farm_name, farm_location, farm_area, farm_cultivation_process))
 
-        print(farm)
         # DB COMMANDS
+        current_user.welcome.add_farm = True
         db.session.commit()
-
         # OBJS SAVE ON SESSION
          # ADD SESSION OBJS
         farm_id = farm.id
-        session['set_farm'].update({'user_id': user_id,
+        session['welcome'].update({'user_id': user_id,
                                 'farm_id':farm_id,
                                 'farm_name':farm_name,
                                 'farm_location':farm_location,
                                 'farm_area':farm_area,
                                 'farm_cultivation_process':farm_cultivation_process})
         session.modified = True
-        print (session['set_farm'])
 
         # DEAFULT FARM
         if current_user.farms.count() == 1: # if first time and first farm, set it as the default one
@@ -296,40 +431,35 @@ def welcome_set_farm():
 
 
         # SUCESS AND REDIRECT TO NEXT STEP
-        flash('''You just created farm: {}
-                    located: {}
-                    with an area: {} m2
-                    growing: {}ally'''.format(farm_name, farm_location, farm_area, farm_cultivation_process))
-        return redirect(url_for('welcome.welcome_set_field'))
+        return redirect(url_for('welcome.add_crop'))
 
-    return render_template('welcome/welcome_set_farm.html', form=form)
+    return render_template('welcome/add_farm.html', form=form)
 
 
 ###################
 # SET FIELD
 ###################
-@welcome.route('/set-field', methods=['GET', 'POST'])
+@welcome.route('/add-crop', methods=['GET', 'POST'])
 @login_required
-def welcome_set_field():
+def add_crop():
+
+    if 'welcome' not in session:
+        session['welcome'] = dict()
+        session.modified = True
 
     crop_choices = Crop.query.all()
-
-
-    form = FieldForm()              # CREATE WTForm FORM
+    form = AddCropForm()              # CREATE WTForm FORM
     form.field_cultivation_crop.choices = [ (crop.id,  str.capitalize(crop._name)) for crop in crop_choices ]
     form.field_cultivation_crop.choices.insert(0, ('0' ,'Choose:'))
 
     if form.validate_on_submit():   # IF request.methiod == 'POST'
         # USER OBJS
-        user = User.query.filter_by(id = session['set_farm']['user_id']).first()
-        farm = user.farms.filter_by(id = session['set_farm']['farm_id']).first()
+        user = User.query.filter_by(id = session['welcome']['user_id']).first()
+        farm = user.farms.filter_by(id = session['welcome']['farm_id']).first()
 
         # FIELD OBJS
-        print(form.field_cultivation_crop.data)
-        print(Crop.query.filter_by(id = form.field_cultivation_crop.data).first())
-
         crop = Crop.query.filter_by(id = form.field_cultivation_crop.data).first()
-        field_name = form.field_name.data
+        field_name = crop._name
         field_cultivation_area = form.field_cultivation_area.data
         field_cultivation_start_date = form.field_cultivation_start_date.data
         field_cultivation_state = form.field_cultivation_state.data
@@ -362,7 +492,7 @@ def welcome_set_field():
 
 
         # FIELD OBJS TO DB
-        field = Field(  field_name=field_name,
+        field = Field(  field_name = field_name,
                         farm=farm,
                         field_cultivation_area=m2_to_cm2(field_cultivation_area),
                         field_cultivation_start_date=field_cultivation_start_date,
@@ -377,6 +507,7 @@ def welcome_set_field():
 
         # DB COMMANDS
         user.completed_welcome = True # sets flag for user to have completed the welcome phase
+        current_user.welcome.add_field = True
         db.session.add(field)
         db.session.commit()
 
@@ -389,7 +520,7 @@ def welcome_set_field():
 
         #SUCESS AND REDIRECT TO DASHBOARD
         flash('You just created a {} in your {}'.format(field_name, farm.farm_name))
-        del session['set_farm']     # ERASE SESSION OBJS
+        del session['welcome']     # ERASE SESSION OBJS
         return redirect(url_for('login_check.index'))
 
-    return render_template('welcome/welcome_set_field.html', form=form)
+    return render_template('welcome/add_crop.html', form=form)

@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, redirect, url_for, flash
-from solarvibes.models import User, Agrimodule, Measurement, Agrisensor
+from solarvibes.models import User, Agrimodule, Measurement, Agrisensor, Field
 from flask_login import current_user
 from flask_security import login_required
 
@@ -28,9 +28,11 @@ def show_agrimodule(agrimodule_id = None):
 
     user = current_user
     agrimodule = current_user.agrimodules.filter_by(id = agrimodule_id).first()
-    farm = user.farms.first()
+    # TODO: better filter the farm and field and the crop that is being passed to render in MAIN and AGRIMODULE blueprint with agrisensor in agrimodule blueprint also checked
+
     # TODO: here is for only 1 crop in the field. but when mix cultivation or multi. need to reflect more than 1 crop
-    field = farm.fields.first()
+    field = Field.query.filter_by(id = agrimodule.field_id).first()
+    farm = user.farms.filter_by(id = field.farm_id).first()
     system_name = agrimodule.name
     crop = field.crops.first()
     measurement = agrimodule.measurements.order_by(Measurement.timestamp.desc()).first()
@@ -62,8 +64,8 @@ def show_agrisensor(agrimodule_id = None, agrisensor_id = None):
     user = current_user
     agrimodule = current_user.agrimodules.filter_by(id = agrimodule_id).first()
     agrisensor = agrimodule.agrisensors.filter_by(id = agrisensor_id).first()
-    farm = user.farms.first()
-    field = farm.fields.first()
+    field = Field.query.filter_by(id = agrimodule.field_id).first()
+    farm = user.farms.filter_by(id = field.farm_id).first()
     system_name = agrimodule.name
     crop = field.crops.first()
     measurement = agrimodule.measurements.order_by(Measurement.timestamp.desc()).first()
