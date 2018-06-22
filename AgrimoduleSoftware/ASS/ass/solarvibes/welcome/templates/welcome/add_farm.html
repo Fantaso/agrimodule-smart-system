@@ -5,18 +5,24 @@
 	Set farm
 {% endblock %}
 
+{% block add_farm_active %}
+	active
+{% endblock %}
+
 {% block content %}
 <div class = "container">
-    <h1>Welcome set farm</h1>
+    <h1>Welcome add farm</h1>
     <hr>
 	<h1>Create your farm</h1>
-	<form method="POST" action="{{ url_for('welcome.welcome_set_farm') }}">
+	<form method="POST" action="{{ url_for('welcome.add_farm') }}">
 		{{ form.csrf_token }}
 		{{ render_field_with_errors(form.farm_name) }}
 		{{ render_field_with_errors(form.farm_location) }}
 		{{ render_field_with_errors(form.farm_area) }}
 		{{ render_field_with_errors(form.farm_cultivation_process) }}
-		<input type="submit" class="btn btn-primary btn-md" value="Create Farm!">
+		<input type="submit" class="hoverable waves-effect waves-light btn" value="Add farm!">
 	</form>
+	<br>
+	<a href="{{ url_for('welcome.add_pump') }}" class="amber darken-1 waves-effect waves-light btn btn-small"><i class="material-icons left">arrow_back</i>Back</a>
 </div>
 {% endblock %}
