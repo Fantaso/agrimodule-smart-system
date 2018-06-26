@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, redirect, url_for, flash
-from solarvibes import db
+from solarvibes import db, photos
 from solarvibes.users.forms import UserProfileForm, PreUserProfileForm # User Forms
 from solarvibes.models import User
 from flask_login import current_user
