@@ -1,8 +1,8 @@
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileAllowed, FileField
-from wtforms import StringField
+from wtforms import StringField, IntegerField
 from wtforms.fields.html5 import DateField
-from wtforms.validators import Email, Length
+from wtforms.validators import Email, Length, NumberRange
 from flask_uploads import IMAGES
 
 
@@ -28,7 +28,7 @@ class UserProfileForm(FlaskForm):
     name        = StringField('Name',               validators=[Length(min=2, max=30, message='Your name needs to be at least 2 characters long.')])
     last_name   = StringField('Last name',          validators=[Length(min=2, max=30, message='Your last name needs to be at least 2 characters long.')])
     address     = StringField('Address',            validators=[Length(min=2, max=30, message='Minimum: 2 characters.')])
-    zipcode     = StringField('Zipcode',            validators=[Length(min=1, max=7, message='Minimum: 1 characters.')])
+    zipcode     = IntegerField('Zipcode',            validators=[NumberRange(min=1, max=99999, message='Number of your code')])
     city        = StringField('City',               validators=[Length(min=2, max=30, message='Minimum: 2 characters.')])
     state       = StringField('State',              validators=[Length(min=2, max=30, message='Minimum: 2 characters.')])
     country     = StringField('Country',            validators=[Length(min=2, max=30, message='Minimum: 2 characters.')])
