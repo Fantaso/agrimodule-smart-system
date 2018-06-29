@@ -257,6 +257,8 @@ class Agrimodule(db.Model):
     lat = db.Column(db.Float(precision=8))
     lon = db.Column(db.Float(precision=8))
     batt_status = db.Column(db.Integer)
+    public_id = db.Column(db.String(200))
+    mac = db.Column(db.String(400))
 
 
     # RELATIONSHIP
