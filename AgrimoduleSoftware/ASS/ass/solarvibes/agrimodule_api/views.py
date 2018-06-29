@@ -1,8 +1,10 @@
 from flask import Blueprint, jsonify, request, make_response
 from solarvibes.models import User, Agrimodule, Agripump, Measurement, Agrisensor
+from solarvibes.models import AgrimoduleList, AgripumpList, AgrisensorList
 from flask_login import current_user
 from flask_security import login_required
 from solarvibes import app, db
+
 import uuid
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
@@ -54,64 +56,6 @@ def get_agrimodule(agrimodule_id = None):
 
     agrimodule = current_user.agrimodules.filter_by(id = agrimodule_id).one()
     return jsonify(agrimodule)
-
-
-
-#############################################################################################################################
-#############################################################################################################################
-########################                      SET MEASUREMENT
-#############################################################################################################################
-#############################################################################################################################
-@agrimodule_api.route('/register/<identifier>', methods = ['POST'])
-# @login_required
-def register(identifier = None):
-
-    if not identifier:
-        print(identifier)
-        return jsonify(dict(message = 'registration not allowed!'))
-
-    agrimodule = AgrimoduleList.query.filter_by(identifier = identifier).first()
-    if not agrimodule:
-        return jsonify(dict(message = 'agrimodule not registered in Solarvibes!'))
-    if not agrimodule.has_user_registered:
-        return jsonify(dict(message = 'agrimodule has not been registered by farmer!'))
-
-    
-
-# identifier
-# type
-# has_user_registered
-# user_id
-# has_agrimodule_registered
-
-    if request.method == 'POST':
-        try:
-            payload = request.get_json()
-            measurement = Measurement(  agrimodule_id = int(payload['agrimodule_id']),
-                                        timestamp = datetime(payload['timestamp']),
-                                        soil_ph = float(payload['soil_ph']),
-                                        soil_nutrient = float(payload['soil_nutrient']),
-                                        soil_temp = float(payload['soil_temp']),
-                                        soil_humi = float(payload['soil_humi']),
-                                        air_temp = float(payload['air_temp']),
-                                        air_humi = float(payload['air_humi']),
-                                        air_pres = float(payload['air_pres']),
-                                        solar_radiation = float(payload['solar_radiation']),
-                                        batt_status = int(payload['batt_status']),
-                                        lat = float(payload['lat']),
-                                        lon = float(payload['lon']),
-                                        )
-            # set agrimodule with lates batt_status, lat and lon
-            agrimodule.batt_status = int(payload['batt_status'])
-            agrimodule.lat = float(payload['lat'])
-            agrimodule.lon = float(payload['lon'])
-            # add object to db and save
-            db.session.add(measurement)
-            db.session.commit()
-            return jsonify({'message':'measurement created!'})
-        except:
-            db.session.rollback()
-            return jsonify({'error':'measurement not created!'})
 
 
 
@@ -288,9 +232,249 @@ def get_measurements(agrimodule_id = None):
             return jsonify({'error':'all measurements corrupted!'})
 
 
+#############################################################################################################################
+#############################################################################################################################
+########################                      0 - HELLO
+#############################################################################################################################
+#############################################################################################################################
+@agrimodule_api.route('/hello', methods = ['GET'])
+@agrimodule_api.route('/hello/<identifier>', methods = ['GET'])
+# @login_required
+def first_contact(identifier = None):
+
+    # initial validation for whene a request contains no identifier
+    if not identifier:
+        print(identifier)
+        return jsonify(dict(message = 'not allowed!')), 400
+
+    # return jsonify(dict(message = 'You have not yet been bought or registered in a farmer account!',)), 202
+    if request.method == 'GET':
+        try:
+            # initialization of variables to be returned
+            http_status = 202
+            payload = dict(belong_to_user = False,
+                            being_used = False,
+                            message = 'You have not been bought or registered in a farmer account yet!',
+                            )
+
+            # query to retrieve the agrimodule registry - where the flags and to which user in the account the agrimodule belongs to.
+            # db exclusive for license and tranfer of ownership of agrimodule
+            agrimodule_reg = AgrimoduleList.query.filter_by(identifier = identifier).first()
+
+            # check if identifier even exist // if this agrmiodule has a license mto access the app
+            # if not  the answer is return directly here, because the other validation would give an error since agrimodule_reg would a Nonetype obj and it would not ahve atrributes
+            if not agrimodule_reg:
+                http_status = 403
+                payload.update(message = 'Contact Solarvibes: Agrimodule Support!')
+                return jsonify(payload), http_status
+
+            # if a user has registered the agrimodule to his account
+            if agrimodule_reg.has_user_registered:
+                http_status = 206
+                payload.update(message = 'Yes, you have an owner', belong_to_user = True)
+
+            # if a user has registered, may have deleted from its configuration, and there is not point of sending data nowhere
+            agrimodule = Agrimodule.query.filter_by(identifier = identifier).first()
+            if agrimodule:
+                http_status = 200
+                payload.update(message = 'Yes, you have an owner and your are being used', being_used = True)
+
+            # validation to sen
+            return jsonify(payload), http_status
+        except:
+            # in case of exceptions, return a internal server error 500
+            return jsonify({'error':'Internal server error agrimodule API - FIRST CONTACT!'}), 500
 
 
 
+#############################################################################################################################
+#############################################################################################################################
+########################                      1 - REGISTRATION
+#############################################################################################################################
+#############################################################################################################################
+@agrimodule_api.route('/register', methods = ['POST'])
+# @login_required
+def register():
+
+    # retrieveng json data payload
+    data = request.get_json(silent = True)
+    # initial validation for whene a request contains no json data
+    if not data:
+        return jsonify(dict(message = 'Bad request')), 400
+    # initial validation for whene a request contains json data but, in the body contains no identifier or mac
+    if not str(data['identifier']) or not str(data['mac']):
+        return jsonify(dict(message = 'Bad request - no data')), 400
+
+    # if all data is there, we proceed for the request
+    identifier = str(data['identifier'])
+    mac = str(data['mac'])
+    print(mac, identifier)
+
+    if request.method == 'GET':
+        try:
+            ###################################
+            ###################################
+            # initial validation. as in first contact
+            ###################################
+            def agrimodule_validation(identifier = None):
+                # initialization of variables to be returned
+                http_status = None
+                msg = 'You have not been bought or registered in a farmer account yet!'
+                # query to retrieve the agrimodule registry - where the flags and to which user in the account the agrimodule belongs to.
+                # db exclusive for license and tranfer of ownership of agrimodule
+                agrimodule_reg = AgrimoduleList.query.filter_by(identifier = identifier).first()
+                # check if identifier even exist // if this agrmiodule has a license mto access the app
+                # if not  the answer is return directly here, because the other validation would give an error since agrimodule_reg would a Nonetype obj and it would not ahve atrributes
+                if not agrimodule_reg:
+                    http_status = 403
+                    msg = 'Contact Solarvibes: Agrimodule Support!'
+                    return dict(msg = msg, http_status = http_status)
+                # if a user has registered the agrimodule to his account
+                if agrimodule_reg.has_user_registered:
+                    http_status = 206
+                    msg = 'Yes, you have an owner'
+                # if a user has registered, may have deleted from its configuration, and there is not point of sending data nowhere
+                agrimodule = Agrimodule.query.filter_by(identifier = identifier).first()
+                if agrimodule:
+                    http_status = 200
+                    msg = 'Yes, you have an owner and your are being used'
+                # validation to sen
+                return dict(msg = msg, http_status = http_status)
+
+            ###################################
+            # call initial validation
+            response = agrimodule_validation(identifier)
+            if not response['http_status'] == 200:
+                return jsonify(dict(message = response['msg'])), response['http_status']
+            ###################################
+            ###################################
+
+
+            ###################################
+            # Begin route
+            ###################################
+            http_status = 202
+            payload = dict(message = 'You are in the process of registering!')
+
+            # check if the mac address is already registered in the agrimodules register in the server
+            mac_registered = Agrimodule.query.filter_by(mac = mac).first()
+            if not mac_registered:
+                # generate the public id and add the mac address to the agrimodule
+                http_status = 201
+
+                agrimodule_reg = AgrimoduleList.query.filter_by(identifier = identifier).first()
+                agrimodule_reg.has_agrimodule_registered = True
+
+                agrimodule = Agrimodule.query.filter_by(identifier = identifier).first()
+                agrimodule.public_id = str(uuid.uuid4())
+                agrimodule.mac = str(mac)
+
+                db.session.commit()
+                payload.update(password = agrimodule.mac, username = agrimodule.public_id, message = 'You have been registered')
+            else:
+                http_status = 403
+                payload.update(message = 'This agrimodule already exist: Get Agrimodule Support!')
+
+            # validation to send
+            return jsonify(payload), http_status
+        except Exception as e:
+            print('Error: ' + str(e))
+            db.session.rollback()
+            # in case of exceptions, return a internal server error 500
+            # return jsonify({'error': str(e)}), 500
+            return jsonify({'error':'Internal server error agrimodule API - REGISTERING!'}), 500
+
+
+#############################################################################################################################
+#############################################################################################################################
+########################                      1 - UN-REGISTRATION
+#############################################################################################################################
+#############################################################################################################################
+@agrimodule_api.route('/unregister', methods = ['GET'])
+@agrimodule_api.route('/unregister/<identifier>', methods = ['GET'])
+@agrimodule_api.route('/unregister/<identifier>/<mac>', methods = ['GET'])
+# @login_required
+def unregister(identifier = None, mac = None):
+
+    # initial validation for whene a request contains no identifier
+    if not identifier or not mac:
+        print(identifier, mac)
+        return jsonify(dict(message = 'not allowed!')), 400
+
+    # return jsonify(dict(message = 'You have not yet been bought or registered in a farmer account!',)), 202
+    if request.method == 'GET':
+        try:
+            ###################################
+            ###################################
+            # initial validation. as in first contact
+            ###################################
+            def agrimodule_validation(identifier = None):
+                # initialization of variables to be returned
+                http_status = None
+                msg = 'You have not been bought or registered in a farmer account yet!'
+                # query to retrieve the agrimodule registry - where the flags and to which user in the account the agrimodule belongs to.
+                # db exclusive for license and tranfer of ownership of agrimodule
+                agrimodule_reg = AgrimoduleList.query.filter_by(identifier = identifier).first()
+                # check if identifier even exist // if this agrmiodule has a license mto access the app
+                # if not  the answer is return directly here, because the other validation would give an error since agrimodule_reg would a Nonetype obj and it would not ahve atrributes
+                if not agrimodule_reg:
+                    http_status = 403
+                    msg = 'Contact Solarvibes: Agrimodule Support!'
+                    return dict(msg = msg, http_status = http_status)
+                # if a user has registered the agrimodule to his account
+                if agrimodule_reg.has_user_registered:
+                    http_status = 206
+                    msg = 'Yes, you have an owner'
+                # if a user has registered, may have deleted from its configuration, and there is not point of sending data nowhere
+                agrimodule = Agrimodule.query.filter_by(identifier = identifier).first()
+                if agrimodule:
+                    http_status = 200
+                    msg = 'Yes, you have an owner and your are being used'
+                # validation to sen
+                return dict(msg = msg, http_status = http_status)
+
+            ###################################
+            # call initial validation
+            response = agrimodule_validation(identifier)
+            if not response['http_status'] == 200:
+                return jsonify(dict(message = response['msg'])), response['http_status']
+            ###################################
+            ###################################
+
+
+            ###################################
+            # Begin route
+            ###################################
+            http_status = 202
+            payload = dict(message = 'You are in the process of registering!')
+
+            # check if the mac address is already registered in the agrimodules register in the server
+            mac_registered = Agrimodule.query.filter_by(mac = mac).first()
+            if not mac_registered:
+                # generate the public id and add the mac address to the agrimodule
+                http_status = 201
+
+                agrimodule_reg = AgrimoduleList.query.filter_by(identifier = identifier).first()
+                agrimodule_reg.has_agrimodule_registered = True
+
+                agrimodule = Agrimodule.query.filter_by(identifier = identifier).first()
+                agrimodule.public_id = str(uuid.uuid4())
+                agrimodule.mac = str(mac)
+
+                db.session.commit()
+                payload.update(password = agrimodule.mac, username = agrimodule.public_id, message = 'You have been registered')
+            else:
+                http_status = 403
+                payload.update(message = 'This agrimodule already exist: Get Agrimodule Support!')
+
+            # validation to send
+            return jsonify(payload), http_status
+        except Exception as e:
+            print('Error: ' + str(e))
+            db.session.rollback()
+            # in case of exceptions, return a internal server error 500
+            return jsonify({'error': str(e)}), 500
+            # return jsonify({'error':'Internal server error agrimodule API - REGISTERING!'}), 500
 #### flask-restless basic configuration.
 # from flask_restless import APIManager
 # manager = APIManager(app, flask_sqlalchemy_db = db)
@@ -311,3 +495,10 @@ def get_measurements(agrimodule_id = None):
 # # print(ag_measurement.batt_status)
 # # print(ag_measurement.lat)
 # # print(ag_measurement.lon)
+
+# ERRORS
+# 200, OK
+# 201, Created
+# 202, Accepted
+# 403, Forbidden
+# 206, Partial Content
