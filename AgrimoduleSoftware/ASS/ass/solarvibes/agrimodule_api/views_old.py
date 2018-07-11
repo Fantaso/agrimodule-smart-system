@@ -307,7 +307,7 @@ def unregister(identifier = None, mac = None):
             db.session.rollback()
             # in case of exceptions, return a internal server error 500
             return jsonify({'error': str(e)}), 500
-            # return jsonify({'error':'Internal server error agrimodule API - REGISTERING!'}), 500
+            
 
 #### flask-restless basic configuration.
 # from flask_restless import APIManager

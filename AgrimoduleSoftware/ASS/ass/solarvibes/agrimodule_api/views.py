@@ -28,6 +28,7 @@ api = Api(agrimodule_api)
 #############################################################################################################################
 class Index(Resource):
     def get(self):
+        # return dict(welcone = 'This is the Solarvibes API design for the agrimodules to interact with Solarvibes servers!')
         return {'Welcome':'This is the Solarvibes API design for the agrimodules to interact with Solarvibes servers!'}
 
 
@@ -99,8 +100,8 @@ register_parser.add_argument('mac',
 )
 
 register_fields = {
-    'identifier' : fields.String,
-    'mac' : fields.String,
+    'identifier' : fields.String(default = 'loco'),
+    'mac' : fields.String(default = 'loco1'),
 }
 ####################################################
 
@@ -173,11 +174,12 @@ class Register(Resource):
             payload.update(password = agrimodule.mac, username = agrimodule.public_id, message = 'You have been registered')
         else:
             http_status = 403
-            payload.update(message = 'This agrimodule already exist - Get Agrimodule Support!')
+            payload['message'] = 'This agrimodule already exist - Get Agrimodule Support!'
 
         # validation to send
         print(payload)
-        return {'msg' : 'loco'}, http_status
+        # return {'error': 'locoooooo'}, 500
+        return payload, http_status
         # except Exception as e:
         #     print('Error: ' + str(e))
         #     db.session.rollback()
