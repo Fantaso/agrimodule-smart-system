@@ -50,7 +50,7 @@ def show(agripump_id = None):
         return cm / 100
     def w_to_kw(w):
         return w / 1000
-    pump_info = {'pump_brand': pump.pump_brand, 'pump_flow_rate':mlpm_to_lps(pump.pump_flow_rate), 'pump_watts':w_to_kw(pump.pump_watts), 'pump_head':cm_to_m(pump.pump_head)}
+    pump_info = {'pump_name': pump.pump_name, 'pump_brand': pump.pump_brand, 'pump_flow_rate':mlpm_to_lps(pump.pump_flow_rate), 'pump_watts':w_to_kw(pump.pump_watts), 'pump_head':cm_to_m(pump.pump_head)}
 
     # Calculating energy consumption full cycle
     def w_to_wm(w):
