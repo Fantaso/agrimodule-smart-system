@@ -179,6 +179,21 @@ class Crop(db.Model):
     def __repr__(self):
         return '<crop {}>'.format(self._name)
 
+#  crop planning db model
+class CropPlanning(db.Model):
+    __tablename__ = 'cropplanning'
+    id = db.Column(db.Integer, primary_key = True)
+
+class Task(db.Model):
+    __tablename__ = 'tasks'
+    id = db.Column(db.Integer, primary_key = True)
+    name = db.Column(db.Integer) # name of the task
+    description = db.Column(db.String(2000)) # description of the task (brief overview)
+    freq = db.Column(db.String(20)) # frequency of the task (weekly, bi-weekly etc)
+    duration = db.Column(db.Integer) # hours
+    man_power = db.Column(db.Integer) # number of man power needed
+
+# farm management system model
 class Pump(db.Model):
     """pump database used for each field or each agripump whichi is installed in the farm. one farm can ahve as many pump the want as long as the have an agripump for it"""
     __tablename__ = 'pump'
