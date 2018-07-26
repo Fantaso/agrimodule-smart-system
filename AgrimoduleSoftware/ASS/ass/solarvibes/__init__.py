@@ -63,7 +63,7 @@ from solarvibes.crop_status.views import crop_status
 from solarvibes.login_check.views import login_check
 from solarvibes.admin.views import admin_bp
 from solarvibes.agrimodule_api.views import agrimodule_api
-from solarvibes.agrimodule_api.views import crop_planning_bp
+from solarvibes.crop_planning.views import crop_planning_bp
 
 app.register_blueprint(site, url_prefix='/site')
 app.register_blueprint(users, url_prefix='/users')
