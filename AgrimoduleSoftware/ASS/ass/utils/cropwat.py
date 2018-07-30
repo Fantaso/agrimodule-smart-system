@@ -1,155 +1,125 @@
+# Variables
 
-# LOGIN
-'/login/'
-'/login/register/'
-'/login/reset-pass/'
-'/login/fb-login/'
+# factors affecrting eto are only climatic factors, so it can be calculated based on only weather data
+# evaporating power of atmosphere in a specific location and time
+ETo = 'reference crop evapotranspiration [mm / day]'
 
-# WELCOME
-##############################################			'/user/welcome/'
-##############################################			'/user/welcome/set-farm/'
-##############################################			'/user/welcome/set-sys/'
-##### SET FARM ########
-# /name/location/area/process
-# /name/state/start-date/crop/area/type/summary/confirm/welcome/
-##### SET SYS ########
-# /turn-on/qr-code/install/pump/confirm/welcome/
+# factor considered:
+# disease-free, well-fertilized crops, grown in large fields under optimun water conditions and achive full production under given climatic condiitions
+# etc will be aprox. 1-9 mm/day from cool to warn average temparatures
+ETc = 'crop evapotranspiration under standard conditions'
 
-# USER 
-'/user'
-	# SETTINGS
-	'/user/settings/'
-	'/user/settings/payment/'
-	'/user/settings/payment/edit/'
-	'/user/settings/profile/'
-	'/user/settings/profile/edit/'
-	'/user/settings/profile/edit-pass/'
-	'/user/settings/confirm-email/'
-	'/user/settings/confirm-phone/'
-	# USER MENU
-	'/user/menu/' 						# this always there at first as nav item
-	'/user/menu/welcome/' 				# initial set up (farm and agrimodule)
-	'/user/menu/farm-status/'
-	'/user/menu/crop-status/'
-	'/user/menu/farmer-plan/'
-	'/user/menu/new-farm/'
-	'/user/menu/new-field/'
-	'/user/menu/crop-analyzer/'
-	'/user/menu/health-analyzer/'
-	'/user/menu/market/'
-	'/user/menu/settings/'
-	'/user/menu/logout/'
+# weather
+direct_solar_radiation = ''
+air_temperature = ''
+air_relative_humidity = ''
+wind_speed = ''
 
-	# MARKET
-	'/user/market/'
-	'/user/market/cart/'
-	'/user/market/cart/edit/'
-	'/user/market/checkout/'
-	'/user/market/search/'
-	'/user/market/search/product/'
-	'/user/market/search/product/add-t-cart/'
-	'/user/market/search/product/rem-f-cart/'
-	
-	# FARM
-##############################################				'/user/farm/'
+# crop
+crop_transpiration_resistance = ''
+crop_roughness = ''
+crop_height = ''
+crop_reflection = ''
+crop_ground_cover = ''
+crop_root_characteristics = ''
+crop_density = ''
 
-		# WEATHER
-		'/user/farm/weather/'
-		'/user/farm/weather/history/'
-		'/user/farm/weather/predictions/'
-		'/user/farm/weather/forecast/'
-		'/user/farm/weather/daily/'
-		'/user/farm/weather/weekly/'
-		'/user/farm/weather/monthly/'
-
-		# ALERTS
-		'/user/farm/alerts/'
-		'/user/farm/alerts/farmer/'
-		'/user/farm/alerts/manager/'
-		'/user/farm/alerts/crop/'
-		'/user/farm/alerts/field/'
-		'/user/farm/alerts/farm/'
-		'/user/farm/alerts/market/'
-		'/user/farm/alerts/agrimodule/'
-		'/user/farm/alerts/agripump/'
-		'/user/farm/alerts/agrisensor/'
-
-		# FIELDS
-##############################################					'/user/farm/field/'
-			# AGRIMODULE
-##############################################						'/user/farm/field/agrimodule/'
-			'/user/farm/field/agrimodule/settings/'
-			'/user/farm/field/agrimodule/add-sensor'
-			'/user/farm/field/agrimodule/edit/<agrimodule_id>'
-			'/user/farm/field/agrimodule/delete/<agrimodule_id>'
-			'/user/farm/field/agrimodule/notifications/'
-			'/user/farm/field/agrimodule/weather/'
-			'/user/farm/field/agrimodule/weather/radiation/'
-			'/user/farm/field/agrimodule/weather/temp/'
-			'/user/farm/field/agrimodule/weather/humidity/'
-			'/user/farm/field/agrimodule/weather/presure/'
-			'/user/farm/field/agrimodule/soil/'
-			'/user/farm/field/agrimodule/soil/ph/'
-			'/user/farm/field/agrimodule/soil/temp/'
-			'/user/farm/field/agrimodule/soil/moist/'
-			'/user/farm/field/agrimodule/soil/nutrients/'
-			# AGRIPUMP
-##############################################						'/user/farm/field/agripump/'
-			'/user/farm/field/agripump/settings/'
-			'/user/farm/field/agripump/notifications/'
-			'/user/farm/field/agripump/on/'
-			'/user/farm/field/agripump/off/'
-			'/user/farm/field/agripump/flow/' # refers to a graph
-			'/user/farm/field/agripump/delete/<agripump_id>'
-			'/user/farm/field/agripump/change-pump/'
-			'/user/farm/field/agripump/schedule/'
-			# CROP
-##############################################						'/user/farm/field/crop-status/'
-
-		# FARMER
-		'/user/farm/farmer/'
-			# PLAN
-			'/user/farm/farmer/plan/'
-			'/user/farm/farmer/plan/add-task/'
-			'/user/farm/farmer/plan/rem-task/'
-			'/user/farm/farmer/plan/edit-task/'
-			'/user/farm/farmer/plan/task/'
-			'/user/farm/farmer/plan/task/how-to/'
-			# RESOURCES
-			'/user/farm/farmer/resources/'
-			'/user/farm/farmer/resources/history/'
-			'/user/farm/farmer/resources/stage/'
-			'/user/farm/farmer/resources/stage/time' # time refers to daily, weekly,  and stage. seedling, grow, fruit..
-			# CROP ANALYZER
-			'/user/farm/farmer/crop-analyzer/'
-			'/user/farm/farmer/crop-analyzer/history/'
-			'/user/farm/farmer/crop-analyzer/inputs/'
-			'/user/farm/farmer/crop-analyzer/suggestion/'
-			'/user/farm/farmer/crop-analyzer/suggestion/crop/'
-			# HEALTH ANALYZER
-			'/user/farm/farmer/health-analyzer/'
-			'/user/farm/farmer/health-analyzer/history/'
-			'/user/farm/farmer/health-analyzer/inputs/'
-			'/user/farm/farmer/health-analyzer/inputs/suggestion/'
-			'/user/farm/farmer/health-analyzer/inputs/suggestion/suggestion-one/'
-
-		# MANAGER
-		'/user/farm/manager/'
-		'/user/farm/manager/balance/'
-		'/user/farm/manager/production/'
-		'/user/farm/manager/clients/'
-		'/user/farm/manager/orders/'
-		'/user/farm/manager/precurement/'
-
-	
+# soil
+soil_salinity = ''
+soil_fertility = ''
+soil_roughness = ''
+soil_water_content = ''
 
 
+# EQUATION FOR AN EVAPORATING SURFACE
+	# Rn: net radiation at crop surface [MJ]/ pow(m, 2) * day]
+	# H: sensible heat
+	# G: soil heat flux [MJ / pow(m, 2) * day]
+	# ƛ * ET: latent heat flux
+Rn - G - ƛET - H = 0
 
+# PENMAN-MONTEITH EQUATION
+	# Rn = net radiation
+	# (es - ea) = s the vapour pressure deficit of the air [kPa]
+	# ∆ =  the slope of the saturation vapour pressure temperature relationship
+	# γ = psychrometric constant
+	# rs, ra = (bulk) surface and aerodynamic resistances
+	# Pa = the mean air density at constant pressure
+	# Cp = the specific heat of the air
+ƛET = (∆ * (Rn - G) + Pa * Cp * ((Es - Ea) / ra)) / (∆ + γ * (1 + (rs / ra)))
 
+# AREODYNAMIC RESISTANCE (ra)
+	# ra = aerodynamic resistances [s pow(m, -1)]
+	# Zm = height of wind measurements [m] meters
+	# Zh = height of humidity measurements [m] meters
+	# d = zero plane displacement height [m] meters
+	# Zom = roughness length governing momentum transfer [m] meters
+	# Zoh = roughness length governing transfer of heat and vapour [m] meters
+	# k = von Karman's constant, 0.41 [None]
+	# Uz = wind speed at height z [s pow(m, -1)]
+from math import log, pow
+ra = (log((Zm - d) / Zom) * log((Zh - d) / Zoh)) / (pow(K, 2) * Uz)
 
+# (BULK) SURFACE RESISTANCE (rs)
+	# rs = (bulk) surface resistances [s pow(m, -1)]
+	# rl = bulk stomatal resistance of the well-illuminated leaf [s pow(m, -1)]
+	# LAI_active = active (sunlit) leaf area index [pow(m, 2) (leaf area) pow(m, -2) (soil surface)] meters
+		# The LAI values for various crops differ widely but values of 3-5 are common for many mature crops. For a given
+		# crop, green LAI changes throughout the season and normally reaches its maximum before or at flowering
+		# LAI further depends on the plant density and the crop variety.
+		# A general equation for LAIactive is: LAI_active = 0.5 LAI
+			# which takes into consideration the fact that generally only the upper half of dense clipped grass is actively
+			# contributing to the surface heat and vapour transfer. For clipped grass a general equation for LAI is:
+			# LAI = 24 * h
+			# where h is the crop height [m] meter
+			# The stomatal resistance, rl of a single leaf has a value of about 100 s m-1 under well-watered conditions
+LAI = 24 * crop_height
+LAI_active = 0.5 * LAI
 
+rs = rl / LAI_active
 
+# REFERENCE CROP EVAPOTRANSPIRATION
+	# ETo = reference evapotranspiration [mm / day]
+	# Rn = net radiation at the crop surface [MJ / (pow(m, 2) * day]
+	# G = soil heat flux density [MJ / (pow(m, 2) * day)]
+	# T = mean daily air temperature at 2 m height [°C]
+	# Uz = wind speed at z or 2 m height [m / s] # calculations should be done at 2 m height
+	# es = saturation vapour pressure [kPa]
+	# ea = actual vapour pressure [kPa]
+	# es - ea = saturation vapour pressure deficit [kPa]
+	# ∆ = slope vapour pressure curve [kPa / °C]
+	# γ = psychrometric constant [kPa / °C]
 
+Eto = (0.408 * ∆ * (Rn - G) + γ * (900 / (T + 273)) * Uz * (es - ea)) / (∆ + γ * (1 + 0.34 * Uz))
 
+# ATMOSPHERIC PRESSURE [kPa]
+	# z = elevation above sea level [m] meters
+from math import pow
+atmospheric_pressure = 101.3 * pow(((293 - 0.0065 * z) / 293), 5.26)
 
+# PSYCHROMETRICS CONSTANT
+	# γ = psychrometric constant [kPa / °C]
+	 # λ = latent heat of vaporization, 2.45 [MJ / kg]
+	 # Cp = specific heat at constant pressure, 1.013 10-3 [MJ / kg * °C]
+	 # ε = ratio molecular weight of water vapour/dry air = 0.622
+γ = (Cp * atmospheric_pressure) / (ε * λ)
+γ_alternative = 0.665e-3 * atmospheric_pressure
 
+# AIR TEMPERATURE
+	# temperature in KELVIN
+kelvin = centigrades + 273.16
+T_mean = (T_max - T_min) / 2
+
+# RELATIVE HUMIDITY
+	# The relative humidity (RH) expresses the degree of saturation of the air as a ratio of the actual (ea) to the
+	# saturation (eo(T)) vapour pressure at the same temperature (T):
+RH = 100 * (ea / eo)
+
+# MEAN SATURATION VAPOUR PRESSURE (es)
+	# As saturation vapour pressure is related to air temperature, it can be calculated from the air temperature. The relationship is expressed by
+	# eo(T) saturation vapour pressure at the air temperature T [kPa]
+	# air_temp = air temperature [°C]
+aqui me queded, pagina 6 de https://appgeodb.nancy.inra.fr/biljou/pdf/Allen_FAO1998.pdf
+	# exp[..] 2.7183 (base of natural logarithm) raised to the power [..].
+from math import expm1, exp
+eo = pow(0.6108, ((17.27 * air_temp) / (air_temp + 237.3)) # function based on temperature
