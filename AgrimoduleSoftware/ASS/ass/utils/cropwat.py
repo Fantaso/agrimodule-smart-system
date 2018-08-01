@@ -119,7 +119,44 @@ RH = 100 * (ea / eo)
 	# As saturation vapour pressure is related to air temperature, it can be calculated from the air temperature. The relationship is expressed by
 	# eo(T) saturation vapour pressure at the air temperature T [kPa]
 	# air_temp = air temperature [°C]
-aqui me queded, pagina 6 de https://appgeodb.nancy.inra.fr/biljou/pdf/Allen_FAO1998.pdf
 	# exp[..] 2.7183 (base of natural logarithm) raised to the power [..].
+# //TODO check if eo formula is the right way to calculate this formula
 from math import expm1, exp
 eo = pow(0.6108, ((17.27 * air_temp) / (air_temp + 237.3)) # function based on temperature
+es = (eo * (T_max + T_min)) / 2
+
+# ACTUAL VAPOUR PRESSURE (ea) DERIVED FROM DEWPOINT TEMPERATURE
+    # T_dew = dewpoint temperature [°C]
+ea = eo * pow(0.6108, ((17.27 * T_dew) / (T_dew + 237.3)) # function based on temperature
+
+# ACTUAL VAPOUR PRESSURE (ea) DERIVED FROM PSYCHROMETRIC DATA
+    # ea = actual vapour pressure [kPa]
+    # eo(T_wet) = saturation vapour pressure at wet bulb temperature [kPa]
+    # γ_psy = psychrometric constant of the instrument [kPa / °C]
+    # T_dry - T_wet = wet bulb depression, with T_dry the dry bulb and T_wet the wet bulb temperature [°C]
+    # for γ_psy
+        # 0.000662 for ventilated (Asmann type) psychrometers, with an air movement of some 5 m/s,
+        # 0.000800 for natural ventilated psychrometers (about 1 m/s),
+        # 0.001200 for non-ventilated psychrometers installed indoors.
+ea = eo * T_wet - γ_psy * (T_dry - T_wet)
+
+# ACTUAL VAPOUR PRESSURE (ea) DERIVED FROM RELATIVE HUMIDITY DATA
+    # ea = actual vapour pressure [kPa]
+    # eo_T_min = saturation vapour pressure at daily minimum temperature [kPa]
+    # eo_T_max = saturation vapour pressure at daily maximum temperature [kPa]
+    # RH_max = maximum relative humidity [%]
+    # RH_min = minimum relative humidity [%]
+# --for RH_max and RH_min
+ea = (eo_T_min * (RH_max / 100) + eo_T_max * (RH_min / 100)) / 2
+
+# --for RH_max -- When using equipment where errors in estimating RH min can be large, or when RH data integrity are in doubt, then one should use only RH max
+ea = eo_T_min * (RH_max / 100)
+
+# --for RH_mean -- In the absence of RH max and RH min , another equation can be used to estimate e a
+    # RH_mean = the mean relative humidity, defined as the average between RH max and RH min .
+ea = (RH_mean / 100) * ((eo_T_max + eo_T_min) / 2)
+
+# VAPOUR PRESSURE DEFICIT (es - ea)
+    ∆ =
+
+∆ =
