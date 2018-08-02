@@ -33,6 +33,14 @@ soil_fertility = ''
 soil_roughness = ''
 soil_water_content = ''
 
+# variable buckets
+variable_bucket = {
+                    'ETo':'reference crop evapotranspiration [mm / day]',
+                    'ETc':'crop evapotranspiration under standard conditions',
+                    'Rn':'net radiation',
+                    'H':'sensible heat',
+                    'G':'soil heat flux',
+}
 
 # EQUATION FOR AN EVAPORATING SURFACE
 	# Rn: net radiation at crop surface [MJ]/ pow(m, 2) * day]
@@ -248,3 +256,50 @@ Rso = (as + bs) * Ra # EQUATION 36
     # Rs = the incoming solar radiation [MJ / m * day]
     # Rns = is expressed in the above equation in [MJ / pow(m, 2) * day]
 Rns = (1 - αlbedo) * Rs # EQUATION 38
+
+# NET LONGWAVE RADIATION (Rnl)
+    # Rnl = net outgoing longwave radiation [MJ pow(m, 2) * day]
+    # σ = Stefan-Boltzmann constant [4.903 10 -9 MJ / pow(K, 4) * pow(m, 2) * day]
+    # T_max_k = maximum absolute temperature during the 24-hour period [K = °C + 273.16]
+    # T_min_k = minimum absolute temperature during the 24-hour period [K = °C + 273.16]
+    # ea = actual vapour pressure [kPa]
+    # Rs / Rso = relative shortwave radiation (limited to ≤ 1.0)
+    # Rs = measured or calculated. (Equation 35) solar radiation [MJ / pow(m, 2) * day]
+    # Rso = calculated (Equation 36 or 37) clear-sky radiation [MJ / pow(m, 2) * day]
+from math import sqrt
+Rnl = STEFAN_BOLTZMANN * ((pow(T_max_k, 4) + pow(T_min_k, 4)) / 2) * (0.34 - 0.14 * sqrt(ea)) * (1.35 * (Rs / Rso) - 0.35) # EQUATION 39
+
+# NET RADIATION (Rn)
+    # The net radiation (R n ) is the difference between the incoming net shortwave radiation (R ns ) and the outgoing net longwave radiation (R nl )
+Rn = Rns - Rnl # EQUATION 40
+
+# SOIL HEAT FLUX (G)
+    #
+    # -- For day and ten-day periods --
+    # As the magnitude of the day or ten-day soil heat flux beneath the grass reference surface is relatively
+    # small, it may be ignored and thus:
+Gday ≈ 0 # EQUATION 42
+    # -- For hourly or shorter periods --
+    # For hourly (or shorter) calculations, G beneath a dense cover of grass does not correlate well with air
+    # temperature. Hourly G can be approximated during DAYLIGHT periods as:
+Ghr = 0.1 * Rn # EQUATION 45
+    # and during NIGHTTIME periods as:
+Ghr = 0.5 * Rn # EQUATION 46
+    # Where the soil is warming, the soil heat flux G is positive. The amount of energy required for this
+    # process is subtracted from R n when estimating evapotranspiration.
+
+# WIND PROFILE RELATIONSHIP
+    # Wind speeds measured at different heights above the soil surface are different. Surface friction tends
+    # to slow down wind passing over it. Wind speed is slowest at the surface and increases with height.
+    # For this reason anemometers are placed at a chosen standard height, i.e., 10 m in meteorology and
+    # 2 or 3 m in agrometeorology. For the calculation of evapotranspiration, wind speed measured at 2 m
+    # above the surface is required. To adjust wind speed data obtained from instruments placed at
+    # elevations other than the standard height of 2 m, a logarithmic wind speed profile may be used for
+    # measurements above a short grassed surface
+
+    # u2 = wind speed at 2 m above ground surface [m / s]
+    # uz = measured wind speed at z m above ground surface [m * s]
+    # z = height of measurement above ground surface [m]
+    # The corresponding multipliers or conversion factors are given in Annex 2 (Table 2.9) and are plotted in Figure 16.
+from math import log
+u2 = uz * (4.87 / log(67.8 * z - 5.42))
