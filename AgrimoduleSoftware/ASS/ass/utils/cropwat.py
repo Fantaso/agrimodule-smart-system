@@ -21,7 +21,7 @@ wind_speed = ''
 # crop
 crop_transpiration_resistance = ''
 crop_roughness = ''
-crop_height = ''
+crop_height_ref = ''
 crop_reflection = ''
 crop_ground_cover = ''
 crop_root_characteristics = ''
@@ -46,7 +46,7 @@ variable_bucket = {
 	# Rn: net radiation at crop surface [MJ]/ pow(m, 2) * day]
 	# H: sensible heat
 	# G: soil heat flux [MJ / pow(m, 2) * day]
-	# ƛ * ET: latent heat flux
+	# ƛET: latent heat flux
 Rn - G - ƛET - H = 0  # EQUATION 1
 
 # PENMAN-MONTEITH EQUATION
@@ -67,7 +67,7 @@ Rn - G - ƛET - H = 0  # EQUATION 1
 	# Zom = roughness length governing momentum transfer [m] meters
 	# Zoh = roughness length governing transfer of heat and vapour [m] meters
 	# k = von Karman's constant, 0.41 [None]
-	# Uz = wind speed at height z [s pow(m, -1)]
+	# Uz = wind speed at height z [m / s]
 from math import log, pow
 ra = (log((Zm - d) / Zom) * log((Zh - d) / Zoh)) / (pow(K, 2) * Uz) # EQUATION 4
 
@@ -84,7 +84,7 @@ ra = (log((Zm - d) / Zom) * log((Zh - d) / Zoh)) / (pow(K, 2) * Uz) # EQUATION 4
 			# LAI = 24 * h
 			# where h is the crop height [m] meter
 			# The stomatal resistance, rl of a single leaf has a value of about 100 s m-1 under well-watered conditions
-LAI = 24 * crop_height
+LAI = 24 * crop_height_ref
 LAI_active = 0.5 * LAI
 
 rs = rl / LAI_active # EQUATION 5
@@ -303,3 +303,154 @@ Ghr = 0.5 * Rn # EQUATION 46
     # The corresponding multipliers or conversion factors are given in Annex 2 (Table 2.9) and are plotted in Figure 16.
 from math import log
 u2 = uz * (4.87 / log(67.8 * z - 5.42))
+
+
+
+###############################################################################
+#########            CALCULATING ETo
+###############################################################################
+
+# ASSUMPTIONS
+
+class ETo():
+
+    '''this is a class to calculate evapotranspiration crop reference:
+    The reference surface is a hypothetical grass reference crop with an assumed crop height, surface resistance and an albedo
+    The reference surface closely resembles an extensive surface of green, well-watered grass of uniform height, actively growing and completely shading the ground. The fixed surface resistance of 70 s m-1 implies a moderately dry soil surface resulting from about a weekly irrigation frequency.'''
+
+    ### CLASS VARIABLES
+    # aerodynamic_resistance
+    KARMAN_CONSTANT = 0.41 # [None]
+    # surface_resistance
+    STOMATAL_RESISTANCE = 100 # [s / m]
+    # specific_air_heat_at_constant_pressure
+    RATIO_MOLECULAR_WEIGHT_WATER_VAPOUR_AND_DRY_AIR = 0.622
+    VAPORIZATION_LATENT_HEAT = 2.45 # [MJ / kg] # This is the latent heat for an air temperature of about 20°C.
+    # mean_air_density_at_constant_pressure
+    SPECIFIC_GAS_CONSTANT = 0.287 # [kJ / kg * K]
+
+
+
+    def __init__(self,  crop_height_ref = 0.12,
+                        wind_measurement_height = 2,
+                        RH_measurement_height = 2,
+                        wind_speed_measurement,
+                        atmospheric_pressure = None,
+                        elevation_above_sea_level = 10,
+                        air_temperature = 25,
+                        ):
+        # aerodynamic_resistance
+        self.crop_height_ref = crop_height_ref # meters
+        self.wind_measurement_height = wind_measurement_height
+        self.RH_measurement_height = RH_measurement_height
+        self.wind_speed_measurement = wind_speed_measurement
+
+        # atmospheric_pressure
+        if not atmospheric_pressure:
+            self.elevation_above_sea_level = elevation_above_sea_level
+            self.atmospheric_pressure = self.average_atmospheric_pressure(self.elevation_above_sea_level)
+
+        #
+        self.air_temperature = air_temperature
+        # surface_resistance
+        # //TODO this surface_Resistance has been calculated already
+        self.surface_resistance = 70 # seconds / meter
+        self.albedo = 0.23
+
+
+    def penman(self):
+        # PENMAN-MONTEITH EQUATION
+        	# Rn = net radiation
+        	# (es - ea) = s the vapour pressure deficit of the air [kPa]
+        	# ∆ =  the slope of the saturation vapour pressure temperature relationship
+        	# γ = psychrometric constant
+        	# rs, ra = (bulk) surface and aerodynamic resistances
+        	# Pa = the mean air density at constant pressure
+        	# Cp = the specific heat of the air
+
+
+        # assuming the ideal gas law
+
+        numerator_one = saturation_vapour_pressure_slope * (net_radiation - soil_heat_flux)
+        numerator_two =  self.mean_air_density_at_constant_pressure() * self.specific_air_heat_at_constant_pressure() * ((saturation_vapour_pressure - actual_vapour_pressure) / self.aerodynamic_resistance())
+        denominator = saturation_vapour_pressure_slope + self.psychrometric_constant() * (1 + (self.surface_resistance() / self.aerodynamic_resistance()))
+        return (first + second) / third
+        # ƛET = (∆ * (Rn - G) + Pa * Cp * ((es - ea) / ra)) / (∆ + γ * (1 + (rs / ra))) # EQUATION 3
+        # return (∆ * (Rn - G) + Pa * Cp * ((es - ea) / ra)) / (∆ + γ * (1 + (rs / ra))) # EQUATION 3
+
+
+
+    def aerodynamic_resistance(self):
+        # AREODYNAMIC RESISTANCE (ra)
+        	# ra = aerodynamic resistances [s pow(m, -1)]
+        	# wind_measurement_height = height of wind measurements [m] meters
+        	# RH_measurement_height = height of humidity measurements [m] meters
+        	# d = zero plane displacement height [m] meters
+        	# Zom = roughness length governing momentum transfer [m] meters
+        	# Zoh = roughness length governing transfer of heat and vapour [m] meters
+        	# k = von Karman's constant, 0.41 [None]
+        	# Uz = wind speed at height z [m / s]
+        from math import log, pow
+        d = (2 / 3) * self.crop_height_ref
+        Zom = (2 / 3) * self.crop_height_ref
+        Zoh = 0.1 * Zom
+        return (log((self.wind_measurement_height - d) / Zom) * log((self.RH_measurement_height - d) / Zoh)) / (pow(Eto.KARMAN_CONSTANT, 2) * self.wind_speed_measurement) # EQUATION 4
+
+
+    def surface_resistance(self):
+        # (BULK) SURFACE RESISTANCE (rs)
+        	# rs = (bulk) surface resistances [s pow(m, -1)]
+        	# rl = bulk stomatal resistance of the well-illuminated leaf [s pow(m, -1)]
+        	# LAI_active = active (sunlit) leaf area index [pow(m, 2) (leaf area) pow(m, -2) (soil surface)] meters
+        		# The LAI values for various crops differ widely but values of 3-5 are common for many mature crops. For a given
+        		# crop, green LAI changes throughout the season and normally reaches its maximum before or at flowering
+        		# LAI further depends on the plant density and the crop variety.
+        		# A general equation for LAIactive is: LAI_active = 0.5 LAI
+        			# which takes into consideration the fact that generally only the upper half of dense clipped grass is actively
+        			# contributing to the surface heat and vapour transfer. For clipped grass a general equation for LAI is:
+        			# LAI = 24 * h
+        			# where h is the crop height [m] meter
+        			# The stomatal resistance, rl of a single leaf has a value of about 100 s m-1 under well-watered conditions
+        LAI = 24 * self.crop_height_ref
+        LAI_active = 0.5 * LAI
+        return ETo.STOMATAL_RESISTANCE / LAI_active # EQUATION 5
+
+
+    def evapotranspiration_ref(self):
+        # REFERENCE CROP EVAPOTRANSPIRATION
+        	# ETo = reference evapotranspiration [mm / day]
+        	# Rn = net radiation at the crop surface [MJ / (pow(m, 2) * day]
+        	# G = soil heat flux density [MJ / (pow(m, 2) * day)]
+        	# T = mean daily air temperature at 2 m height [°C]
+        	# Uz = wind speed at z or 2 m height [m / s] # calculations should be done at 2 m height
+        	# es = saturation vapour pressure [kPa]
+        	# ea = actual vapour pressure [kPa]
+        	# es - ea = saturation vapour pressure deficit [kPa]
+        	# ∆ = slope vapour pressure curve [kPa / °C]
+        	# γ = psychrometric constant [kPa / °C]
+                (∆ * (Rn - G) + Pa * Cp * ((es - ea) / ra)) / (∆ + γ * (1 + (rs / ra))) # EQUATION 3
+        return (0.408 * ∆ * (Rn - G) + γ * (900 / (T + 273)) * Uz * (es - ea)) / (∆ + γ * (1 + 0.34 * Uz)) # EQUATION 6
+
+
+    def specific_air_heat_at_constant_pressure(self): # [MJ / kg * celcius]
+        # //TODO atmospheric_pressure and psychrometric_constant
+        return (psychrometric_constant * ETo.RATIO_MOLECULAR_WEIGHT_WATER_VAPOUR_AND_DRY_AIR * ETo.VAPORIZATION_LATENT_HEAT) / self.atmospheric_pressure #
+
+    def mean_air_density_at_constant_pressure(self): # [kg / pow(m, 3)]
+        # considering the ideal gas law
+        # //TODO atmospheric_pressure
+        virtual_temperature = 1.01 * (self.air_temperature + 273)
+        return self.atmospheric_pressure / (virtual_temperature * ETo.SPECIFIC_GAS_CONSTANT)
+
+    def psychrometric_constant(self):
+        # PSYCHROMETRICS CONSTANT
+        	# γ = psychrometric constant [kPa / °C]
+        	 # λ = latent heat of vaporization, 2.45 [MJ / kg]
+        	 # Cp = specific heat at constant pressure, 1.013 10-3 [MJ / kg * °C]
+        	 # ε = ratio molecular weight of water vapour/dry air = 0.622
+        γ = (specific_air_heat_at_constant_pressure * self.atmospheric_pressure) / (ETo.RATIO_MOLECULAR_WEIGHT_WATER_VAPOUR_AND_DRY_AIR * ETo.VAPORIZATION_LATENT_HEAT)  # EQUATION 8
+        γ = 0.665e-3 * self.atmospheric_pressure # EQUATION 8
+
+    def average_atmospheric_pressure(self):
+        from math import pow
+        return 101.3 * pow(((293 - 0.0065 * self.elevation_above_sea_level) / 293), 5.26) # EQUATION 7
