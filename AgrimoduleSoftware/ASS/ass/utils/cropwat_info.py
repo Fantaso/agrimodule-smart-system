@@ -1,8 +1,23 @@
 '''CALCULATION OF ROP WATER REQUIREMENTS'''
 why_methods = 'Primarily the choice of method must be based on the type of climatic data available and on the accuracy required in determining water needs.'
-procedure = {   'first': 'The effect of climate on crop water requirement',
-                'second': 'The effect of the crop characteristics on crop water requirements',
-                'third': 'The effect of local conditions and agricultural practices on crop water requirements',
+factors = {   'first':  { 'name': 'weather',
+                            'description': 'The effect of climate on crop water requirement',
+                            'factors': ['radiation', 'air temperature', ' humidity', 'wind speed'],
+                            },
+                'second': { 'name': 'crop',
+                            'description': 'The effect of the crop characteristics on crop water requirements',
+                            'factors': ['crop type', 'variety', ' development stage', 'resistance to transpiration', ' crop heigh', 'crop roughness', 'reflection', 'ground cover', 'crop rooting characteristics', 'negligible: heat stored or released in the plant', 'negligible: the energy used in metabolic activities'],
+                            },
+                'third':  { 'name': 'weather',
+                            'description': 'The effect of local conditions and agricultural practices on crop water requirements',
+                            'factors': [' soil salinity', 'poor land fertility', 'limited application of fertilizers', 'the presence of hard or impenetrable soil horizons', 'the absence of control of diseases and pests', 'poor soil management may limit the crop development and reduce the evapotranspiration', 'ground cover', 'plant density', 'the soil water content: The effect of soil water content on ET is conditioned primarily by the magnitude of the water deficit and the type of soil'],
+                            },
+mitigations = [ 'A windbreak reduces wind velocities and decreases the ET rate of the field directly beyond the barrier. The effect can be significant especially in windy, warm and dry conditions although evapotranspiration from the trees themselves may offset any reduction in the field',
+                'Soil evaporation in a young orchard, where trees are widely spaced, can be reduced by using a well-designed drip or trickle irrigation system',
+                'The drippers apply water directly to the soil near trees, thereby leaving the major part of the soil surface dry, and limiting the evaporation losses',
+                'The use of mulches, especially when the crop is small, is another way of substantially reducing soil evaporation',
+                'Anti-transpirants, such as stomata-closing, film-forming or reflecting material, reduce the water losses from the crop and hence the transpiration rate',
+]
 }
 methods = [ 'Blaney-Criddle': {
                                 'temperature': 'measured',
@@ -27,7 +42,7 @@ methods = [ 'Blaney-Criddle': {
                                 'error tolerance': {'in extreme donditions': '+-20%',
                                                     },
                                 },
-            'Penman': {
+            'Penman-Monteith': {
                                 'temperature': 'measured',
                                 'humidity': 'measured',
                                 'wind': 'measured',
@@ -40,13 +55,18 @@ methods = [ 'Blaney-Criddle': {
                                                     },
                                 },
             'Pan Evaporation': {
-                                'temperature': None,,
+                                'temperature': None,
                                 'humidity': 'estimated',
                                 'wind': 'estimated',
                                 'sunshine': None,
                                 'radiation': None,
                                 'evaporation': 'measured',
                                 'environment': 'measured',
+                                'error tolerance': {'depends on location': '+-15%',
+                                                    },
+                                },
+            'Mass Transfer': {
+                                'note': 'assessing the incoming and outgoing water flux into the crop root zone over some time period',
                                 'error tolerance': {'depends on location': '+-15%',
                                                     },
                                 },
