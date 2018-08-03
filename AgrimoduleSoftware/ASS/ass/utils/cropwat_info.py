@@ -1,6 +1,6 @@
 '''CALCULATION OF ROP WATER REQUIREMENTS'''
 why_methods = 'Primarily the choice of method must be based on the type of climatic data available and on the accuracy required in determining water needs.'
-factors = {   'first':  { 'name': 'weather',
+factors = {     'first':  { 'name': 'weather',
                             'description': 'The effect of climate on crop water requirement',
                             'factors': ['radiation', 'air temperature', ' humidity', 'wind speed'],
                             },
@@ -20,6 +20,7 @@ mitigations = [ 'A windbreak reduces wind velocities and decreases the ET rate o
 ]
 }
 methods = [ 'Blaney-Criddle': {
+                                'method type': 'Energy balance and microclimatological methods',
                                 'temperature': 'measured',
                                 'humidity': 'estimated',
                                 'wind': 'estimated',
@@ -28,10 +29,11 @@ methods = [ 'Blaney-Criddle': {
                                 'evaporation': None,
                                 'environment': 'estimated',
                                 'environment': 'estimated',
-                                'error tolerance': {'for longer periods of a month': '+-25%',
+                                'error tolerance': {'for longer periods of a month': '±25%',
                                                     },
                                 },
             'Radiation': {
+                                'method type': 'Energy balance and microclimatological methods',
                                 'temperature': 'measured',
                                 'humidity': 'estimated',
                                 'wind': 'estimated',
@@ -39,10 +41,12 @@ methods = [ 'Blaney-Criddle': {
                                 'radiation': 'not essential',
                                 'evaporation': None,
                                 'environment': 'estimated',
-                                'error tolerance': {'in extreme donditions': '+-20%',
+                                'error tolerance': {'in extreme donditions': '±20%',
                                                     },
+                                'research': 'The radiation methods show good results in humid climates where the aerodynamic term is relatively small, but performance in arid conditions is erratic and tends to underestimate evapotranspiration.',
                                 },
             'Penman-Monteith': {
+                                'method type': 'Energy balance and microclimatological methods',
                                 'temperature': 'measured',
                                 'humidity': 'measured',
                                 'wind': 'measured',
@@ -50,11 +54,13 @@ methods = [ 'Blaney-Criddle': {
                                 'radiation': 'not essential',
                                 'evaporation': None,
                                 'environment': 'estimated',
-                                'error tolerance': {'summer donditions': '+-10%',
-                                                    'low evaporative conditions': '+-20%'
+                                'error tolerance': {'summer donditions': '±10%',
+                                                    'low evaporative conditions': '±20%'
                                                     },
+                                'research': 'The Penman methods may require local calibration of the wind function to achieve satisfactory results and The relatively accurate and consistent performance of the Penman-Monteith approach in both arid and humid climates has been indicated in both the ASCE and European studies.',
                                 },
             'Pan Evaporation': {
+                                'method type': 'Energy balance and microclimatological methods',
                                 'temperature': None,
                                 'humidity': 'estimated',
                                 'wind': 'estimated',
@@ -62,14 +68,20 @@ methods = [ 'Blaney-Criddle': {
                                 'radiation': None,
                                 'evaporation': 'measured',
                                 'environment': 'measured',
-                                'error tolerance': {'depends on location': '+-15%',
+                                'error tolerance': {'depends on location': '±15%',
                                                     },
+                                'research': 'Pan evapotranspiration methods clearly reflect the shortcomings of predicting crop evapotranspiration from open water evaporation. The methods are susceptible to the microclimatic conditions under which the pans are operating and the rigour of station maintenance. Their performance proves erratic.',
                                 },
             'Mass Transfer': {
-                                'note': 'assessing the incoming and outgoing water flux into the crop root zone over some time period',
-                                'error tolerance': {'depends on location': '+-15%',
-                                                    },
+                                'method type': 'Energy balance and microclimatological methods',
+                                'process': 'By assuming steady state conditions and that the eddy transfer coefficients for water vapour are proportional to those for heat and momentum, the evapotranspiration rate can be computed from the vertical gradients of air temperature and water vapour via the Bowen ratio. Other direct measurement methods use gradients of wind speed and water vapour. These methods and other methods such as eddy covariance, require accurate measurement of vapour pressure temperature or wind speed at different levels above the surface. Therefore, their application is restricted to primarily research situations.',
+                                },
+                                },
+            'Soil Water Transfer': {
+                                'method type': 'soil analysis',
+                                'process': 'consists of assessing the incoming and outgoing water flux into the crop root zone over some time period',
+                                'factors': ['Irrigation (I)', 'rainfall (P)','surface runoff (RO)', 'deep percolation (DP)', 'capillary rise (CR)', 'subsurface flow in (SFin)',' subsurface flow out (SFout)', 'soil water content (D SW)'],
+                                'formula': 'ET = I + P - RO - DP + CR ± D SF ± D SW',
+                                'note': 'Some fluxes such as subsurface flow, deep percolation and capillary rise from a water table are difficult to assess and short time periods cannot be considered. The soil water balance method can usually only give ET estimates over long time periods of the order of week-long or ten-day periods',
                                 },
             ]
-
-eff
