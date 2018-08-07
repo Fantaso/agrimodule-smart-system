@@ -157,6 +157,7 @@ ea = eo * T_wet - γ_psy * (T_dry - T_wet) # EQUATION 15
     # eo_T_max = saturation vapour pressure at daily maximum temperature [kPa]
     # RH_max = maximum relative humidity [%]
     # RH_min = minimum relative humidity [%]
+
 # --for RH_max and RH_min
 ea = (eo_T_min * (RH_max / 100) + eo_T_max * (RH_min / 100)) / 2 # EQUATION 17
 
@@ -358,7 +359,8 @@ class ETo():
         self.albedo = 0.23
 
 
-    def penman(self):
+    def penman_monteith(self):
+        # ORIGINAL equation
         # PENMAN-MONTEITH EQUATION
         	# Rn = net radiation
         	# (es - ea) = s the vapour pressure deficit of the air [kPa]
@@ -428,8 +430,9 @@ class ETo():
         	# es - ea = saturation vapour pressure deficit [kPa]
         	# ∆ = slope vapour pressure curve [kPa / °C]
         	# γ = psychrometric constant [kPa / °C]
-                (∆ * (Rn - G) + Pa * Cp * ((es - ea) / ra)) / (∆ + γ * (1 + (rs / ra))) # EQUATION 3
-        return (0.408 * ∆ * (Rn - G) + γ * (900 / (T + 273)) * Uz * (es - ea)) / (∆ + γ * (1 + 0.34 * Uz)) # EQUATION 6
+                # Radiation is MJ / pow(m, 2) * day -> (converted to mm / day) = radiation / 2.45 = 0.408*radiation = [mm / day]
+                # (∆ * (Rn - G) + Pa * Cp * ((es - ea) / ra)) / (∆ + γ * (1 + (rs / ra))) # EQUATION 3
+        return (0.408 * saturation_vapour_pressure_slope * (net_radiation - soil_heat_flux) + self.psychrometric_constant() * (900 / (T + 273)) * self.wind_speed_measurement * (saturation_vapour_pressure - actual_vapour_pressure)) / (saturation_vapour_pressure_slope + self.psychrometric_constant() * (1 + 0.34 * self.wind_speed_measurement)) # EQUATION 6
 
 
     def specific_air_heat_at_constant_pressure(self): # [MJ / kg * celcius]
@@ -452,5 +455,7 @@ class ETo():
         γ = 0.665e-3 * self.atmospheric_pressure # EQUATION 8
 
     def average_atmospheric_pressure(self):
+        # ATMOSPHERIC PRESSURE [kPa]
+        	# z = elevation above sea level [m] meters
         from math import pow
         return 101.3 * pow(((293 - 0.0065 * self.elevation_above_sea_level) / 293), 5.26) # EQUATION 7
