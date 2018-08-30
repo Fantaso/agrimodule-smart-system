@@ -49,7 +49,7 @@ def index():
         return render_template('welcome/welcome.html', user=current_user, set_sys_flag=set_sys_flag)
 
     # if user have not set up any farm yet -> we send him to set his farm only
-    if not current_user.welcome.add_farm or current_user.welcome.add_crop:
+    if not current_user.welcome.add_farm or current_user.welcome.add_field:
         flash('Now set your farm, ' + current_user.name + '!')
         set_sys_flag = False
         return render_template('welcome/welcome.html', user=current_user, set_sys_flag=set_sys_flag)
@@ -108,8 +108,9 @@ def add_agrisys():
 
         def get_bundle_identifiers(identifier):
             agrimodule_identifier = identifier
-            agrisensor_identifier = 'agrisensor' + identifier[-4:]
-            agripump_identifier = 'agripump' + identifier[-4:]
+            # //TODO: must recognize all numbers instead of the las four digits. unless a uuid is created with a standarz characters qty.
+            agrisensor_identifier = 'agrisensor' + identifier[-5:]
+            agripump_identifier = 'agripump' + identifier[-5:]
             return agrimodule_identifier, agrisensor_identifier, agripump_identifier
 
         if not is_registered_in_solarvibes(agrimodule_identifier):
