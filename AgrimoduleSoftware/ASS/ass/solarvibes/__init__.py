@@ -2,7 +2,7 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_security import Security, SQLAlchemyUserDatastore
 from flask_migrate import Migrate, MigrateCommand
-from flask_script import Manager
+from flask_script import Manager, Server
 from flask_mail import Mail
 from flask_uploads import IMAGES, UploadSet, configure_uploads
 from solarvibes.forms import RegisterFormExt
@@ -21,8 +21,11 @@ migrate = Migrate(app, db)                          # creates a migration object
 mail = Mail(app)
 
 # TO MANAGE THE MIGRATIONS WITH FLASK-SCRIPT WITH PYTHON EXTERNAL SCRIPTS > goes together to migrations for migraing db
+# server = Server(host = '192.168.1.17', port = 8000, debug = True)
 manager = Manager(app)
 manager.add_command('db', MigrateCommand)
+manager.add_command('runserver', Server(host=None, port=None))
+
 
 #############################
 # Begin Import Models

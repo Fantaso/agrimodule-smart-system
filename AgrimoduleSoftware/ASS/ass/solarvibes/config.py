@@ -3,7 +3,7 @@ from os import environ
 class Config:
 
     ########## SERVER ##########
-    # HOST = '192.168.1.5'
+    # HOST = '192.168.1.17'
     # PORT = 8000
     DEBUG = True
 
