@@ -24,7 +24,6 @@ class Farm(db.Model):
     farm_name = db.Column(db.String(25), unique=True, nullable=False)
     farm_location = db.Column(db.String(20))
     farm_coordinates = db.Column(db.String(3000))
-
     farm_area = db.Column(db.Float(precision=2))
     farm_cultivation_process = db.Column(db.String(20))
 
