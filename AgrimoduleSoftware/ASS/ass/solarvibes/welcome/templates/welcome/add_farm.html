@@ -9,20 +9,65 @@
 	active
 {% endblock %}
 
+{% block map %}
+  <link rel="css/sheet" type="text/css" href="css/custom/map.css">
+{% endblock %}
+
 {% block content %}
+
+<!-- <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAJusa1miMBhsqN5m3oJhm6X2mmdhYqLqU&libraries=places"></script> -->
+<!-- // Enable Place API and Map Javascript API on Google Cloud Platform for this API key -->
+
 <div class = "container">
     <h1>Welcome add farm</h1>
     <hr>
-	<h1>Create your farm</h1>
-	<form method="POST" action="{{ url_for('welcome.add_farm') }}">
-		{{ form.csrf_token }}
-		{{ render_field_with_errors(form.farm_name) }}
-		{{ render_field_with_errors(form.farm_location) }}
-		{{ render_field_with_errors(form.farm_area) }}
-		{{ render_field_with_errors(form.farm_cultivation_process) }}
-		<input type="submit" class="hoverable waves-effect waves-light btn" value="Add farm!">
-	</form>
-	<br>
-	<a href="{{ url_for('welcome.add_pump') }}" class="amber darken-1 waves-effect waves-light btn btn-small"><i class="material-icons left">arrow_back</i>Back</a>
+  <h1>Create your farm</h1>
+
+  <form method="POST" action="{{ url_for('welcome.add_farm') }}">
+    {{ form.csrf_token }}
+    {{ render_field_with_errors(form.farm_name) }}
+    <div id="map" style="height: 500px;"></div>
+    <br>
+    <!-- {{ render_field_with_errors(form.farm_location) }} -->
+    <!-- {{ render_field_with_errors(form.farm_area) }} -->
+    {{ render_field_with_errors(form.farm_cultivation_process) }}
+    <input type="submit" class="hoverable waves-effect waves-light btn" value="Add farm!">
+  </form>
+
+  <br>
+
+  <a href="{{ url_for('welcome.add_pump') }}" class="amber darken-1 waves-effect waves-light btn btn-small"><i class="material-icons left">arrow_back</i>Back</a>
+
+  <script>
+    function initMap() {
+      var map = new google.maps.Map(document.getElementById('map'), {
+        center: {lat: -34.397, lng: 150.644},
+        zoom: 8
+      });
+
+      var drawingManager = new google.maps.drawing.DrawingManager({
+        drawingMode: google.maps.drawing.OverlayType.MARKER,
+        drawingControl: true,
+        drawingControlOptions: {
+          position: google.maps.ControlPosition.TOP_CENTER,
+          drawingModes: ['circle', 'polygon', 'rectangle']
+        },
+        markerOptions: {icon: 'https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png'},
+        circleOptions: {
+          fillColor: '#ffff00',
+          fillOpacity: 1,
+          strokeWeight: 5,
+          clickable: false,
+          editable: true,
+          zIndex: 1
+        }
+      });
+      drawingManager.setMap(map);
+    }
+  </script>
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAJusa1miMBhsqN5m3oJhm6X2mmdhYqLqU&libraries=drawing&callback=initMap"
+       async defer></script>
+
 </div>
+
 {% endblock %}
