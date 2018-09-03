@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, FloatField, SelectField
+from wtforms import StringField, FloatField, SelectField, HiddenField
 from wtforms.fields.html5 import DateField
 from wtforms.validators import DataRequired, Length, NumberRange
 
@@ -13,6 +13,7 @@ class PreAddFarmForm:
 class AddFarmForm(FlaskForm):
     farm_name                   = StringField('Farm name', validators=[DataRequired(), Length(min=2, max=30, message='''Your name needs at least 2 characters.''')])
     farm_location               = StringField('Farm location', validators=[DataRequired(), Length(min=2, max=30, message='''Your name needs at least 2 characters.''')])
+    farm_coordinates            = HiddenField('')
     farm_area                   = FloatField('Farm Cultivation Area', validators=[DataRequired(), NumberRange(min=1, max=5000, message='Area between 1 and 5000 m2')])
     farm_cultivation_process    = SelectField('Farm Cultivation Process', validators=[DataRequired()], choices=[('Organic','Organic'),('Chemical','Chemical')])
 
