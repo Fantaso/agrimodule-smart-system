@@ -420,6 +420,7 @@ def edit_agripump(agripump_id = 0):
 @agrimodule_settings.route('/delete-agrimodule', methods=['GET'])
 @agrimodule_settings.route('/delete-agrimodule/<agrimodule_id>', methods=['GET'])
 @login_required
+# //TODO: erase from agrimodulelist the .has_user_registered when deleting an agrimodule from the system
 def delete_agrimodule(agrimodule_id = 0):
     if int(agrimodule_id) <= 0:
         flash('This Agrimodule done not exist.')
