@@ -347,72 +347,125 @@ def add_pump():
     return render_template('welcome/add_pump.html', form=form)
 
 ###################
-# SET ADD PUMP
+# SET ADD SOIL TEST
 ###################
-@welcome.route('/add-test-result', methods=['GET', 'POST'])
+@welcome.route('/add-soil-test', methods=['GET', 'POST'])
 @login_required
-def add_test_result():
+def add_soil_test():
     if 'welcome' not in session:
         session['welcome'] = dict()
         session.modified = True
     # from form to db
+    # Write methods if needed
 
-
-    form = AddTestResultsForm()
+    form = AddSoilTestForm()
     # if user has complete farm, but didnot finish field. pass the current
-    if current_user.welcome.add_pump:
-        pump = current_user.pumps.first()
-        myPump = PreAddPumpForm(pump_name = pump.pump_name, pump_brand = pump.pump_brand, pump_flow_rate = mlpm_to_lps(pump.pump_flow_rate), pump_head = cm_to_m(pump.pump_head), pump_watts = w_to_kw(pump.pump_watts))
-        form = AddPumpForm(obj=myPump)               # CREATE WTForm FORM
+    if current_user.welcome.add_soil_test:
+        soil_test = current_user.soil_tests.first()
+        mySoilTest = PreAddSoilTestForm(soil_ph = soil_test.soil_ph, soil_ec = soil_test.soil_ec, soil_organic_carbon = soil_test.soil_organic_carbon, soil_nitrogen=soil_test.soil_nitrogen, soil_p205=soil_test.soil_p205, soil_k20=soil_test.soil_k20)
+        form = AddSoilTestForm(obj=mySoilTest)
 
     if form.validate_on_submit():
         # USER OBJS
-        user = current_user
-        agrimodule = user.agrimodules.first()
-        agripump = agrimodule.agripumps.first()
+        farm = current_user.farms.first()
 
-        if current_user.welcome.add_pump:
-            pump.pump_name = form.pump_name.data
-            pump.pump_brand = form.pump_brand.data
-            pump.pump_flow_rate = lps_to_mlpm(form.pump_flow_rate.data)
-            pump.pump_head = m_to_cm(form.pump_head.data)
-            pump.pump_watts = kw_to_w(form.pump_watts.data)
-            flash('Your pump has been re-registered: "{}"'.format(pump.pump_name))
+        if current_user.welcome.add_soil_test:
+            soil_test.soil_ph = form.soil_ph.data
+            soil_test.soil_ec = form.soil_ec.data
+            soil_test.soil_organic_carbon = form.soil_organic_carbon.data
+            soil_test.soil_nitrogen = form.soil_nitrogen.data
+            soil_test.soil_p205 = form.soil_p205.data
+            soil_test.soil_k20 = form.soil_k20.data
+            flash('Your soil test has been re-registered: "Soil Test ID {}"'.format(soil_test.id))
         else:
-            # ADD PUMP OBJS
-            pump_name = form.pump_name.data
-            pump_brand = form.pump_brand.data
-            pump_flow_rate = lps_to_mlpm(form.pump_flow_rate.data)
-            pump_head = m_to_cm(form.pump_head.data)
-            pump_watts = kw_to_w(form.pump_watts.data)
+            # ADD SOIL TEST OBJS
+            soil_ph = form.soil_ph.data
+            soil_ec = form.soil_ec.data
+            soil_organic_carbon = form.soil_organic_carbon.data
+            soil_nitrogen = form.soil_nitrogen.data
+            soil_p205 = form.soil_p205.data
+            soil_k20 = form.soil_k20.data
             # OBJS TO DB
-            pump = Pump(user = user, pump_name = pump_name, pump_brand = pump_brand, pump_flow_rate = pump_flow_rate, pump_head = pump_head, pump_watts = pump_watts)
-            db.session.add(pump)
-            flash('Your pump has been registered: "{}"'.format(pump.pump_name))
+            soil_test = SoilTest(farm = farm, soil_ph = soil_test.soil_ph, soil_ec = soil_test.soil_ec, soil_organic_carbon = soil_test.soil_organic_carbon, soil_nitrogen=soil_test.soil_nitrogen, soil_p205=soil_test.soil_p205, soil_k20=soil_test.soil_k20)
+            db.session.add(soil_test)
+            flash('Your soil test has been registered: "Soil Test ID {}"'.format(soil_test.id))
 
         # DB COMMANDS
         db.session.commit()
 
-        # ADD PUMP TO AGRIPUMP
-        agripump.pump_id = pump.id
-        current_user.welcome.add_pump = True
+        # SAVE INPUT STATUS
+        current_user.welcome.add_soil_test = True
         db.session.commit()
 
-
         # OBJS SAVE ON SESSION
-        session['welcome'].update({'pump_id':pump.id, 'pump_brand':form.pump_brand.data, 'pump_flow_rate':form.pump_flow_rate.data, 'pump_head':form.pump_head.data, 'pump_watts':form.pump_watts.data})
+        session['welcome'].update({'soil_test_id':soil_test.id, 'soil_ph':form.soil_ph.data, 'soil_ec':form.soil_ec.data, 'soil_organic_carbon':form.soil_organic_carbon.data, 'soil_nitrogen':form.soil_nitrogen.data, 'soil_p205':form.soil_p205.data, 'soil_k20':form.soil_k20.data})
         session.modified = True
 
+        # FLASH AND REDIRECT
+        return redirect(url_for('welcome.add_water_test'))
+
+    return render_template('welcome/add_water_test.html', form=form)
+
+
+###################
+# SET ADD WATER TEST
+###################
+@welcome.route('/add-water-test', methods=['GET', 'POST'])
+@login_required
+def add_water_test():
+    if 'welcome' not in session:
+        session['welcome'] = dict()
+        session.modified = True
+    # from form to db
+    # Write methods if needed
+
+    form = AddWaterTestForm()
+    # if user has complete farm, but didnot finish field. pass the current
+    if current_user.welcome.add_water_test:
+        water_test = current_user.water_tests.first()
+        myWaterTest = PreAddWaterTestForm(water_ph = water_test.water_ph, water_ec = water_test.water_ec, water_bicarbonates = soil_test.water_bicarbonates, water_carbonates=soil_test.water_carbonates, water_potasium=water_test.water_potasium, water_sulphate=water_test.water_sulphate)
+        form = AddWaterTestForm(obj=myWaterTest)
+
+    if form.validate_on_submit():
+        # USER OBJS
+        farm = current_user.farms.first()
+
+        if current_user.welcome.add_water_test:
+            water_test.water_ph = form.water_ph.data
+            water_test.water_ec = form.water_ec.data
+            water_test.water_bicarbonates = form.water_bicarbonates.data
+            water_test.water_carbonates = form.water_carbonates.data
+            water_test.water_potasium = form.water_potasium.data
+            water_test.water_sulphate = form.water_sulphate.data
+            flash('Your soil test has been re-registered: "Soil Test ID {}"'.format(water_test.id))
+        else:
+            # ADD WATER TEST OBJS
+            water_ph = form.water_ph.data
+            water_ec = form.water_ec.data
+            water_bicarbonates = form.water_bicarbonates.data
+            water_carbonates = form.water_carbonates.data
+            water_potasium = form.water_potasium.data
+            water_sulphate = form.water_sulphate.data
+            # OBJS TO DB
+            water_test = SoilTest(farm = farm, water_ph = water_test.water_ph, water_ec = water_test.water_ec, water_bicarbonates = soil_test.water_bicarbonates, water_carbonates=soil_test.water_carbonates, water_potasium=water_test.water_potasium, water_sulphate=water_test.water_sulphate)
+            db.session.add(water_test)
+            flash('Your soil test has been registered: "Soil Test ID {}"'.format(water_test.id))
+
+        # DB COMMANDS
+        db.session.commit()
+
+        # SAVE INPUT STATUS
+        current_user.welcome.add_water_test = True
+        db.session.commit()
+
+        # OBJS SAVE ON SESSION
+        session['welcome'].update({'water_test_id':water_test.id, 'water_ph':form.water_ph.data, 'water_ec':form.water_ec.data, 'water_bicarbonates':form.water_bicarbonates.data, 'water_carbonates':form.water_carbonates.data, 'water_potasium':form.water_potasium.data, 'water_sulphate':form.water_sulphate.data})
+        session.modified = True
 
         # FLASH AND REDIRECT
-        flash('''Your Pump brand: {}
-                Flow rate: {} lps
-                Head pressure: {} m
-                Wattage: {} kW'''.format(form.pump_brand.data, form.pump_flow_rate.data, form.pump_head.data, form.pump_watts.data))
-        return redirect(url_for('welcome.index'))
+        return redirect(url_for('welcome.add_crop'))
 
-    return render_template('welcome/add_pump.html', form=form)
-
+    return render_template('welcome/add_crop.html', form=form)
 
 ###################
 # SET FARM
@@ -499,9 +552,9 @@ def add_farm():
 
 
         # SUCESS AND REDIRECT TO NEXT STEP
-        return redirect(url_for('welcome.add_crop'))
+        return redirect(url_for('welcome.add_soil_test'))
 
-    return render_template('welcome/add_farm.html', form=form)
+    return render_template('welcome/add_soil_test.html', form=form)
 
 
 ###################

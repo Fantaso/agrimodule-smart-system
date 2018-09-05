@@ -47,12 +47,12 @@ class SoilTest(db.Model):
 
     __tablename__ = 'soiltest'
     id = db.Column(db.Integer, primary_key=True)
-    soil_ph = db.Column(db.Integer)
-    soil_ec = db.Column(db.Integer)
-    soil_organic_carbon = db.Column(db.Integer)
-    soil_nitrogen = db.Column(db.Integer)
-    soil_p205 = db.Column(db.Integer)
-    soil_k20 = db.Column(db.Integer)
+    soil_ph = db.Column(db.Float(precision=2))
+    soil_ec = db.Column(db.Float(precision=2))
+    soil_organic_carbon = db.Column(db.Float(precision=2))
+    soil_nitrogen = db.Column(db.Float(precision=2))
+    soil_p205 = db.Column(db.Float(precision=2))
+    soil_k20 = db.Column(db.Float(precision=2))
 
     # FARM[1]-TEST[M]
     farm_id = db.Column(db.Integer, db.ForeignKey('farm.id'))
@@ -67,12 +67,12 @@ class WaterTest(db.Model):
 
     __tablename__ = 'watertest'
     id = db.Column(db.Integer, primary_key=True)
-    water_ph = db.Column(db.Integer)
-    water_ec = db.Column(db.Integer)
-    water_bicarbonates = db.Column(db.Integer)
-    water_carbonates = db.Column(db.Integer)
-    water_potasium = db.Column(db.Integer)
-    water_sulphate = db.Column(db.Integer)
+    water_ph = db.Column(db.Float(precision=2))
+    water_ec = db.Column(db.Float(precision=2))
+    water_bicarbonates = db.Column(db.Float(precision=2))
+    water_carbonates = db.Column(db.Float(precision=2))
+    water_potasium = db.Column(db.Float(precision=2))
+    water_sulphate = db.Column(db.Float(precision=2))
 
     # FARM[1]-TEST[M]
     farm_id = db.Column(db.Integer, db.ForeignKey('farm.id'))

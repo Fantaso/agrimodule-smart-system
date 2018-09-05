@@ -17,21 +17,38 @@ class AddFarmForm(FlaskForm):
     farm_cultivation_process    = SelectField('Farm Cultivation Process', validators=[DataRequired()], choices=[('Organic','Organic'),('Chemical','Chemical')])
 
 class PreAddSoilTestForm:
-    def __init__(self, field_cultivation_area, field_cultivation_crop, field_cultivation_start_date, field_cultivation_state, field_cultivation_type):
-        # self.field_name                    = field_name
-        self.field_cultivation_area        = field_cultivation_area
-        self.field_cultivation_crop        = field_cultivation_crop
-        self.field_cultivation_start_date  = field_cultivation_start_date
-        self.field_cultivation_state       = field_cultivation_state
-        self.field_cultivation_type        = field_cultivation_type
+    def __init__(self, soil_ph, soil_ec, soil_organic_carbon, soil_nitrogen, soil_p205, soil_k20):
+        self.soil_ph              = soil_ph
+        self.soil_ec              = soil_ec
+        self.soil_organic_carbon  = soil_organic_carbon
+        self.soil_nitrogen        = soil_nitrogen
+        self.soilp205             = soil_p205
+        self.sol_k20              = soil_k20
 
 class AddSoilTestForm(FlaskForm):
-    # field_name                    = StringField(label='Field name', validators=[DataRequired(), Length(min=2, max=30, message='''Your name needs at least 2 characters.''')])
-    field_cultivation_area        = FloatField(label='Field Cultivation Area', validators=[DataRequired(), NumberRange(min=1, max=5000, message='Cultivation area should be maximum as big as your farm')],render_kw={"placeholder":"500.50"})
-    field_cultivation_crop        = SelectField(label='Cultivation Crop', validators=[DataRequired()], coerce = int)
-    field_cultivation_start_date  = DateField(label='Cultivation Start Date', format='%d %B, %Y', validators=[DataRequired()])
-    field_cultivation_state       = SelectField(label='Cultivation State', validators=[DataRequired()], choices=[('new','New'),('already growing','Already Growing')])
-    field_cultivation_type        = SelectField(label='Cultivation Type', validators=[DataRequired()], choices=[('mono','Mono'), ('mix','Mix'), ('multi','Multi')])
+    soil_ph             = FloatField(label='pH', validators=[DataRequired(), NumberRange(min=0, max=14, message='pH should be between 1 to 14')])
+    soil_ec             = FloatField(label='EC (ds/m)', validators=[DataRequired(), NumberRange(min=0, max=20, message='EC should be between 1 to 20 ds/m')])
+    soil_organic_carbon = FloatField(label='Organic Carbon (%)', validators=[DataRequired(), NumberRange(min=0, max=4, message='Orgnic Carbon should be between 0 to 4%')])
+    soil_nitrogen       = FloatField(label='Available nitrogen (kg/ha)', validators=[DataRequired()])
+    soil_p205           = FloatField(label='Available P205 (kg/ha)', validators=[DataRequired()])
+    soil_k20            = FloatField(label='Available K20 (kg/ha)', validators=[DataRequired()])
+
+class PreAddWaterTestForm:
+    def __init__(self, water_ph, water_ec, water_bicarbonates, water_carbonates, water_potasium, water_sulphate):
+        self.water_ph              = water_ph
+        self.water_ec              = water_ec
+        self.water_bicarbonates    = water_bicarbonates
+        self.water_carbonates      = water_carbonates
+        self.water_potasium        = water_potasium
+        self.water_sulphate        = water_sulphate
+
+class AddWaterTestForm(FlaskForm):
+    water_ph             = FloatField(label='pH', validators=[DataRequired(), NumberRange(min=0, max=14, message='pH should be between 1 to 14')])
+    water_ec             = FloatField(label='EC (ds/m)', validators=[DataRequired(), NumberRange(min=0, max=20, message='EC should be between 1 to 20 ds/m')])
+    water_bicarbonates   = FloatField(label='Bicarbonates', validators=[DataRequired()])
+    water_carbonates     = FloatField(label='Carbonates', validators=[DataRequired()])
+    water_potasium       = FloatField(label='Potasium', validators=[DataRequired()])
+    water_sulphate       = FloatField(label='Sulphate', validators=[DataRequired()])
 
 class PreAddCropForm:
     def __init__(self, field_cultivation_area, field_cultivation_crop, field_cultivation_start_date, field_cultivation_state, field_cultivation_type):

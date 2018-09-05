@@ -277,6 +277,26 @@
                     <span class="nav-text">Add Farm</span>
                   </a>
                 </li>
+                <li class="{% block add_soil_test_active %}{% endblock %}">
+                  <a href="{{ url_for('welcome.add_soil_test') }}">
+                      {% if current_user.welcome.add_soil_test: %}
+                          <i class="material-icons svgreen-text">check_circle</i>
+                      {% else %}
+                          <i class="material-icons svgreen-text">panorama_fish_eye</i>
+                      {% endif %}
+                    <span class="nav-text">Add Soil Test</span>
+                  </a>
+                </li>
+                <li class="{% block add_water_test_active %}{% endblock %}">
+                  <a href="{{ url_for('welcome.add_water_test') }}">
+                      {% if current_user.welcome.add_water_test: %}
+                          <i class="material-icons svgreen-text">check_circle</i>
+                      {% else %}
+                          <i class="material-icons svgreen-text">panorama_fish_eye</i>
+                      {% endif %}
+                    <span class="nav-text">Add Water Test</span>
+                  </a>
+                </li>
                 <li class="{% block add_crop_active %}{% endblock %}">
                   <a href="{{ url_for('welcome.add_crop') }}">
                       {% if current_user.welcome.add_crop: %}
