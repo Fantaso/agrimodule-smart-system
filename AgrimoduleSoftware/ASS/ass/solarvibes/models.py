@@ -43,6 +43,46 @@ crops_field = db.Table('crops_field',
     db.Column('field_id', db.Integer, db.ForeignKey('field.id')),
     db.Column('crop_id', db.Integer, db.ForeignKey('crop.id')))
 
+class SoilTest(db.Model):
+
+    __tablename__ = 'soiltest'
+    id = db.Column(db.Integer, primary_key=True)
+    soil_ph = db.Column(db.Integer)
+    soil_ec = db.Column(db.Integer)
+    soil_organic_carbon = db.Column(db.Integer)
+    soil_nitrogen = db.Column(db.Integer)
+    soil_p205 = db.Column(db.Integer)
+    soil_k20 = db.Column(db.Integer)
+
+    # FARM[1]-TEST[M]
+    farm_id = db.Column(db.Integer, db.ForeignKey('farm.id'))
+
+    _time_created = db.Column(db.DateTime(timezone=True), server_default=func.now())
+    _time_updated = db.Column(db.DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
+
+    def __repr__(self):
+      return '<field {}>'.format(self.id)
+
+class WaterTest(db.Model):
+
+    __tablename__ = 'watertest'
+    id = db.Column(db.Integer, primary_key=True)
+    water_ph = db.Column(db.Integer)
+    water_ec = db.Column(db.Integer)
+    water_bicarbonates = db.Column(db.Integer)
+    water_carbonates = db.Column(db.Integer)
+    water_potasium = db.Column(db.Integer)
+    water_sulphate = db.Column(db.Integer)
+
+    # FARM[1]-TEST[M]
+    farm_id = db.Column(db.Integer, db.ForeignKey('farm.id'))
+
+    _time_created = db.Column(db.DateTime(timezone=True), server_default=func.now())
+    _time_updated = db.Column(db.DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
+
+    def __repr__(self):
+      return '<field {}>'.format(self.id)
+
 class Field(db.Model):
     """Fields that can exist inside the Farm.Model. One Farm can have as many Fields within for different crops to be cultivated, being limited by the size of the Farm"""
     __tablename__ = 'field'

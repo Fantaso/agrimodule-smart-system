@@ -346,6 +346,73 @@ def add_pump():
 
     return render_template('welcome/add_pump.html', form=form)
 
+###################
+# SET ADD PUMP
+###################
+@welcome.route('/add-test-result', methods=['GET', 'POST'])
+@login_required
+def add_test_result():
+    if 'welcome' not in session:
+        session['welcome'] = dict()
+        session.modified = True
+    # from form to db
+
+
+    form = AddTestResultsForm()
+    # if user has complete farm, but didnot finish field. pass the current
+    if current_user.welcome.add_pump:
+        pump = current_user.pumps.first()
+        myPump = PreAddPumpForm(pump_name = pump.pump_name, pump_brand = pump.pump_brand, pump_flow_rate = mlpm_to_lps(pump.pump_flow_rate), pump_head = cm_to_m(pump.pump_head), pump_watts = w_to_kw(pump.pump_watts))
+        form = AddPumpForm(obj=myPump)               # CREATE WTForm FORM
+
+    if form.validate_on_submit():
+        # USER OBJS
+        user = current_user
+        agrimodule = user.agrimodules.first()
+        agripump = agrimodule.agripumps.first()
+
+        if current_user.welcome.add_pump:
+            pump.pump_name = form.pump_name.data
+            pump.pump_brand = form.pump_brand.data
+            pump.pump_flow_rate = lps_to_mlpm(form.pump_flow_rate.data)
+            pump.pump_head = m_to_cm(form.pump_head.data)
+            pump.pump_watts = kw_to_w(form.pump_watts.data)
+            flash('Your pump has been re-registered: "{}"'.format(pump.pump_name))
+        else:
+            # ADD PUMP OBJS
+            pump_name = form.pump_name.data
+            pump_brand = form.pump_brand.data
+            pump_flow_rate = lps_to_mlpm(form.pump_flow_rate.data)
+            pump_head = m_to_cm(form.pump_head.data)
+            pump_watts = kw_to_w(form.pump_watts.data)
+            # OBJS TO DB
+            pump = Pump(user = user, pump_name = pump_name, pump_brand = pump_brand, pump_flow_rate = pump_flow_rate, pump_head = pump_head, pump_watts = pump_watts)
+            db.session.add(pump)
+            flash('Your pump has been registered: "{}"'.format(pump.pump_name))
+
+        # DB COMMANDS
+        db.session.commit()
+
+        # ADD PUMP TO AGRIPUMP
+        agripump.pump_id = pump.id
+        current_user.welcome.add_pump = True
+        db.session.commit()
+
+
+        # OBJS SAVE ON SESSION
+        session['welcome'].update({'pump_id':pump.id, 'pump_brand':form.pump_brand.data, 'pump_flow_rate':form.pump_flow_rate.data, 'pump_head':form.pump_head.data, 'pump_watts':form.pump_watts.data})
+        session.modified = True
+
+
+        # FLASH AND REDIRECT
+        flash('''Your Pump brand: {}
+                Flow rate: {} lps
+                Head pressure: {} m
+                Wattage: {} kW'''.format(form.pump_brand.data, form.pump_flow_rate.data, form.pump_head.data, form.pump_watts.data))
+        return redirect(url_for('welcome.index'))
+
+    return render_template('welcome/add_pump.html', form=form)
+
 
 ###################
 # SET FARM
