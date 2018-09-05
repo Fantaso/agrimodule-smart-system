@@ -8,6 +8,15 @@ from flask_login import current_user
 from flask_security import login_required
 from math import sqrt, floor
 from datetime import datetime, timedelta
+from ast import literal_eval as make_tuple
+from shapely.geometry.polygon import Polygon
+from functools import partial
+import numpy as np
+import ast
+import json
+import geopandas as gpd
+
+
 
 welcome = Blueprint(
     'welcome',
@@ -379,9 +388,6 @@ def add_farm():
                             )
         form = AddFarmForm(obj=myFarm)               # CREATE WTForm FORM
 
-    print(type(form.farm_coordinates.data))
-    # this is a string
-
     if form.validate_on_submit():   # IF request.methiod == 'POST'
         # USER OBJS
         user_id = current_user.get_id()
@@ -389,19 +395,62 @@ def add_farm():
         # FARM OBJS
         farm_name = form.farm_name.data
         farm_location = form.farm_location.data
-        farm_coordinates = form.farm_coordinates.data
-
-
-        # Calculate area*****************:
-
-
-        # farm_area = form.farm_area.data
-        farm_area = 1.0
+        farm_coordinates = ast.literal_eval(form.farm_coordinates.data)
+        farm_area = 0
         farm_cultivation_process = form.farm_cultivation_process.data
+
+        fcs = []
+        for fc in farm_coordinates:
+          fcs.append([fc[0], fc[1]])
+
+        print(fcs)
+
+        # obj = {'type':'Feature','geometry': {'type': 'Polygon', 'coordinates': [fcs], 'properties': {'name': None, 'area': 0}}}
+
+        coordinates_polygon = ((15.257606506347656, 52.5314697078057),
+                        (15.355110168457031, 52.5314697078057),
+                        (15.355110168457031, 52.57155098920788),
+                        (15.257606506347656, 52.57155098920788),
+                        (15.257606506347656, 52.5314697078057))
+
+        poly = gpd.GeoSeries({
+            'Farm': Polygon(coordinates_polygon)})
+        print(poly.crs)
+        poly.crs = {'init' :'epsg:4326'}
+        print(poly.crs)
+
+        poly_cartesian = poly.copy()
+        poly_cartesian.crs = {'init' :'epsg:3857'}
+        print(poly_cartesian.crs)
+        poly_cartesian['area'] = poly_cartesian.area/10**6
+        print(poly_cartesian['area'])
+
+        poly_wgs84 = poly_cartesian.copy()
+        poly_wgs84.crs = {'init' :'epsg:32633'}
+        print(poly_wgs84.crs)
+        poly_wgs84['area'] = poly_wgs84.area/10**6
+        print(poly_wgs84['area'])
+
+        # Polygon([(-33.68521565736163, 150.245788520813), (-34.711989623766925, 151.267517036438), (-35.287951309669815, 149.3833617630005), (-34.485905889886666, 149.224060005188)])
+        # Make Polygon object so that .area works
+
+        # data = json.dumps(obj)
+        # gdf = gpd.GeoDataFrame(json.loads(data))
+        # print(gdf.geometry.coordinates[0])
+        # gdf.crs = {'init': 'epsg:3857'}
+        # note the epsg format
+        # print(gdf.crs)
+        # print(gdf)
+        # print(gdf.geometry.area)
+        # gdf.properties.area = gdf.geometry.coordinates.area / 10**6
+        # gdf['coordinates'] has to be POLYGON obj to apply .area
+
+        # gdf.head(2)
+
+
 
         # FARM OBJS TO DB
         if current_user.welcome.add_farm:
-            print(current_user.welcome.add_farm)
             farm.farm_name = form.farm_name.data
             farm.farm_location = form.farm_location.data
             farm.farm_coordinates = form.farm_coordinates.data
@@ -441,7 +490,7 @@ def add_farm():
                                 'farm_area':farm_area,
                                 'farm_cultivation_process':farm_cultivation_process})
         session.modified = True
-        print("POST Successful")
+        print("POST successful")
 
         # DEAFULT FARM
         if current_user.farms.count() == 1: # if first time and first farm, set it as the default one

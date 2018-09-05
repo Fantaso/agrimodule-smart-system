@@ -31,23 +31,6 @@ def site_index():
 def app_index():
     return redirect(url_for('login_check.index'))
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 ##########################################################
 ##########################################################
 # FARM VIEWS
@@ -56,6 +39,7 @@ def app_index():
 ##################
 # USER WEATHER
 ##################
+
 @app.route('/user/farm/weather', methods=['GET'])
 @login_required
 def user_weather():

@@ -67,8 +67,10 @@
         google.maps.event.addListener(drawingManager, 'polygoncomplete', function (polygon) {
         var coordinates = (polygon.getPath().getArray());
 
+        coordinates = String(coordinates).replace(/[(]/g , "[").replace(/[)]/g, "]");
+        console.log(coordinates)
+
         document.getElementById("farm_coordinates").value = coordinates
-        console.log(coordinates);
         });
       }
 
