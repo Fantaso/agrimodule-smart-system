@@ -294,6 +294,8 @@ class WelcomeLog(db.Model):
     add_pump = db.Column(db.Boolean)
     add_farm = db.Column(db.Boolean)
     add_field = db.Column(db.Boolean)
+    add_soil_test = db.Column(db.Boolean)
+    add_water_test = db.Column(db.Boolean)
     # WELCOME[1]-USER[1]
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 

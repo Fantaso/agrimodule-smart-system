@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, redirect, url_for, flash, session
 from solarvibes import db
-from solarvibes.welcome.forms import PreAddFarmForm, AddFarmForm, AddCropForm, PreAddCropForm, AddAgrisysForm, PreAddAgrisysForm, InstallAgrisysForm, PreInstallAgrisysForm, AddPumpForm, PreAddPumpForm
+from solarvibes.welcome.forms import PreAddFarmForm, AddFarmForm, AddSoilTestForm, AddWaterTestForm, AddCropForm, PreAddCropForm, AddAgrisysForm, PreAddAgrisysForm, InstallAgrisysForm, PreInstallAgrisysForm, AddPumpForm, PreAddPumpForm
 from solarvibes.models import User, Crop, Farm, Field, Pump, Agrimodule, Agrisensor, Agripump
 from solarvibes.models import AgrimoduleList, AgrisensorList, AgripumpList
 from solarvibes.models import WelcomeLog
@@ -423,7 +423,7 @@ def add_water_test():
     # if user has complete farm, but didnot finish field. pass the current
     if current_user.welcome.add_water_test:
         water_test = current_user.water_tests.first()
-        myWaterTest = PreAddWaterTestForm(water_ph = water_test.water_ph, water_ec = water_test.water_ec, water_bicarbonates = soil_test.water_bicarbonates, water_carbonates=soil_test.water_carbonates, water_potasium=water_test.water_potasium, water_sulphate=water_test.water_sulphate)
+        myWaterTest = PreAddWaterTestForm(water_ph = water_test.water_ph, water_ec = water_test.water_ec, water_bicarbonates = water_test.water_bicarbonates, water_carbonates = water_test.water_carbonates, water_potasium= water_test.water_potasium, water_sulphate=water_test.water_sulphate)
         form = AddWaterTestForm(obj=myWaterTest)
 
     if form.validate_on_submit():
@@ -447,7 +447,7 @@ def add_water_test():
             water_potasium = form.water_potasium.data
             water_sulphate = form.water_sulphate.data
             # OBJS TO DB
-            water_test = SoilTest(farm = farm, water_ph = water_test.water_ph, water_ec = water_test.water_ec, water_bicarbonates = soil_test.water_bicarbonates, water_carbonates=soil_test.water_carbonates, water_potasium=water_test.water_potasium, water_sulphate=water_test.water_sulphate)
+            water_test = SoilTest(farm = farm, water_ph = water_test.water_ph, water_ec = water_test.water_ec, water_bicarbonates = water_test.water_bicarbonates, water_carbonates=water_test.water_carbonates, water_potasium=water_test.water_potasium, water_sulphate=water_test.water_sulphate)
             db.session.add(water_test)
             flash('Your soil test has been registered: "Soil Test ID {}"'.format(water_test.id))
 
