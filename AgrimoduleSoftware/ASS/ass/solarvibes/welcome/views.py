@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, redirect, url_for, flash, session
 from solarvibes import db
-from solarvibes.welcome.forms import PreAddFarmForm, AddFarmForm, AddSoilTestForm, AddWaterTestForm, AddCropForm, PreAddCropForm, AddAgrisysForm, PreAddAgrisysForm, InstallAgrisysForm, PreInstallAgrisysForm, AddPumpForm, PreAddPumpForm
+from solarvibes.welcome.forms import PreAddFarmForm, AddFarmForm, PreAddSoilTestForm, AddSoilTestForm, PreAddWaterTestForm, AddWaterTestForm, AddCropForm, PreAddCropForm, AddAgrisysForm, PreAddAgrisysForm, InstallAgrisysForm, PreInstallAgrisysForm, AddPumpForm, PreAddPumpForm
 from solarvibes.models import User, Crop, Farm, Field, Pump, Agrimodule, Agrisensor, Agripump, SoilTest, WaterTest
 from solarvibes.models import AgrimoduleList, AgrisensorList, AgripumpList
 from solarvibes.models import WelcomeLog
@@ -359,12 +359,11 @@ def add_soil_test():
     form = AddSoilTestForm()
     # if user has complete farm, but didnot finish field. pass the current
     if current_user.welcome.add_soil_test:
-        soil_test = current_user.soil_tests.first()
+        soil_test = current_user.farms.first().soil_tests.first()
         mySoilTest = PreAddSoilTestForm(soil_ph = soil_test.soil_ph, soil_ec = soil_test.soil_ec, soil_organic_carbon = soil_test.soil_organic_carbon, soil_nitrogen=soil_test.soil_nitrogen, soil_p205=soil_test.soil_p205, soil_k20=soil_test.soil_k20)
         form = AddSoilTestForm(obj=mySoilTest)
 
     if form.validate_on_submit():
-        print(form.validate_on_submit())
         # USER OBJS
         farm = current_user.farms.first()
 
@@ -419,7 +418,7 @@ def add_water_test():
     form = AddWaterTestForm()
     # if user has complete farm, but didnot finish field. pass the current
     if current_user.welcome.add_water_test:
-        water_test = current_user.water_tests.first()
+        water_test = current_user.farms.first().water_tests.first()
         myWaterTest = PreAddWaterTestForm(water_ph = water_test.water_ph, water_ec = water_test.water_ec, water_bicarbonates = water_test.water_bicarbonates, water_carbonates = water_test.water_carbonates, water_potasium= water_test.water_potasium, water_sulphate=water_test.water_sulphate)
         form = AddWaterTestForm(obj=myWaterTest)
 
