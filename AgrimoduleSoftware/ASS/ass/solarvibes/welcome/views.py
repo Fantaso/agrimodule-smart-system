@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, redirect, url_for, flash, session
 from solarvibes import db
 from solarvibes.welcome.forms import PreAddFarmForm, AddFarmForm, AddSoilTestForm, AddWaterTestForm, AddCropForm, PreAddCropForm, AddAgrisysForm, PreAddAgrisysForm, InstallAgrisysForm, PreInstallAgrisysForm, AddPumpForm, PreAddPumpForm
-from solarvibes.models import User, Crop, Farm, Field, Pump, Agrimodule, Agrisensor, Agripump
+from solarvibes.models import User, Crop, Farm, Field, Pump, Agrimodule, Agrisensor, Agripump, SoilTest, WaterTest
 from solarvibes.models import AgrimoduleList, AgrisensorList, AgripumpList
 from solarvibes.models import WelcomeLog
 from flask_login import current_user
@@ -355,8 +355,6 @@ def add_soil_test():
     if 'welcome' not in session:
         session['welcome'] = dict()
         session.modified = True
-    # from form to db
-    # Write methods if needed
 
     form = AddSoilTestForm()
     # if user has complete farm, but didnot finish field. pass the current
@@ -366,6 +364,7 @@ def add_soil_test():
         form = AddSoilTestForm(obj=mySoilTest)
 
     if form.validate_on_submit():
+        print(form.validate_on_submit())
         # USER OBJS
         farm = current_user.farms.first()
 
@@ -386,7 +385,7 @@ def add_soil_test():
             soil_p205 = form.soil_p205.data
             soil_k20 = form.soil_k20.data
             # OBJS TO DB
-            soil_test = SoilTest(farm = farm, soil_ph = soil_test.soil_ph, soil_ec = soil_test.soil_ec, soil_organic_carbon = soil_test.soil_organic_carbon, soil_nitrogen=soil_test.soil_nitrogen, soil_p205=soil_test.soil_p205, soil_k20=soil_test.soil_k20)
+            soil_test = SoilTest(farm_id = farm.id, soil_ph = soil_ph, soil_ec = soil_ec, soil_organic_carbon = soil_organic_carbon, soil_nitrogen=soil_nitrogen, soil_p205=soil_p205, soil_k20=soil_k20)
             db.session.add(soil_test)
             flash('Your soil test has been registered: "Soil Test ID {}"'.format(soil_test.id))
 
@@ -445,7 +444,7 @@ def add_water_test():
             water_potasium = form.water_potasium.data
             water_sulphate = form.water_sulphate.data
             # OBJS TO DB
-            water_test = WaterTest(farm = farm, water_ph = water_test.water_ph, water_ec = water_test.water_ec, water_bicarbonates = water_test.water_bicarbonates, water_carbonates=water_test.water_carbonates, water_potasium=water_test.water_potasium, water_sulphate=water_test.water_sulphate)
+            water_test = WaterTest(farm_id = farm.id, water_ph = water_ph, water_ec = water_ec, water_bicarbonates = water_bicarbonates, water_carbonates=water_carbonates, water_potasium=water_potasium, water_sulphate=water_sulphate)
             db.session.add(water_test)
             flash('Your water test has been registered: "Water Test ID {}"'.format(water_test.id))
 
