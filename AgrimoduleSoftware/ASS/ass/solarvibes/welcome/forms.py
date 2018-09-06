@@ -1,7 +1,22 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, FloatField, SelectField
 from wtforms.fields.html5 import DateField
-from wtforms.validators import DataRequired, Length, NumberRange
+from wtforms.validators import DataRequired, Length, NumberRange, ValidationError, Optional
+
+# If the FloatField is optional but needs validation
+class ConditionalFloatValidation(object):
+  def __init__(self, min, max, message):
+    self.min = min
+    self.max = max
+    self.message = message
+
+  def __call__(self, form, field):
+    d = field.data
+    if (
+      d is not None
+      and (d < self.min or d > self.max)
+    ):
+      raise ValidationError(self.message)
 
 class PreAddFarmForm:
     def __init__(self, farm_name, farm_location, farm_area, farm_cultivation_process):
@@ -11,8 +26,8 @@ class PreAddFarmForm:
         self.farm_cultivation_process    = farm_cultivation_process
 
 class AddFarmForm(FlaskForm):
-    farm_name                   = StringField('Farm name', validators=[DataRequired(), Length(min=2, max=30, message='''Your name needs at least 2 characters.''')])
-    farm_location               = StringField('Farm location', validators=[DataRequired(), Length(min=2, max=30, message='''Your name needs at least 2 characters.''')])
+    farm_name                   = StringField('Farm Name', validators=[DataRequired(), Length(min=2, max=30, message='''Your name needs at least 2 characters.''')])
+    farm_location               = StringField('Farm Location', validators=[DataRequired(), Length(min=2, max=30, message='''Your name needs at least 2 characters.''')])
     farm_area                   = FloatField('Farm Cultivation Area', validators=[DataRequired(), NumberRange(min=1, max=5000, message='Area between 1 and 5000 m2')])
     farm_cultivation_process    = SelectField('Farm Cultivation Process', validators=[DataRequired()], choices=[('Organic','Organic'),('Chemical','Chemical')])
 
@@ -26,12 +41,12 @@ class PreAddSoilTestForm:
         self.soil_k20             = soil_k20
 
 class AddSoilTestForm(FlaskForm):
-    soil_ph             = FloatField(label='pH', validators=[DataRequired(), NumberRange(min=0, max=14, message='pH should be between 1 to 14')])
-    soil_ec             = FloatField(label='EC (ds/m)', validators=[DataRequired(), NumberRange(min=0, max=20, message='EC should be between 1 to 20 ds/m')])
-    soil_organic_carbon = FloatField(label='Organic Carbon (%)', validators=[DataRequired(), NumberRange(min=0, max=4, message='Orgnic Carbon should be between 0 to 4%')])
-    soil_nitrogen       = FloatField(label='Available nitrogen (kg/ha)', validators=[DataRequired()])
-    soil_p205           = FloatField(label='Available P205 (kg/ha)', validators=[DataRequired()])
-    soil_k20            = FloatField(label='Available K20 (kg/ha)', validators=[DataRequired()])
+    soil_ph             = FloatField(label='pH', validators=[ConditionalFloatValidation(min=None, max=14.0, message='pH should be between 1 to 14'), Optional()])
+    soil_ec             = FloatField(label='EC (ds/m)', validators=[ConditionalFloatValidation(min=None, max=20.0, message='EC should be between 1 to 20 ds/m'), Optional()])
+    soil_organic_carbon = FloatField(label='Organic Carbon (%)', validators=[ConditionalFloatValidation(min=None, max=4, message='Orgnic Carbon should be between 0 to 4%'), Optional()])
+    soil_nitrogen       = FloatField(label='Available nitrogen (kg/ha)')
+    soil_p205           = FloatField(label='Available P205 (kg/ha)')
+    soil_k20            = FloatField(label='Available K20 (kg/ha)')
 
 class PreAddWaterTestForm:
     def __init__(self, water_ph, water_ec, water_bicarbonates, water_carbonates, water_potasium, water_sulphate):
@@ -43,12 +58,12 @@ class PreAddWaterTestForm:
         self.water_sulphate        = water_sulphate
 
 class AddWaterTestForm(FlaskForm):
-    water_ph             = FloatField(label='pH', validators=[DataRequired(), NumberRange(min=0, max=14, message='pH should be between 1 to 14')])
-    water_ec             = FloatField(label='EC (ds/m)', validators=[DataRequired(), NumberRange(min=0, max=20, message='EC should be between 1 to 20 ds/m')])
-    water_bicarbonates   = FloatField(label='Bicarbonates', validators=[DataRequired()])
-    water_carbonates     = FloatField(label='Carbonates', validators=[DataRequired()])
-    water_potasium       = FloatField(label='Potasium', validators=[DataRequired()])
-    water_sulphate       = FloatField(label='Sulphate', validators=[DataRequired()])
+    water_ph             = FloatField(label='pH', validators=[ConditionalFloatValidation(min=0.0, max=14.0, message='pH should be between 1 to 14'), Optional()])
+    water_ec             = FloatField(label='EC (ds/m)', validators=[ConditionalFloatValidation(min=0.0, max=20.0, message='EC should be between 1 to 20 ds/m'), Optional()])
+    water_bicarbonates   = FloatField(label='Bicarbonates')
+    water_carbonates     = FloatField(label='Carbonates')
+    water_potasium       = FloatField(label='Potasium')
+    water_sulphate       = FloatField(label='Sulphate')
 
 class PreAddCropForm:
     def __init__(self, field_cultivation_area, field_cultivation_crop, field_cultivation_start_date, field_cultivation_state, field_cultivation_type):
@@ -73,8 +88,8 @@ class PreAddAgrisysForm:
         self.agrimodule_identifier        = agrimodule_identifier
 
 class AddAgrisysForm(FlaskForm):
-    agrimodule_name              = StringField('Agrimodule name', validators=[DataRequired(), Length(min=2, max=20, message='Give it a name for sanity MAX 30.')])
-    agrimodule_identifier        = StringField('Agrimodule code', validators=[DataRequired(), Length(min=2, max=30, message='Your agrimodule system identifier is in the back of your agrimodule.')])
+    agrimodule_name              = StringField('Agrimodule Name', validators=[DataRequired(), Length(min=2, max=20, message='Give it a name for sanity MAX 30.')])
+    agrimodule_identifier        = StringField('Agrimodule Code', validators=[DataRequired(), Length(min=2, max=30, message='Your agrimodule system identifier is in the back of your agrimodule.')])
 
 class PreInstallAgrisysForm:
     def __init__(self, agm_lat, agm_lon, ags_lat, ags_lon, agp_lat, agp_lon):
