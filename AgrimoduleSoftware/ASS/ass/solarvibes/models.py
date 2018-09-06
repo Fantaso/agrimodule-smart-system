@@ -31,6 +31,8 @@ class Farm(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     # FARM[1]-FIELD[M]
     fields = db.relationship('Field', backref='farm', lazy='dynamic')
+    soil_tests = db.relationship('SoilTest', backref='farm', lazy='dynamic')
+    water_tests = db.relationship('WaterTest', backref='farm', lazy='dynamic')
 
     _default = db.Column(db.Boolean)
     _time_created = db.Column(db.DateTime(timezone=True), server_default=func.now())
