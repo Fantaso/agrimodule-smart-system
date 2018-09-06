@@ -404,7 +404,7 @@ def add_soil_test():
         # FLASH AND REDIRECT
         return redirect(url_for('welcome.add_water_test'))
 
-    return render_template('welcome/add_water_test.html', form=form)
+    return render_template('welcome/add_soil_test.html', form=form)
 
 
 ###################
@@ -416,8 +416,6 @@ def add_water_test():
     if 'welcome' not in session:
         session['welcome'] = dict()
         session.modified = True
-    # from form to db
-    # Write methods if needed
 
     form = AddWaterTestForm()
     # if user has complete farm, but didnot finish field. pass the current
@@ -437,7 +435,7 @@ def add_water_test():
             water_test.water_carbonates = form.water_carbonates.data
             water_test.water_potasium = form.water_potasium.data
             water_test.water_sulphate = form.water_sulphate.data
-            flash('Your soil test has been re-registered: "Soil Test ID {}"'.format(water_test.id))
+            flash('Your water test has been re-registered: "Water Test ID {}"'.format(water_test.id))
         else:
             # ADD WATER TEST OBJS
             water_ph = form.water_ph.data
@@ -447,9 +445,9 @@ def add_water_test():
             water_potasium = form.water_potasium.data
             water_sulphate = form.water_sulphate.data
             # OBJS TO DB
-            water_test = SoilTest(farm = farm, water_ph = water_test.water_ph, water_ec = water_test.water_ec, water_bicarbonates = water_test.water_bicarbonates, water_carbonates=water_test.water_carbonates, water_potasium=water_test.water_potasium, water_sulphate=water_test.water_sulphate)
+            water_test = WaterTest(farm = farm, water_ph = water_test.water_ph, water_ec = water_test.water_ec, water_bicarbonates = water_test.water_bicarbonates, water_carbonates=water_test.water_carbonates, water_potasium=water_test.water_potasium, water_sulphate=water_test.water_sulphate)
             db.session.add(water_test)
-            flash('Your soil test has been registered: "Soil Test ID {}"'.format(water_test.id))
+            flash('Your water test has been registered: "Water Test ID {}"'.format(water_test.id))
 
         # DB COMMANDS
         db.session.commit()
@@ -465,7 +463,7 @@ def add_water_test():
         # FLASH AND REDIRECT
         return redirect(url_for('welcome.add_crop'))
 
-    return render_template('welcome/add_crop.html', form=form)
+    return render_template('welcome/add_water_test.html', form=form)
 
 ###################
 # SET FARM
@@ -554,7 +552,7 @@ def add_farm():
         # SUCESS AND REDIRECT TO NEXT STEP
         return redirect(url_for('welcome.add_soil_test'))
 
-    return render_template('welcome/add_soil_test.html', form=form)
+    return render_template('welcome/add_farm.html', form=form)
 
 
 ###################

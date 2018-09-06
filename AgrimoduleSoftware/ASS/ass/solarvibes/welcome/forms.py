@@ -22,8 +22,8 @@ class PreAddSoilTestForm:
         self.soil_ec              = soil_ec
         self.soil_organic_carbon  = soil_organic_carbon
         self.soil_nitrogen        = soil_nitrogen
-        self.soilp205             = soil_p205
-        self.sol_k20              = soil_k20
+        self.soil_p205            = soil_p205
+        self.soil_k20             = soil_k20
 
 class AddSoilTestForm(FlaskForm):
     soil_ph             = FloatField(label='pH', validators=[DataRequired(), NumberRange(min=0, max=14, message='pH should be between 1 to 14')])
