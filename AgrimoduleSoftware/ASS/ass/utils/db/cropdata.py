@@ -9,15 +9,6 @@ class CropData():
     2. CROP IRRIGATION SCHEDULE
     3. CROP FERTILIZATION SCHEDULE"""
 
-    def get_rel_path(filename, image_folder):
-
-        """"this method gets the relative path of the object and join
-		the relative path and the filename for the crop images url
-        to be access by the app to render pictures in the web app"""
-
-        dirname = os.path.dirname(__file__)
-        url = os.path.join(dirname, image_folder, filename)
-        return url
 
     __CROP_IMAGES_FOLDER_NAME = 'crop_images'
     __CROPS = {
@@ -26,7 +17,7 @@ class CropData():
     			'name':'green_cardamom',
     			'variety':'cardamom',
     		 	'family':'dry fruit',
-    			'image': get_rel_path(filename = 'green_cardamom.png', image_folder = __CROP_IMAGES_FOLDER_NAME),
+    			'image': CropData.get_rel_path(filename = 'green_cardamom.png', image_folder = __CROP_IMAGES_FOLDER_NAME),
     			'yield': 122.1153, # gr
     			'canopy_x':0.9, # m
     			'canopy_y':0.9, # m
@@ -381,3 +372,17 @@ class CropData():
         """"this method returns the dictionary containing the specific crop
         fertilization schedule"""
         return CropData.__CROPS[self.crop_name]['fertilization']
+
+
+    #########     STATIC METHODS     ##########
+
+    @static_method
+    def get_rel_path(filename, image_folder):
+
+        """"this method gets the relative path of the object and join
+		the relative path and the filename for the crop images url
+        to be access by the app to render pictures in the web app"""
+
+        dirname = os.path.dirname(__file__)
+        url = os.path.join(dirname, image_folder, filename)
+        return url
