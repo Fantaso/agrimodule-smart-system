@@ -17,7 +17,7 @@ class Config:
     # SECURITY_PASSWORD_HASH = 'plaintext' # when change later, SALT must be configure too.
     SECURITY_PASSWORD_SALT = environ.get('SECURITY_PASSWORD_SALT')
     SECURITY_REGISTERABLE = True 	# allows register form template from flask-security
-    SECURITY_CONFIRMABLE = True		# users must confirm their email throught nthe liunk provided in the welcome email
+    SECURITY_CONFIRMABLE = False	# users must confirm their email throught nthe liunk provided in the welcome email
     SECURITY_RECOVERABLE = True		# allows user to recover email or reset password when forgot
     SECURITY_CHANGEABLE = True 		# enable the change password
     # SECURITY_RETYPABLE = True 		# allows for typing pass 2 times for confirmation (DONT EXIST IN DOCUMENTAITION)

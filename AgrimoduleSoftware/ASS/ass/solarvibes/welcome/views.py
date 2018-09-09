@@ -350,6 +350,7 @@ def add_pump():
 ###################
 # SET FARM
 ###################
+
 @welcome.route('/add-farm', methods=['GET', 'POST'])
 @login_required
 def add_farm():
@@ -364,15 +365,22 @@ def add_farm():
         session.modified = True
 
     form = AddFarmForm()
-    # if user has complete farm, but didnot finish field. pass the current
+
+    # if user has complete farm, but did not finish field. pass the current
     if current_user.welcome.add_farm:
+
         farm = current_user.farms.first()
+
         myFarm = PreAddFarmForm(farm_name = farm.farm_name,
                             farm_location = farm.farm_location,
-                            farm_area = cm2_to_m2(farm.farm_area),
+                            farm_coordinates = farm.farm_coordinates,
+                            # farm_area = cm2_to_m2(farm.farm_area),
                             farm_cultivation_process = farm.farm_cultivation_process,
                             )
         form = AddFarmForm(obj=myFarm)               # CREATE WTForm FORM
+
+    print(type(form.farm_coordinates.data))
+    # this is a string
 
     if form.validate_on_submit():   # IF request.methiod == 'POST'
         # USER OBJS
@@ -381,24 +389,34 @@ def add_farm():
         # FARM OBJS
         farm_name = form.farm_name.data
         farm_location = form.farm_location.data
-        farm_area = form.farm_area.data
+        farm_coordinates = form.farm_coordinates.data
+
+
+        # Calculate area*****************:
+
+
+        # farm_area = form.farm_area.data
+        farm_area = 1.0
         farm_cultivation_process = form.farm_cultivation_process.data
 
-        # FARM OBJS  TO DB
+        # FARM OBJS TO DB
         if current_user.welcome.add_farm:
+            print(current_user.welcome.add_farm)
             farm.farm_name = form.farm_name.data
             farm.farm_location = form.farm_location.data
-            farm.farm_area = m2_to_cm2(form.farm_area.data)
+            farm.farm_coordinates = form.farm_coordinates.data
+            # farm.farm_area = m2_to_cm2(form.farm_area.data)
             farm.farm_cultivation_process = form.farm_cultivation_process.data
             farm._default = False
             flash('''You just re-created farm: {}
                         located: {}
                         with an area: {} m2
-                        growing: {}ally'''.format(farm_name, farm_location, farm_area, farm_cultivation_process))
+                        growing: {}ally'''.format(farm_name, farm_location, farm_coordinates, farm_area, farm_cultivation_process))
         else:
             farm = Farm(    user_id=user_id,
                             farm_name=farm_name,
                             farm_location=farm_location,
+                            farm_coordinates=farm_coordinates,
                             farm_area=m2_to_cm2(farm_area),
                             farm_cultivation_process=farm_cultivation_process,
                             _default=False)
@@ -419,9 +437,11 @@ def add_farm():
                                 'farm_id':farm_id,
                                 'farm_name':farm_name,
                                 'farm_location':farm_location,
+                                'farm_coordinates': farm_coordinates,
                                 'farm_area':farm_area,
                                 'farm_cultivation_process':farm_cultivation_process})
         session.modified = True
+        print("POST Successful")
 
         # DEAFULT FARM
         if current_user.farms.count() == 1: # if first time and first farm, set it as the default one
@@ -433,13 +453,14 @@ def add_farm():
 
         # SUCESS AND REDIRECT TO NEXT STEP
         return redirect(url_for('welcome.add_crop'))
-
+    print("failed validation")
     return render_template('welcome/add_farm.html', form=form)
 
 
 ###################
 # SET FIELD
 ###################
+
 @welcome.route('/add-crop', methods=['GET', 'POST'])
 @login_required
 def add_crop():
