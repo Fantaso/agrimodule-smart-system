@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, redirect, url_for, flash, session
 from solarvibes import db
-from solarvibes.welcome.forms import PreAddFarmForm, AddFarmForm, AddCropForm, PreAddCropForm, AddAgrisysForm, PreAddAgrisysForm, InstallAgrisysForm, PreInstallAgrisysForm, AddPumpForm, PreAddPumpForm
-from solarvibes.models import User, Crop, Farm, Field, Pump, Agrimodule, Agrisensor, Agripump
+from solarvibes.welcome.forms import PreAddFarmForm, AddFarmForm, PreAddSoilTestForm, AddSoilTestForm, PreAddWaterTestForm, AddWaterTestForm, AddCropForm, PreAddCropForm, AddAgrisysForm, PreAddAgrisysForm, InstallAgrisysForm, PreInstallAgrisysForm, AddPumpForm, PreAddPumpForm
+from solarvibes.models import User, Crop, Farm, Field, Pump, Agrimodule, Agrisensor, Agripump, SoilTest, WaterTest
 from solarvibes.models import AgrimoduleList, AgrisensorList, AgripumpList
 from solarvibes.models import WelcomeLog
 from flask_login import current_user
@@ -346,6 +346,122 @@ def add_pump():
 
     return render_template('welcome/add_pump.html', form=form)
 
+###################
+# SET ADD SOIL TEST
+###################
+@welcome.route('/add-soil-test', methods=['GET', 'POST'])
+@login_required
+def add_soil_test():
+    if 'welcome' not in session:
+        session['welcome'] = dict()
+        session.modified = True
+
+    form = AddSoilTestForm()
+    # if user has complete farm, but didnot finish field. pass the current
+    if current_user.welcome.add_soil_test:
+        soil_test = current_user.farms.first().soil_tests.first()
+        mySoilTest = PreAddSoilTestForm(soil_ph = soil_test.soil_ph, soil_ec = soil_test.soil_ec, soil_organic_carbon = soil_test.soil_organic_carbon, soil_nitrogen=soil_test.soil_nitrogen, soil_p205=soil_test.soil_p205, soil_k20=soil_test.soil_k20)
+        form = AddSoilTestForm(obj=mySoilTest)
+
+    if form.validate_on_submit():
+        # USER OBJS
+        farm = current_user.farms.first()
+
+        if current_user.welcome.add_soil_test:
+            soil_test.soil_ph = form.soil_ph.data
+            soil_test.soil_ec = form.soil_ec.data
+            soil_test.soil_organic_carbon = form.soil_organic_carbon.data
+            soil_test.soil_nitrogen = form.soil_nitrogen.data
+            soil_test.soil_p205 = form.soil_p205.data
+            soil_test.soil_k20 = form.soil_k20.data
+            flash('Your soil test has been re-registered: "Soil Test ID {}"'.format(soil_test.id))
+        else:
+            # ADD SOIL TEST OBJS
+            soil_ph = form.soil_ph.data
+            soil_ec = form.soil_ec.data
+            soil_organic_carbon = form.soil_organic_carbon.data
+            soil_nitrogen = form.soil_nitrogen.data
+            soil_p205 = form.soil_p205.data
+            soil_k20 = form.soil_k20.data
+            # OBJS TO DB
+            soil_test = SoilTest(farm_id = farm.id, soil_ph = soil_ph, soil_ec = soil_ec, soil_organic_carbon = soil_organic_carbon, soil_nitrogen=soil_nitrogen, soil_p205=soil_p205, soil_k20=soil_k20)
+            db.session.add(soil_test)
+            flash('Your soil test has been registered: "Soil Test ID {}"'.format(soil_test.id))
+
+        # DB COMMANDS
+        db.session.commit()
+
+        # SAVE INPUT STATUS
+        current_user.welcome.add_soil_test = True
+        db.session.commit()
+
+        # OBJS SAVE ON SESSION
+        session['welcome'].update({'soil_test_id':soil_test.id, 'soil_ph':form.soil_ph.data, 'soil_ec':form.soil_ec.data, 'soil_organic_carbon':form.soil_organic_carbon.data, 'soil_nitrogen':form.soil_nitrogen.data, 'soil_p205':form.soil_p205.data, 'soil_k20':form.soil_k20.data})
+        session.modified = True
+
+        # FLASH AND REDIRECT
+        return redirect(url_for('welcome.add_water_test'))
+
+    return render_template('welcome/add_soil_test.html', form=form)
+
+
+###################
+# SET ADD WATER TEST
+###################
+@welcome.route('/add-water-test', methods=['GET', 'POST'])
+@login_required
+def add_water_test():
+    if 'welcome' not in session:
+        session['welcome'] = dict()
+        session.modified = True
+
+    form = AddWaterTestForm()
+    # if user has complete farm, but didnot finish field. pass the current
+    if current_user.welcome.add_water_test:
+        water_test = current_user.farms.first().water_tests.first()
+        myWaterTest = PreAddWaterTestForm(water_ph = water_test.water_ph, water_ec = water_test.water_ec, water_bicarbonates = water_test.water_bicarbonates, water_carbonates = water_test.water_carbonates, water_potasium= water_test.water_potasium, water_sulphate=water_test.water_sulphate)
+        form = AddWaterTestForm(obj=myWaterTest)
+
+    if form.validate_on_submit():
+        # USER OBJS
+        farm = current_user.farms.first()
+
+        if current_user.welcome.add_water_test:
+            water_test.water_ph = form.water_ph.data
+            water_test.water_ec = form.water_ec.data
+            water_test.water_bicarbonates = form.water_bicarbonates.data
+            water_test.water_carbonates = form.water_carbonates.data
+            water_test.water_potasium = form.water_potasium.data
+            water_test.water_sulphate = form.water_sulphate.data
+            flash('Your water test has been re-registered: "Water Test ID {}"'.format(water_test.id))
+        else:
+            # ADD WATER TEST OBJS
+            water_ph = form.water_ph.data
+            water_ec = form.water_ec.data
+            water_bicarbonates = form.water_bicarbonates.data
+            water_carbonates = form.water_carbonates.data
+            water_potasium = form.water_potasium.data
+            water_sulphate = form.water_sulphate.data
+            # OBJS TO DB
+            water_test = WaterTest(farm_id = farm.id, water_ph = water_ph, water_ec = water_ec, water_bicarbonates = water_bicarbonates, water_carbonates=water_carbonates, water_potasium=water_potasium, water_sulphate=water_sulphate)
+            db.session.add(water_test)
+            flash('Your water test has been registered: "Water Test ID {}"'.format(water_test.id))
+
+        # DB COMMANDS
+        db.session.commit()
+
+        # SAVE INPUT STATUS
+        current_user.welcome.add_water_test = True
+        db.session.commit()
+
+        # OBJS SAVE ON SESSION
+        session['welcome'].update({'water_test_id':water_test.id, 'water_ph':form.water_ph.data, 'water_ec':form.water_ec.data, 'water_bicarbonates':form.water_bicarbonates.data, 'water_carbonates':form.water_carbonates.data, 'water_potasium':form.water_potasium.data, 'water_sulphate':form.water_sulphate.data})
+        session.modified = True
+
+        # FLASH AND REDIRECT
+        return redirect(url_for('welcome.add_crop'))
+
+    return render_template('welcome/add_water_test.html', form=form)
 
 ###################
 # SET FARM
@@ -450,10 +566,8 @@ def add_farm():
             farm._default = True
             db.session.commit()
 
-
         # SUCESS AND REDIRECT TO NEXT STEP
-        return redirect(url_for('welcome.add_crop'))
-    print("failed validation")
+        return redirect(url_for('welcome.add_soil_test'))
     return render_template('welcome/add_farm.html', form=form)
 
 

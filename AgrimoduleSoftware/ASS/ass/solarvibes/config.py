@@ -22,8 +22,8 @@ class Config:
     SECURITY_CHANGEABLE = True 		# enable the change password
     # SECURITY_RETYPABLE = True 		# allows for typing pass 2 times for confirmation (DONT EXIST IN DOCUMENTAITION)
     SECURITY_TRACKABLE = True 		# allows server to track statistics about the user acount like lastlogin,currentip etc.
-    SECURITY_SEND_REGISTER_EMAIL = True 	# to disable/enable sending a confirmation email for registering without configuring the email register yet.
-    SECURITY_EMAIL_SENDER = environ.get('MAIL_USERNAME')
+    SECURITY_SEND_REGISTER_EMAIL = False 	# to disable/enable sending a confirmation email for registering without configuring the email register yet.
+    # SECURITY_EMAIL_SENDER = environ.get('MAIL_USERNAME')
     SECURITY_URL_PREFIX = '/auth'
     SECURITY_POST_LOGIN_VIEW = '/login-check'
     SECURITY_POST_LOGOUT_VIEW = '/auth/login'
@@ -43,8 +43,8 @@ class Config:
     # SQLALCHEMY_TRACK_MODIFICATIONS = False
 
     ########## FLASK-MAIL ##########
-    MAIL_SERVER = 'smtp.gmail.com'
-    MAIL_PORT = 465
-    MAIL_USE_SSL = True
-    MAIL_USERNAME = environ.get('MAIL_USERNAME')
-    MAIL_PASSWORD = environ.get('MAIL_PASSWORD')
+    # MAIL_SERVER = 'smtp.gmail.com'
+    # MAIL_PORT = 465
+    # MAIL_USE_SSL = True
+    # MAIL_USERNAME = environ.get('MAIL_USERNAME')
+    # MAIL_PASSWORD = environ.get('MAIL_PASSWORD')
