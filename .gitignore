@@ -3,7 +3,18 @@
 cfg2.cfg
 archive/
 
-# software directory
+## software directory
+
+# utils folder
+# aws
+/home/fantaso/projects/AgrimoduleSmartSystem/AgrimoduleHardware/ASS/ass/utils/aws
+# cropwat
+/home/fantaso/projects/AgrimoduleSmartSystem/AgrimoduleHardware/ASS/ass/utils/cropwat
+# evapotranspiration
+/home/fantaso/projects/AgrimoduleSmartSystem/AgrimoduleHardware/ASS/ass/utils/evapotranspiration
+
+
+
 Software/
 .gitignore
 *.db-journal
