@@ -11,10 +11,10 @@ class ConditionalFloatValidation(object):
     self.message = message
 
   def __call__(self, form, field):
-    d = field.data
+    data = field.data
     if (
-      d is not None
-      and (d < self.min or d > self.max)
+      data is not None
+      and (data < self.min or data > self.max)
     ):
       raise ValidationError(self.message)
 
@@ -41,9 +41,9 @@ class PreAddSoilTestForm:
         self.soil_k20             = soil_k20
 
 class AddSoilTestForm(FlaskForm):
-    soil_ph             = FloatField(label='pH', validators=[ConditionalFloatValidation(min=None, max=14.0, message='pH should be between 1 to 14'), Optional()])
-    soil_ec             = FloatField(label='EC (ds/m)', validators=[ConditionalFloatValidation(min=None, max=20.0, message='EC should be between 1 to 20 ds/m'), Optional()])
-    soil_organic_carbon = FloatField(label='Organic Carbon (%)', validators=[ConditionalFloatValidation(min=None, max=4, message='Orgnic Carbon should be between 0 to 4%'), Optional()])
+    soil_ph             = FloatField(label='pH', validators=[ConditionalFloatValidation(min=0, max=14.0, message='pH should be between 1 to 14'), Optional()])
+    soil_ec             = FloatField(label='EC (ds/m)', validators=[ConditionalFloatValidation(min=0, max=20.0, message='EC should be between 1 to 20 ds/m'), Optional()])
+    soil_organic_carbon = FloatField(label='Organic Carbon (%)', validators=[ConditionalFloatValidation(min=0, max=4, message='Orgnic Carbon should be between 0 to 4%'), Optional()])
     soil_nitrogen       = FloatField(label='Available nitrogen (kg/ha)')
     soil_p205           = FloatField(label='Available P205 (kg/ha)')
     soil_k20            = FloatField(label='Available K20 (kg/ha)')
