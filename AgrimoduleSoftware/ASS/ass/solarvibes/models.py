@@ -63,7 +63,7 @@ class SoilTest(db.Model):
     _time_updated = db.Column(db.DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
 
     def __repr__(self):
-      return '<field {}>'.format(self.id)
+      return '<Soil Test {}>'.format(self.id)
 
 class WaterTest(db.Model):
 
@@ -83,7 +83,7 @@ class WaterTest(db.Model):
     _time_updated = db.Column(db.DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
 
     def __repr__(self):
-      return '<field {}>'.format(self.id)
+      return '<Water Test {}>'.format(self.id)
 
 class Field(db.Model):
     """Fields that can exist inside the Farm.Model. One Farm can have as many Fields within for different crops to be cultivated, being limited by the size of the Farm"""
