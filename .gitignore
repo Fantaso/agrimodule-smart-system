@@ -7,11 +7,11 @@ archive/
 
 # utils folder
 # aws
-/home/fantaso/projects/AgrimoduleSmartSystem/AgrimoduleHardware/ASS/ass/utils/aws
+AgrimoduleSoftware/ASS/ass/utils/aws/
 # cropwat
-AgrimoduleHardware/ASS/ass/utils/cropwat
+AgrimoduleSoftware/ASS/ass/utils/cropwat/
 # evapotranspiration
-AgrimoduleHardware/ASS/ass/utils/evapotranspiration
+AgrimoduleSoftware/ASS/ass/utils/evapotranspiration/
 
 
 
