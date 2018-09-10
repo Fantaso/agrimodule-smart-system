@@ -6,11 +6,11 @@ from wtforms.validators import DataRequired, Length, NumberRange, ValidationErro
 # If the FloatField is optional but needs validation
 class ConditionalFloatValidation(object):
     def __init__(self, min, max, message):
-      self.min = min
-      self.max = max
-      self.message = message
+        self.min = min
+        self.max = max
+        self.message = message
 
-  def __call__(self, form, field):
+    def __call__(self, form, field):
       data = field.data
       if (
         data is not None

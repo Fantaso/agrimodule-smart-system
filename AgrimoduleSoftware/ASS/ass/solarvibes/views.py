@@ -20,7 +20,7 @@ from solarvibes.models import roles_users, Role, User, Farm, Field, DailyFieldIn
 @app.route('/', methods=['GET'])
 # @login_required
 def site_index():
-    return redirect(url_for('site.index'))
+    return redirect(url_for('login_check.index'))
 
 
 #############################

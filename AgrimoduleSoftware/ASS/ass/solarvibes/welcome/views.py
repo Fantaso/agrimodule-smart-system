@@ -38,6 +38,8 @@ def index():
                                     install_agrisys = False,
                                     add_pump = False,
                                     add_farm = False,
+                                    add_soil_test = False,
+                                    add_water_test = False,
                                     add_field = False)
         db.session.add(welcome_log)
         db.session.commit()
