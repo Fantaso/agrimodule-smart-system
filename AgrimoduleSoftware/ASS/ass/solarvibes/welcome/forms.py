@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, FloatField, SelectField
+from wtforms import StringField, FloatField, SelectField, HiddenField
 from wtforms.fields.html5 import DateField
 from wtforms.validators import DataRequired, Length, NumberRange, ValidationError, Optional
 
@@ -19,16 +19,18 @@ class ConditionalFloatValidation(object):
         raise ValidationError(self.message)
 
 class PreAddFarmForm:
-    def __init__(self, farm_name, farm_location, farm_area, farm_cultivation_process):
+    def __init__(self, farm_name, farm_location, farm_coordinates, farm_cultivation_process):
         self.farm_name                   = farm_name
         self.farm_location               = farm_location
-        self.farm_area                   = farm_area
+        self.farm_coordinates            = farm_coordinates
+        # self.farm_area                   = farm_area
         self.farm_cultivation_process    = farm_cultivation_process
 
 class AddFarmForm(FlaskForm):
-    farm_name                   = StringField('Farm Name', validators=[DataRequired(), Length(min=2, max=30, message='''Your name needs at least 2 characters.''')])
-    farm_location               = StringField('Farm Location', validators=[DataRequired(), Length(min=2, max=30, message='''Your name needs at least 2 characters.''')])
-    farm_area                   = FloatField('Farm Cultivation Area', validators=[DataRequired(), NumberRange(min=1, max=5000, message='Area between 1 and 5000 m2')])
+    farm_name                   = StringField('Farm name', validators=[DataRequired(), Length(min=2, max=30, message='''Your name needs at least 2 characters.''')])
+    farm_location               = StringField('Farm location', validators=[DataRequired(), Length(min=2, max=30, message='''Your name needs at least 2 characters.''')])
+    farm_coordinates            = HiddenField('', validators=[DataRequired()])
+#     farm_area                   = FloatField('Farm Cultivation Area', validators=[DataRequired(), NumberRange(min=1, max=5000, message='Area between 1 and 5000 m2')])
     farm_cultivation_process    = SelectField('Farm Cultivation Process', validators=[DataRequired()], choices=[('Organic','Organic'),('Chemical','Chemical')])
 
 class PreAddSoilTestForm:

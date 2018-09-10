@@ -23,6 +23,7 @@ class Farm(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     farm_name = db.Column(db.String(25), unique=True, nullable=False)
     farm_location = db.Column(db.String(20))
+    farm_coordinates = db.Column(db.String(3000))
     farm_area = db.Column(db.Float(precision=2))
     farm_cultivation_process = db.Column(db.String(20))
 
@@ -101,8 +102,6 @@ class Field(db.Model):
     field_num_plants = db.Column(db.Integer)
     field_spacing_topology = db.Column(db.String(20))
     field_water_required_day = db.Column(db.Integer)
-    # field_ = db.Column(db.Float)
-    # field_ = db.Column(db.Float)
     # field_ = db.Column(db.Float)
 
     # RELATIONSHIP TO BE ADDED
