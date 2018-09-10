@@ -5,18 +5,18 @@ from wtforms.validators import DataRequired, Length, NumberRange, ValidationErro
 
 # If the FloatField is optional but needs validation
 class ConditionalFloatValidation(object):
-  def __init__(self, min, max, message):
-    self.min = min
-    self.max = max
-    self.message = message
+    def __init__(self, min, max, message):
+      self.min = min
+      self.max = max
+      self.message = message
 
   def __call__(self, form, field):
-    data = field.data
-    if (
-      data is not None
-      and (data < self.min or data > self.max)
-    ):
-      raise ValidationError(self.message)
+      data = field.data
+      if (
+        data is not None
+        and (data < self.min or data > self.max)
+      ):
+        raise ValidationError(self.message)
 
 class PreAddFarmForm:
     def __init__(self, farm_name, farm_location, farm_area, farm_cultivation_process):
