@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: e4d10c9e42bb
-Revises:
-Create Date: 2018-06-15 18:19:10.021151
+Revision ID: a33aa88d3918
+Revises: 
+Create Date: 2018-09-05 17:03:46.583279
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'e4d10c9e42bb'
+revision = 'a33aa88d3918'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -24,6 +24,36 @@ def upgrade():
     sa.Column('msg', sa.Text(), nullable=True),
     sa.Column('_time_created', sa.DateTime(timezone=True), server_default=sa.text('now()'), nullable=True),
     sa.PrimaryKeyConstraint('id')
+    )
+    op.create_table('agrimodulelist',
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('identifier', sa.String(length=100), nullable=False),
+    sa.Column('type', sa.String(length=10), nullable=False),
+    sa.Column('has_user_registered', sa.Boolean(), nullable=True),
+    sa.Column('user_id', sa.Integer(), nullable=True),
+    sa.Column('has_agrimodule_registered', sa.Boolean(), nullable=True),
+    sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('identifier')
+    )
+    op.create_table('agripumplist',
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('identifier', sa.String(length=100), nullable=False),
+    sa.Column('type', sa.String(length=10), nullable=False),
+    sa.Column('has_user_registered', sa.Boolean(), nullable=True),
+    sa.Column('user_id', sa.Integer(), nullable=True),
+    sa.Column('has_agrimodule_registered', sa.Boolean(), nullable=True),
+    sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('identifier')
+    )
+    op.create_table('agrisensorlist',
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('identifier', sa.String(length=100), nullable=False),
+    sa.Column('type', sa.String(length=10), nullable=False),
+    sa.Column('has_user_registered', sa.Boolean(), nullable=True),
+    sa.Column('user_id', sa.Integer(), nullable=True),
+    sa.Column('has_agrimodule_registered', sa.Boolean(), nullable=True),
+    sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('identifier')
     )
     op.create_table('contactustable',
     sa.Column('id', sa.Integer(), nullable=False),
@@ -44,6 +74,7 @@ def upgrade():
     sa.Column('_space_y', sa.Float(precision=2), nullable=True),
     sa.Column('_space_z', sa.Float(precision=2), nullable=True),
     sa.Column('_density', sa.Float(precision=2), nullable=True),
+    sa.Column('image', sa.String(length=200), nullable=True),
     sa.Column('_fruit_quantity', sa.Integer(), nullable=True),
     sa.Column('_fruit_size', sa.Float(precision=2), nullable=True),
     sa.Column('_fruit_weight', sa.Float(precision=2), nullable=True),
@@ -71,10 +102,21 @@ def upgrade():
     sa.Column('_air_humi_opt', sa.Float(precision=2), nullable=True),
     sa.Column('_air_humi_max', sa.Float(precision=2), nullable=True),
     sa.Column('_water_needed', sa.Integer(), nullable=True),
-    sa.Column('_time_created', sa.DateTime(timezone=True), server_default=sa.text('now()'), nullable=True),
-    sa.Column('_time_updated', sa.DateTime(timezone=True), server_default=sa.text('now()'), nullable=True),
+    sa.Column('time_created', sa.DateTime(timezone=True), server_default=sa.text('now()'), nullable=True),
+    sa.Column('time_updated', sa.DateTime(timezone=True), server_default=sa.text('now()'), nullable=True),
     sa.PrimaryKeyConstraint('id'),
-    sa.UniqueConstraint('_name')
+    sa.UniqueConstraint('_name'),
+    sa.UniqueConstraint('image')
+    )
+    op.create_table('crop_image',
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('path', sa.String(length=200), nullable=True),
+    sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('path')
+    )
+    op.create_table('cropplanning',
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.PrimaryKeyConstraint('id')
     )
     op.create_table('dailyfieldinput',
     sa.Column('id', sa.Integer(), nullable=False),
@@ -122,6 +164,15 @@ def upgrade():
     sa.Column('description', sa.String(length=255), nullable=True),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('name')
+    )
+    op.create_table('tasks',
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('name', sa.Integer(), nullable=True),
+    sa.Column('description', sa.String(length=2000), nullable=True),
+    sa.Column('freq', sa.String(length=20), nullable=True),
+    sa.Column('duration', sa.Integer(), nullable=True),
+    sa.Column('man_power', sa.Integer(), nullable=True),
+    sa.PrimaryKeyConstraint('id')
     )
     op.create_table('user',
     sa.Column('id', sa.Integer(), nullable=False),
@@ -196,6 +247,17 @@ def upgrade():
     sa.ForeignKeyConstraint(['role_id'], ['role.id'], ),
     sa.ForeignKeyConstraint(['user_id'], ['user.id'], )
     )
+    op.create_table('welcome',
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('add_agrisys', sa.Boolean(), nullable=True),
+    sa.Column('install_agrisys', sa.Boolean(), nullable=True),
+    sa.Column('add_pump', sa.Boolean(), nullable=True),
+    sa.Column('add_farm', sa.Boolean(), nullable=True),
+    sa.Column('add_field', sa.Boolean(), nullable=True),
+    sa.Column('user_id', sa.Integer(), nullable=True),
+    sa.ForeignKeyConstraint(['user_id'], ['user.id'], ),
+    sa.PrimaryKeyConstraint('id')
+    )
     op.create_table('field',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('field_name', sa.String(length=25), nullable=False),
@@ -215,13 +277,43 @@ def upgrade():
     sa.ForeignKeyConstraint(['farm_id'], ['farm.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
+    op.create_table('soiltest',
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('soil_ph', sa.Integer(), nullable=True),
+    sa.Column('soil_ec', sa.Integer(), nullable=True),
+    sa.Column('soil_organic_carbon', sa.Integer(), nullable=True),
+    sa.Column('soil_nitrogen', sa.Integer(), nullable=True),
+    sa.Column('soil_p205', sa.Integer(), nullable=True),
+    sa.Column('soil_k20', sa.Integer(), nullable=True),
+    sa.Column('farm_id', sa.Integer(), nullable=True),
+    sa.Column('_time_created', sa.DateTime(timezone=True), server_default=sa.text('now()'), nullable=True),
+    sa.Column('_time_updated', sa.DateTime(timezone=True), server_default=sa.text('now()'), nullable=True),
+    sa.ForeignKeyConstraint(['farm_id'], ['farm.id'], ),
+    sa.PrimaryKeyConstraint('id')
+    )
+    op.create_table('watertest',
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('water_ph', sa.Integer(), nullable=True),
+    sa.Column('water_ec', sa.Integer(), nullable=True),
+    sa.Column('water_bicarbonates', sa.Integer(), nullable=True),
+    sa.Column('water_carbonates', sa.Integer(), nullable=True),
+    sa.Column('water_potasium', sa.Integer(), nullable=True),
+    sa.Column('water_sulphate', sa.Integer(), nullable=True),
+    sa.Column('farm_id', sa.Integer(), nullable=True),
+    sa.Column('_time_created', sa.DateTime(timezone=True), server_default=sa.text('now()'), nullable=True),
+    sa.Column('_time_updated', sa.DateTime(timezone=True), server_default=sa.text('now()'), nullable=True),
+    sa.ForeignKeyConstraint(['farm_id'], ['farm.id'], ),
+    sa.PrimaryKeyConstraint('id')
+    )
     op.create_table('agrimodules',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('name', sa.String(length=20), nullable=True),
-    sa.Column('identifier', sa.String(length=50), nullable=False),
+    sa.Column('identifier', sa.String(length=100), nullable=False),
     sa.Column('lat', sa.Float(precision=8), nullable=True),
     sa.Column('lon', sa.Float(precision=8), nullable=True),
     sa.Column('batt_status', sa.Integer(), nullable=True),
+    sa.Column('public_id', sa.String(length=200), nullable=True),
+    sa.Column('mac', sa.String(length=400), nullable=True),
     sa.Column('user_id', sa.Integer(), nullable=True),
     sa.Column('field_id', sa.Integer(), nullable=True),
     sa.Column('_time_created', sa.DateTime(timezone=True), server_default=sa.text('now()'), nullable=True),
@@ -308,17 +400,26 @@ def downgrade():
     op.drop_table('agripumps')
     op.drop_table('crops_field')
     op.drop_table('agrimodules')
+    op.drop_table('watertest')
+    op.drop_table('soiltest')
     op.drop_table('field')
+    op.drop_table('welcome')
     op.drop_table('roles_users')
     op.drop_table('pump')
     op.drop_table('farm')
     op.drop_table('workwithustable')
     op.drop_table('user')
+    op.drop_table('tasks')
     op.drop_table('role')
     op.drop_table('platformfbtable')
     op.drop_table('newslettertable')
     op.drop_table('dailyfieldinput')
+    op.drop_table('cropplanning')
+    op.drop_table('crop_image')
     op.drop_table('crop')
     op.drop_table('contactustable')
+    op.drop_table('agrisensorlist')
+    op.drop_table('agripumplist')
+    op.drop_table('agrimodulelist')
     op.drop_table('agrimodulefbtable')
     # ### end Alembic commands ###

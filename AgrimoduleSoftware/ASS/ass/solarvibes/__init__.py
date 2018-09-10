@@ -52,7 +52,7 @@ security = Security(app, user_datastore, register_form=RegisterFormExt, confirm_
 # Begin Import Views
 #############################
 from solarvibes import views
-from solarvibes.site.views import site
+# from solarvibes.site.views import site
 from solarvibes.users.views import users
 from solarvibes.welcome.views import welcome
 from solarvibes.main.views import main
@@ -68,7 +68,7 @@ from solarvibes.admin.views import admin_bp
 from solarvibes.agrimodule_api.views_new import agrimodule_api
 from solarvibes.crop_planning.views import crop_planning_bp
 
-app.register_blueprint(site, url_prefix='/site')
+# app.register_blueprint(site, url_prefix='/site')
 app.register_blueprint(users, url_prefix='/users')
 app.register_blueprint(welcome, url_prefix='/welcome')
 app.register_blueprint(main, url_prefix='/main')

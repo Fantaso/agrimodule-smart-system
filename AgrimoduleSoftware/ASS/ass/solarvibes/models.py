@@ -23,6 +23,7 @@ class Farm(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     farm_name = db.Column(db.String(25), unique=True, nullable=False)
     farm_location = db.Column(db.String(20))
+    farm_coordinates = db.Column(db.String(3000))
     farm_area = db.Column(db.Float(precision=2))
     farm_cultivation_process = db.Column(db.String(20))
 
@@ -31,6 +32,8 @@ class Farm(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     # FARM[1]-FIELD[M]
     fields = db.relationship('Field', backref='farm', lazy='dynamic')
+    soil_tests = db.relationship('SoilTest', backref='farm', lazy='dynamic')
+    water_tests = db.relationship('WaterTest', backref='farm', lazy='dynamic')
 
     _default = db.Column(db.Boolean)
     _time_created = db.Column(db.DateTime(timezone=True), server_default=func.now())
@@ -42,6 +45,46 @@ class Farm(db.Model):
 crops_field = db.Table('crops_field',
     db.Column('field_id', db.Integer, db.ForeignKey('field.id')),
     db.Column('crop_id', db.Integer, db.ForeignKey('crop.id')))
+
+class SoilTest(db.Model):
+
+    __tablename__ = 'soiltest'
+    id = db.Column(db.Integer, primary_key=True)
+    soil_ph = db.Column(db.Float(precision=2))
+    soil_ec = db.Column(db.Float(precision=2))
+    soil_organic_carbon = db.Column(db.Float(precision=2))
+    soil_nitrogen = db.Column(db.Float(precision=2))
+    soil_p205 = db.Column(db.Float(precision=2))
+    soil_k20 = db.Column(db.Float(precision=2))
+
+    # FARM[1]-TEST[M]
+    farm_id = db.Column(db.Integer, db.ForeignKey('farm.id'))
+
+    _time_created = db.Column(db.DateTime(timezone=True), server_default=func.now())
+    _time_updated = db.Column(db.DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
+
+    def __repr__(self):
+      return '<Soil Test {}>'.format(self.id)
+
+class WaterTest(db.Model):
+
+    __tablename__ = 'watertest'
+    id = db.Column(db.Integer, primary_key=True)
+    water_ph = db.Column(db.Float(precision=2))
+    water_ec = db.Column(db.Float(precision=2))
+    water_bicarbonates = db.Column(db.Float(precision=2))
+    water_carbonates = db.Column(db.Float(precision=2))
+    water_potasium = db.Column(db.Float(precision=2))
+    water_sulphate = db.Column(db.Float(precision=2))
+
+    # FARM[1]-TEST[M]
+    farm_id = db.Column(db.Integer, db.ForeignKey('farm.id'))
+
+    _time_created = db.Column(db.DateTime(timezone=True), server_default=func.now())
+    _time_updated = db.Column(db.DateTime(timezone=True), server_default=func.now(), onupdate=func.now())
+
+    def __repr__(self):
+      return '<Water Test {}>'.format(self.id)
 
 class Field(db.Model):
     """Fields that can exist inside the Farm.Model. One Farm can have as many Fields within for different crops to be cultivated, being limited by the size of the Farm"""
@@ -59,8 +102,6 @@ class Field(db.Model):
     field_num_plants = db.Column(db.Integer)
     field_spacing_topology = db.Column(db.String(20))
     field_water_required_day = db.Column(db.Integer)
-    # field_ = db.Column(db.Float)
-    # field_ = db.Column(db.Float)
     # field_ = db.Column(db.Float)
 
     # RELATIONSHIP TO BE ADDED
@@ -254,6 +295,8 @@ class WelcomeLog(db.Model):
     add_pump = db.Column(db.Boolean)
     add_farm = db.Column(db.Boolean)
     add_field = db.Column(db.Boolean)
+    add_soil_test = db.Column(db.Boolean)
+    add_water_test = db.Column(db.Boolean)
     # WELCOME[1]-USER[1]
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
