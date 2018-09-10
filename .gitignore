@@ -9,9 +9,9 @@ archive/
 # aws
 /home/fantaso/projects/AgrimoduleSmartSystem/AgrimoduleHardware/ASS/ass/utils/aws
 # cropwat
-/home/fantaso/projects/AgrimoduleSmartSystem/AgrimoduleHardware/ASS/ass/utils/cropwat
+AgrimoduleHardware/ASS/ass/utils/cropwat
 # evapotranspiration
-/home/fantaso/projects/AgrimoduleSmartSystem/AgrimoduleHardware/ASS/ass/utils/evapotranspiration
+AgrimoduleHardware/ASS/ass/utils/evapotranspiration
 
 
 
