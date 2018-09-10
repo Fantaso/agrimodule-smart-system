@@ -37,7 +37,7 @@ class CropApi():
 		db.session.commit()
 		print('Crops added to db! Done!')
 
-	
+
 
 
 
