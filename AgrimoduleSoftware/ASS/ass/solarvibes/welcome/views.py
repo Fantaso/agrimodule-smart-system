@@ -329,7 +329,8 @@ def add_pump():
         db.session.commit()
 
         # ADD PUMP TO AGRIPUMP
-        agripump.pump_id = pump.id
+        if agripump:
+            agripump.pump_id = pump.id
         current_user.welcome.add_pump = True
         db.session.commit()
 
