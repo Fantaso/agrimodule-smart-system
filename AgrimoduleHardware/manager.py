@@ -24,47 +24,57 @@ class Measurement:
 
 # //////////////////////////////////////////////////////////////////////////
 # Initialize AgriSensor object with MAC, Identifier and UUID
-agri_sensor = AgriSensor("mac001", "i001", "uuid0001")
+agri_sensor1 = AgriSensor("mac001", "i001", "uuid0001")
+agri_sensor2 = AgriSensor("mac002", "i002", "uuid0002")
+agri_sensor3 = AgriSensor("mac003", "i003", "uuid0003")
+agri_sensors = [agri_sensor1, agri_sensor2, agri_sensor3]
+
 agri_sensors_obj = {}
 
-# Info of an agri_sensor
-agri_sensor_obj = {
-  "identifier": agri_sensor.identifier,
-  "mac": agri_sensor.mac
-}
-
-agri_sensors_obj[agri_sensor.uuid] = agri_sensor_obj
+for ags in agri_sensors:
+  # Info of an agri_sensor
+  agri_sensor_obj = {
+    "identifier": ags.identifier,
+    "mac": ags.mac
+  }
+  agri_sensors_obj[ags.uuid] = agri_sensor_obj
 
 # //////////////////////////////////////////////////////////////////////////
 # Initialize Measurement object with AirTemperature, AirRH, etc.
-measurement = Measurement("uuid012", 25, 10, 12, 15, 12, 3, 7, 13, 0.72, 35.6895, 139.6917)
+measurement1 = Measurement("uuid001", 25, 10, 12, 15, 12, 3, 7, 13, 0.72, 35.6895, 139.6917)
+measurement2 = Measurement("uuid002", 22, 12, 11, 14, 11, 1, 7, 9, 0.70, 35.6895, 139.6917)
+measurement3 = Measurement("uuid003", 12, 22, 13, 11, 10, 1, 4, 10, 0.71, 35.6895, 139.6917)
+measurements = [measurement1, measurement2, measurement3]
+
 measurements_obj = {
   "reported": {
   }
 }
 
 # A measurement
-measurement_obj = {
-  "air": {
-    "air_temp": measurement.air_temp,
-    "air_rh": measurement.air_rh,
-    "air_atmopressure": measurement.air_atmopressure,
-    "air_light": measurement.air_light,
-  },
-  "soil": {
-    "soil_ph": measurement.soil_ph,
-    "soil_ec": measurement.soil_ec,
-    "soil_moisture": measurement.soil_moisture,
-    "soil_temp": measurement.soil_temp
-  },
-  "property": {
-    "battery": measurement.battery,
-    "latitude": measurement.latitude,
-    "longitude": measurement.longitude
+for m in measurements:
+  measurement_obj = {
+    "air": {
+      "air_temp": m.air_temp,
+      "air_rh": m.air_rh,
+      "air_atmopressure": m.air_atmopressure,
+      "air_light": m.air_light,
+    },
+    "soil": {
+      "soil_ph": m.soil_ph,
+      "soil_ec": m.soil_ec,
+      "soil_moisture": m.soil_moisture,
+      "soil_temp": m.soil_temp
+    },
+    "property": {
+      "battery": m.battery,
+      "latitude": m.latitude,
+      "longitude": m.longitude
+    }
   }
-}
+  measurements_obj['reported'][m.uuid] = measurement_obj
 
-measurements_obj['reported'][measurement.uuid] = measurement_obj
+
 
 # //////////////////////////////////////////////////////////////////////////
 
