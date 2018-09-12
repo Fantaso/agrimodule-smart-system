@@ -15,51 +15,68 @@
  */
  '''
 
-
 from AWSIoTPythonSDK.MQTTLib import AWSIoTMQTTClient
 import logging
 import time
 import argparse
 import json
-import random
-
-
-def register():
-    # domain = solar-viber.com/app
-    # uidentifier = agrimodule3000 
-    pass
+from models import Measurement
 
 AllowedActions = ['both', 'publish', 'subscribe']
 
 # Custom MQTT message callback
 def customCallback(client, userdata, message):
+    print("\n")
     print("Received a new message: ")
+    print("-----------------------------------\n")
     print(message.payload)
+    print("\n")
     print("from topic: ")
     print(message.topic)
-    print("--------------\n\n")
+    print("-----------------------------------\n\n")
+
+# Measurements to be sent
+# measurement1 = Measurement("uuid001", 25, 10, 12, 15, 12, 3, 7, 13, 0.72, 35.6895, 139.6917, 201809011230)
+# measurement2 = Measurement("uuid002", 22, 12, 11, 14, 11, 1, 7, 9, 0.70, 35.6895, 139.6917, 201809011245)
+# measurement3 = Measurement("uuid003", 12, 22, 13, 11, 10, 1, 4, 10, 0.71, 35.6895, 139.6917, 201809011300)
+measurement4 = Measurement("uuid001", 25, 10, 12, 15, 12, 3, 7, 13, 0.72, 35.6895, 139.6917, 201809011400)
+measurement5 = Measurement("uuid002", 22, 12, 11, 14, 11, 1, 7, 9, 0.70, 35.6895, 139.6917, 201809011400)
+measurement6 = Measurement("uuid003", 12, 22, 13, 11, 10, 1, 4, 10, 0.71, 35.6895, 139.6917, 201809011400)
+measurements = [measurement4, measurement5, measurement6]
+
+measurement_obj = {}
+measurements_obj = {
+  "reported": { "measurements" :[]
+  }
+}
+
+for m in measurements:
+  measurement_obj[m.uuid] = m.json_object
+  measurements_obj['reported']['measurements'].append(measurement_obj)
 
 # Read in command-line parameters
 parser = argparse.ArgumentParser()
-parser.add_argument("-e", "--endpoint", action="store", required=True, dest="host", help="a32h6mx1kypes3.iot.eu-central-1.amazonaws.com")
-parser.add_argument("-r", "--rootCA", action="store", required=True, dest="rootCAPath", help="x509_root.crt")
-parser.add_argument("-c", "--cert", action="store", dest="certificatePath", help="18ffc00ad9-certificate.pem.crt.txt")
-parser.add_argument("-k", "--key", action="store", dest="privateKeyPath", help="18ffc00ad9-private.pem.key")
+parser.add_argument("-e", "--endpoint", action="store", required=True, dest="host", help="Your AWS IoT custom endpoint")
+parser.add_argument("-r", "--rootCA", action="store", required=True, dest="rootCAPath", help="Root CA file path")
+parser.add_argument("-c", "--cert", action="store", dest="certificatePath", help="Certificate file path")
+parser.add_argument("-k", "--key", action="store", dest="privateKeyPath", help="Private key file path")
+parser.add_argument("-p", "--port", action="store", dest="port", type=int, help="Port number override")
 parser.add_argument("-w", "--websocket", action="store_true", dest="useWebsocket", default=False,
                     help="Use MQTT over WebSocket")
 parser.add_argument("-id", "--clientId", action="store", dest="clientId", default="basicPubSub",
-                    help="RasPi3_SDB")
-parser.add_argument("-t", "--topic", action="store", dest="topic", default="sdk/test/Python", help="Payload/topic")
+                    help="Targeted client id")
+parser.add_argument("-t", "--topic", action="store", dest="topic", default="sdk/test/Python", help="Targeted topic")
 parser.add_argument("-m", "--mode", action="store", dest="mode", default="both",
                     help="Operation modes: %s"%str(AllowedActions))
-parser.add_argument("-M", "--message", action="store", dest="message", default="Hello World from RasPi3",
-                    help="Message fromRasPi3")
+parser.add_argument("-M", "--message", action="store", dest="message", default="Hello World!",
+                    help="Message to publish")
 
 args = parser.parse_args()
 host = args.host
 rootCAPath = args.rootCAPath
 certificatePath = args.certificatePath
 privateKeyPath = args.privateKeyPath
+port = args.port
 useWebsocket = args.useWebsocket
 clientId = args.clientId
 topic = args.topic
@@ -76,23 +93,29 @@ if not args.useWebsocket and (not args.certificatePath or not args.privateKeyPat
     parser.error("Missing credentials for authentication.")
     exit(2)
 
+# Port defaults
+if args.useWebsocket and not args.port:  # When no port override for WebSocket, default to 443
+    port = 443
+if not args.useWebsocket and not args.port:  # When no port override for non-WebSocket, default to 8883
+    port = 8883
+
 # Configure logging
-logger = logging.getLogger("AWSIoTPythonSDK.core")
-logger.setLevel(logging.DEBUG)
-streamHandler = logging.StreamHandler()
-formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-streamHandler.setFormatter(formatter)
-logger.addHandler(streamHandler)
+# logger = logging.getLogger("AWSIoTPythonSDK.core")
+# logger.setLevel(logging.DEBUG)
+# streamHandler = logging.StreamHandler()
+# formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+# streamHandler.setFormatter(formatter)
+# logger.addHandler(streamHandler)
 
 # Init AWSIoTMQTTClient
 myAWSIoTMQTTClient = None
 if useWebsocket:
     myAWSIoTMQTTClient = AWSIoTMQTTClient(clientId, useWebsocket=True)
-    myAWSIoTMQTTClient.configureEndpoint(host, 443)
+    myAWSIoTMQTTClient.configureEndpoint(host, port)
     myAWSIoTMQTTClient.configureCredentials(rootCAPath)
 else:
     myAWSIoTMQTTClient = AWSIoTMQTTClient(clientId)
-    myAWSIoTMQTTClient.configureEndpoint(host, 8883)
+    myAWSIoTMQTTClient.configureEndpoint(host, port)
     myAWSIoTMQTTClient.configureCredentials(rootCAPath, privateKeyPath, certificatePath)
 
 # AWSIoTMQTTClient connection configuration
@@ -108,23 +131,56 @@ if args.mode == 'both' or args.mode == 'subscribe':
     myAWSIoTMQTTClient.subscribe(topic, 1, customCallback)
 time.sleep(2)
 
-# Publish to the same topic in a loop forever
+measurement_index = len(measurements_obj['reported']['measurements'])
+keys = list(measurements_obj['reported']['measurements'][0])
 loopCount = 0
+
 while True:
+  for i in range(0, 3):
+  # Publish to the same topic in a loop forever
     if args.mode == 'both' or args.mode == 'publish':
         message = {}
-        message['message'] = args.message
+        message['uuid'] = keys[i]
+        message['updated'] = measurements_obj['reported']['measurements'][i][keys[i]]['property']['updated']
+        message['message'] = measurements_obj['reported']['measurements'][i][keys[i]]
         message['sequence'] = loopCount
         messageJson = json.dumps(message)
-        python_object = {
-                 'Device_ID': 'RaspberryPi3_cdf7',
-                 'time' : time.time(),
-                 'Temperature': random.randint(0,100),
-                 'Humidity': random.randint(0,50)
-                        }
-        json_string = json.dumps(python_object)
-        myAWSIoTMQTTClient.publish(topic,json_string,1)
+        myAWSIoTMQTTClient.publish(topic,messageJson,1)
         if args.mode == 'publish':
             print('Published topic %s: %s\n' % (topic, json_string))
         loopCount += 1
-    time.sleep(10)
+
+  time.sleep(2)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

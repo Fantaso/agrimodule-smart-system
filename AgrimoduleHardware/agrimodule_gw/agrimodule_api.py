@@ -1,3 +1,7 @@
+
+# This API is in Rasp Pi
+# Rasp to APP communication
+
 import requests
 from getmac import get_mac_address
 from os import path
@@ -70,6 +74,7 @@ print('REGISTER:   ' + register.text)
 print('')
 
 
+# Store UUID in some kind of a file, in order not to lose it.
 
 
 
