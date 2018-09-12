@@ -5,8 +5,8 @@ class AgriSensor:
         self.identifier = identifier
         self.uuid = uuid
         self.json_object = {
-          "identifier": ags.identifier,
-          "mac": ags.mac
+          "identifier": identifier,
+          "mac": mac
         }
         # time created ?
 

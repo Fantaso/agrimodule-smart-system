@@ -21,6 +21,8 @@ import time
 import argparse
 import json
 from models import Measurement
+from backup import writeToJSONFile
+from datetime import datetime
 
 AllowedActions = ['both', 'publish', 'subscribe']
 
@@ -53,6 +55,16 @@ measurements_obj = {
 for m in measurements:
   measurement_obj[m.uuid] = m.json_object
   measurements_obj['reported']['measurements'].append(measurement_obj)
+
+# Backup measurements data to JSON file.
+
+
+datetime = datetime.now().strftime("%Y%m%d%H%M")
+path = '../backups/measurements'
+file_name = str(datetime)
+data = measurement_obj
+
+writeToJSONFile(path, file_name, data)
 
 # Read in command-line parameters
 parser = argparse.ArgumentParser()
