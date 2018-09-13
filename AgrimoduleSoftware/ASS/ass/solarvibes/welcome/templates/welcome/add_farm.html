@@ -15,7 +15,7 @@
 
 {% block content %}
 
-<!-- <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAJusa1miMBhsqN5m3oJhm6X2mmdhYqLqU&libraries=places"></script> -->
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAJusa1miMBhsqN5m3oJhm6X2mmdhYqLqU&libraries=places"></script>
 <!-- // Enable Place API and Map Javascript API on Google Cloud Platform for this API key -->
 
 <div class = "container">
@@ -27,8 +27,9 @@
     {{ form.csrf_token }}
     {{ render_field_with_errors(form.farm_name) }}
     {{ render_field_with_errors(form.farm_location) }}
-    <div id="map" style="height: 500px;"></div>
-    <br>
+    {{ render_field_with_errors(form.farm_area) }}
+    <!-- <div id="map" style="height: 500px;"></div> -->
+    <!-- <br> -->
     {{ render_field_with_errors(form.farm_coordinates) }}
     {{ render_field_with_errors(form.farm_cultivation_process) }}
     <input type="submit" class="hoverable waves-effect waves-light btn" value="Add farm!">
@@ -39,42 +40,47 @@
   <a href="{{ url_for('welcome.add_pump') }}" class="amber darken-1 waves-effect waves-light btn btn-small"><i class="material-icons left">arrow_back</i>Back</a>
 
     <script>
-      function initMap() {
-        var map = new google.maps.Map(document.getElementById('map'), {
-          center: {lat: -34.397, lng: 150.644},
-          zoom: 8
-        });
+      // function initMap() {
+      //   var map = new google.maps.Map(document.getElementById('map'), {
+      //     center: {lat: -34.397, lng: 150.644},
+      //     zoom: 8
+      //   });
+	  //
+      //   var drawingManager = new google.maps.drawing.DrawingManager({
+      //     drawingMode: google.maps.drawing.OverlayType.MARKER,
+      //     drawingControl: true,
+      //     drawingControlOptions: {
+      //       position: google.maps.ControlPosition.TOP_CENTER,
+      //       drawingModes: ['marker', 'circle', 'polygon', 'polyline', 'rectangle']
+      //     },
+      //     markerOptions: {icon: 'https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png'},
+      //     circleOptions: {
+      //       fillColor: '#ffff00',
+      //       fillOpacity: 1,
+      //       strokeWeight: 5,
+      //       clickable: false,
+      //       editable: true,
+      //       zIndex: 1
+      //     }
+      //   });
+      //   drawingManager.setMap(map);
+	  //
+      //   google.maps.event.addListener(drawingManager, 'polygoncomplete', function (polygon) {
+      //   var coordinates = (polygon.getPath().getArray());
+	  //
+      //   document.getElementById("farm_coordinates").value = coordinates
+      //   console.log(coordinates);
+      //   });
+	  // }
+		var input = document.getElementById('farm_location');
+		var autocomplete = new google.maps.places.Autocomplete(input,{types: ['(cities)']});
+		google.maps.event.addListener(autocomplete, 'place_changed', function(){
+			var place = autocomplete.getPlace();
+		})
 
-        var drawingManager = new google.maps.drawing.DrawingManager({
-          drawingMode: google.maps.drawing.OverlayType.MARKER,
-          drawingControl: true,
-          drawingControlOptions: {
-            position: google.maps.ControlPosition.TOP_CENTER,
-            drawingModes: ['marker', 'circle', 'polygon', 'polyline', 'rectangle']
-          },
-          markerOptions: {icon: 'https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png'},
-          circleOptions: {
-            fillColor: '#ffff00',
-            fillOpacity: 1,
-            strokeWeight: 5,
-            clickable: false,
-            editable: true,
-            zIndex: 1
-          }
-        });
-        drawingManager.setMap(map);
-
-        google.maps.event.addListener(drawingManager, 'polygoncomplete', function (polygon) {
-        var coordinates = (polygon.getPath().getArray());
-
-        document.getElementById("farm_coordinates").value = coordinates
-        console.log(coordinates);
-        });
-      }
 
     </script>
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCBH2_9ICY6lpK-H9o_lpmWY9Q6rzJMsJE&libraries=drawing&callback=initMap"
-         async defer></script>
+    <!-- <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCBH2_9ICY6lpK-H9o_lpmWY9Q6rzJMsJE&libraries=drawing&callback=initMap"async defer></script> -->
 
 </div>
 
