@@ -493,7 +493,7 @@ def add_farm():
         myFarm = PreAddFarmForm(farm_name = farm.farm_name,
                             farm_location = farm.farm_location,
                             farm_coordinates = farm.farm_coordinates,
-                            # farm_area = cm2_to_m2(farm.farm_area),
+                            farm_area = cm2_to_m2(farm.farm_area),
                             farm_cultivation_process = farm.farm_cultivation_process,
                             )
         form = AddFarmForm(obj=myFarm)               # CREATE WTForm FORM
@@ -514,8 +514,8 @@ def add_farm():
         # Calculate area*****************:
 
 
-        # farm_area = form.farm_area.data
-        farm_area = 1.0
+        farm_area = form.farm_area.data
+        # farm_area = 1.0
         farm_cultivation_process = form.farm_cultivation_process.data
 
         # FARM OBJS TO DB
@@ -524,7 +524,7 @@ def add_farm():
             farm.farm_name = form.farm_name.data
             farm.farm_location = form.farm_location.data
             farm.farm_coordinates = form.farm_coordinates.data
-            # farm.farm_area = m2_to_cm2(form.farm_area.data)
+            farm.farm_area = m2_to_cm2(form.farm_area.data)
             farm.farm_cultivation_process = form.farm_cultivation_process.data
             farm._default = False
             flash('''You just re-created farm: {}
