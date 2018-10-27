@@ -586,11 +586,19 @@ def add_crop():
         session['welcome'] = dict()
         session.modified = True
 
-    crop_choices = Crop.query.all()
+    if not session['welcome']['user_id']:
+        session['welcome'].update({'user_id': current_user.id})
+        session.modified = True
+
+    if not session['welcome']['farm_id']:
+        only_farm_id = current_user.farms.first().id
+        session['welcome'].update({'farm_id': only_farm_id})
+        session.modified = True
+
     form = AddCropForm()              # CREATE WTForm FORM
+    crop_choices = Crop.query.all()
     form.field_cultivation_crop.choices = [ (crop.id,  str.capitalize(crop._name)) for crop in crop_choices ]
     form.field_cultivation_crop.choices.insert(0, ('0' ,'Choose:'))
-
     if form.validate_on_submit():   # IF request.methiod == 'POST'
         # USER OBJS
         user = User.query.filter_by(id = session['welcome']['user_id']).first()
@@ -645,7 +653,8 @@ def add_crop():
         field.crops.append(crop)
 
         # DB COMMANDS
-        user.completed_welcome = True # sets flag for user to have completed the welcome phase
+        current_user.completed_welcome = True # sets flag for user to have completed the welcome phase
+        print('user.completed_welcome is ' + str(user.completed_welcome))
         current_user.welcome.add_field = True
         db.session.add(field)
         db.session.commit()
@@ -661,5 +670,6 @@ def add_crop():
         flash('You just created a {} in your {}'.format(field_name, farm.farm_name))
         del session['welcome']     # ERASE SESSION OBJS
         return redirect(url_for('login_check.index'))
+
 
     return render_template('welcome/add_crop.html', form=form)

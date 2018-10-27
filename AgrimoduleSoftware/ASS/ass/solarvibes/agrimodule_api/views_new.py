@@ -475,7 +475,7 @@ def unregister(identifier = None, mac = None):
 
 #### flask-restless basic configuration.
 # from flask_restless import APIManager
-# manager = APIManager(app, flask_sqlalchemy_db = db)
+# manager = APIManager(application, flask_sqlalchemy_db = db)
 # manager.create_api(Agrimodule)
 # manager.create_api(Agrisensor, methods=['GET'])
 # manager.create_api(Agripump, methods=['GET'])

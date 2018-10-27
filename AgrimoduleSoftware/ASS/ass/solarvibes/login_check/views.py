@@ -18,20 +18,19 @@ login_check = Blueprint(
 def index():
 
     user = current_user
+    print('entering...')
     if  request.method == 'GET':
         # if the user has not yet been authenticated -> goto login
         if user.is_anonymous:
-            print('0')
+            print('you must be logged in!')
             flash('you must be logged in!')
             return redirect(url_for('login'))
 
         # if the user is authenticated
         if user.is_authenticated:
             # if is the first time he logs in
-            if user.login_count == 1 or user.login_count ==  None:
+            if not user.completed_welcome or user.login_count ==  None:
                 print('1')
-                user.completed_welcome = False
-                db.session.commit()
                 return redirect(url_for('welcome.index'))
             # if the user already complete the welcome setup
             if user.completed_welcome:

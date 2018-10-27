@@ -5,7 +5,7 @@ from solarvibes.models import Farm, Field, crops_field, Crop
 from solarvibes.models import DailyFieldInput
 from solarvibes.models import Agrimodule, Agripump, Agrisensor, Pump, Measurement
 from solarvibes.models import AgrimoduleList, AgrisensorList, AgripumpList, WelcomeLog
-from solarvibes import app, db
+from solarvibes import application, db
 
 from flask_admin import Admin
 from flask_admin.contrib.sqla import ModelView
@@ -18,7 +18,7 @@ admin_bp = Blueprint(
         __name__,
 )
 
-admin = Admin(app, template_mode = 'bootstrap3')
+admin = Admin(application, template_mode = 'bootstrap3')
 
 
 class UserView(ModelView):
