@@ -492,13 +492,13 @@ def add_farm():
 
         myFarm = PreAddFarmForm(farm_name = farm.farm_name,
                             farm_location = farm.farm_location,
-                            farm_coordinates = farm.farm_coordinates,
+                            # farm_coordinates = farm.farm_coordinates,
                             farm_area = cm2_to_m2(farm.farm_area),
                             farm_cultivation_process = farm.farm_cultivation_process,
                             )
         form = AddFarmForm(obj=myFarm)               # CREATE WTForm FORM
 
-    print(type(form.farm_coordinates.data))
+    # print(type(form.farm_coordinates.data))
     # this is a string
 
     if form.validate_on_submit():   # IF request.methiod == 'POST'
@@ -508,7 +508,7 @@ def add_farm():
         # FARM OBJS
         farm_name = form.farm_name.data
         farm_location = form.farm_location.data
-        farm_coordinates = form.farm_coordinates.data
+        # farm_coordinates = form.farm_coordinates.data
 
 
         # Calculate area*****************:
@@ -523,19 +523,19 @@ def add_farm():
             print(current_user.welcome.add_farm)
             farm.farm_name = form.farm_name.data
             farm.farm_location = form.farm_location.data
-            farm.farm_coordinates = form.farm_coordinates.data
+            # farm.farm_coordinates = form.farm_coordinates.data
             farm.farm_area = m2_to_cm2(form.farm_area.data)
             farm.farm_cultivation_process = form.farm_cultivation_process.data
             farm._default = False
             flash('''You just re-created farm: {}
                         located: {}
                         with an area: {} m2
-                        growing: {}ally'''.format(farm_name, farm_location, farm_coordinates, farm_area, farm_cultivation_process))
+                        growing: {}ally'''.format(farm_name, farm_location, farm_area, farm_cultivation_process))
         else:
             farm = Farm(    user_id=user_id,
                             farm_name=farm_name,
                             farm_location=farm_location,
-                            farm_coordinates=farm_coordinates,
+                            # farm_coordinates=farm_coordinates,
                             farm_area=m2_to_cm2(farm_area),
                             farm_cultivation_process=farm_cultivation_process,
                             _default=False)
@@ -556,7 +556,7 @@ def add_farm():
                                 'farm_id':farm_id,
                                 'farm_name':farm_name,
                                 'farm_location':farm_location,
-                                'farm_coordinates': farm_coordinates,
+                                # 'farm_coordinates': farm_coordinates,
                                 'farm_area':farm_area,
                                 'farm_cultivation_process':farm_cultivation_process})
         session.modified = True
