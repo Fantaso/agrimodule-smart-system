@@ -1,7 +1,7 @@
 AgrimoduleSoftware/ASS/ass/solarvibes/static/* linguist-vendored
 
 
-https://github.com/alexkaratarakis/gitattributes/blob/master/.gitattributes
+# https://github.com/alexkaratarakis/gitattributes/blob/master/.gitattributes
 ---------------------------------------------------------------
 # THIS IS ONLY FOR THE gitattributes REPOSITORY.
 # Handle line endings automatically for files detected as text
@@ -17,7 +17,7 @@ https://github.com/alexkaratarakis/gitattributes/blob/master/.gitattributes
 *.md text
 
 
-https://github.com/alexkaratarakis/gitattributes/blob/master/Python.gitattributes
+# https://github.com/alexkaratarakis/gitattributes/blob/master/Python.gitattributes
 -------------------------------------------------------------
 # Basic .gitattributes for a python repo.
 
